@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { useSearchParams } from "next/navigation";
 import { validateLead, type FieldErrors } from "@/lib/validation/lead";
 import { PROJECT_TYPES, type LeadInput, type LeadType, type ProjectType } from "@/lib/types/lead";
 
@@ -30,7 +31,10 @@ const EMPTY_FORM: LeadInput = {
 };
 
 export function ContactForm() {
-  const [form, setForm] = useState<LeadInput>(EMPTY_FORM);
+  const searchParams = useSearchParams();
+  const initialType: LeadType = searchParams.get("type") === "investor" ? "investor" : "client";
+
+  const [form, setForm] = useState<LeadInput>({ ...EMPTY_FORM, type: initialType });
   const [state, setState] = useState<SubmitState>({ status: "idle" });
 
   function update<K extends keyof LeadInput>(key: K, value: LeadInput[K]) {
@@ -60,7 +64,7 @@ export function ContactForm() {
 
       if (res.status === 200 && data.success) {
         setState({ status: "success" });
-        setForm(EMPTY_FORM);
+        setForm({ ...EMPTY_FORM, type: initialType });
       } else if (res.status === 400 && data.error === "VALIDATION_ERROR") {
         setState({ status: "field-errors", fields: data.fields ?? {} });
       } else if (res.status === 429) {

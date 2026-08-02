@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ContactForm } from "@/components/ContactForm";
 
 export const metadata: Metadata = {
@@ -14,7 +15,11 @@ export default function ContactPage() {
         Tell us about your project, or reach out as an investor or partner.
       </p>
       <div className="mt-10">
-        <ContactForm />
+        {/* useSearchParams (to pre-select investor/client from ?type=)
+            requires a Suspense boundary during static generation. */}
+        <Suspense fallback={null}>
+          <ContactForm />
+        </Suspense>
       </div>
     </main>
   );
