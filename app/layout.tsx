@@ -27,6 +27,7 @@ const themeInitScript = `
 `;
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://jarvisstudios.net"),
   title: "Jarvis Studios",
   description:
     "Jarvis Studios — web development, app development, SaaS, CRM, and marketing/design for growing businesses.",

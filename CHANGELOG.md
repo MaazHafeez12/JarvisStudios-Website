@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - `CHANGELOG.md` — this file.
 
 ### Changed
+- Replaced the placeholder domain with the real production domain, `jarvisstudios.net`, in `app/sitemap.ts`, `app/robots.ts`, and `app/layout.tsx` (`metadataBase`, needed for correct absolute OG/canonical URLs).
 - TRD and ARCHITECTURE updated to resolve Security Audit High/Medium findings: rate limiting locked to Upstash Redis (ruling out an in-memory limiter, which doesn't work reliably on stateless serverless functions), production/preview environment isolation required for Supabase and Resend/Slack credentials, explicit sanitization rules for content interpolated into email/Slack notifications, explicit same-origin/no-CORS policy for `/api/leads`, and centralized security response headers.
 - DESIGN.md logo section updated after reviewing the actual brand asset (`logo.svg`): documented that the file is an auto-traced conversion of the source JPEG rather than clean vector art, and specified a safe interim usage pattern instead of attempting a risky hand-edit.
 - DESIGN.md icon set decided as Lucide (over Phosphor), for consistency with the Next.js/Tailwind stack.
