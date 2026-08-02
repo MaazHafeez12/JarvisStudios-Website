@@ -1,6 +1,6 @@
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
+    <main className="flex flex-col items-center justify-center gap-4 px-6 py-24 text-center">
       <p className="font-mono text-sm uppercase tracking-widest text-[--text-secondary]">
         Jarvis Studios — scaffold
       </p>

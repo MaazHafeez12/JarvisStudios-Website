@@ -10,6 +10,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Project scaffold: Next.js 16 (App Router) + TypeScript + Tailwind CSS, initialized per `docs/ARCHITECTURE.md`. Includes root layout with dark/light theme initialization (no-flash, `prefers-color-scheme`-aware), brand color/typography tokens from `docs/DESIGN.md` wired into Tailwind config and CSS custom properties, and centralized security response headers (CSP, HSTS, X-Frame-Options, etc.) in `next.config.ts` per `docs/SECURITY_AUDIT.md` finding #4.
 - `.env.example` documenting all planned environment variables (Supabase, Resend, Slack, Upstash) per `docs/TRD.md` §9.
 - `.claude/launch.json` dev server config for local preview.
+- Global layout shell: `Nav` (desktop + mobile menu, theme toggle, "Start a project" CTA) and `Footer` (service/company links, contact email), wired into `app/layout.tsx` around every page per `docs/DESIGN.md` §7.
+- `Logo` component: contains the current `logo.svg` brand asset in a fixed-size rounded box (interim fix per `docs/DESIGN.md` §2.1, since the source file isn't safely editable — see that section for why) and `ThemeToggle`, both under `components/ui/`.
+- Stub pages for `/services`, `/work`, `/about`, `/investors`, `/contact` so navigation is fully clickable ahead of each page's real content.
 - Product Requirements Document (`docs/PRD.md`) — problem statement, target users, goals/non-goals, user stories, MVP scope, success metrics, phased rollout plan.
 - Technical Requirements Document (`docs/TRD.md`) — tech stack, data models, API contracts, third-party integrations, performance/scalability and non-functional requirements.
 - Architecture Document (`docs/ARCHITECTURE.md`) — system/data-flow diagrams, request lifecycle, folder/module structure, key architectural decisions with rationale.
