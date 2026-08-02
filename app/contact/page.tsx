@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ContactForm } from "@/components/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact — Jarvis Studios",
@@ -7,12 +8,14 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-24">
-      <h1 className="font-display text-4xl font-semibold">Contact</h1>
-      <p className="mt-4 text-[--text-secondary]">
-        The real contact form + /api/leads backend (docs/TRD.md §5) is a
-        later step.
+    <main className="mx-auto max-w-xl px-6 py-24">
+      <h1 className="font-display text-4xl font-semibold">Get in touch</h1>
+      <p className="mt-3 text-[--text-secondary]">
+        Tell us about your project, or reach out as an investor or partner.
       </p>
+      <div className="mt-10">
+        <ContactForm />
+      </div>
     </main>
   );
 }
