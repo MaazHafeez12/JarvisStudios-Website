@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Token-based theming per docs/DESIGN.md §4 — components reference these
+  CSS custom properties (via Tailwind's arbitrary value / bg-[--surface]
+  syntax, or by extending the Tailwind theme to point at them) rather than
+  branching on `dark:` everywhere, so light/dark stay in sync as the site
+  grows. Dark mode is the default per DESIGN.md §4.
+*/
+:root {
+  --surface: theme("colors.neutral.950");
+  --surface-raised: theme("colors.neutral.900");
+  --text-primary: theme("colors.neutral.0");
+  --text-secondary: theme("colors.neutral.400");
+  --border: theme("colors.neutral.600");
+  --accent: theme("colors.brand.500");
+  --accent-hover: theme("colors.brand.300");
+}
+
+:root[data-theme="light"] {
+  --surface: theme("colors.neutral.0");
+  --surface-raised: theme("colors.neutral.100");
+  --text-primary: theme("colors.neutral.800");
+  --text-secondary: theme("colors.neutral.600");
+  --border: theme("colors.neutral.200");
+  --accent: theme("colors.brand.500");
+  --accent-hover: theme("colors.brand.700");
+}
+
+body {
+  background-color: var(--surface);
+  color: var(--text-primary);
+}
