@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Contact form (`components/ContactForm.tsx`) and `POST /api/leads` Route Handler implementing the full contract from `docs/TRD.md` §5: client/investor type selector, server-side validation as the source of truth, honeypot bot-trap (silently returns a fake success rather than revealing detection), Upstash Redis-backed rate limiting (5/IP/hour), Supabase insert via the service-role-only server client, and best-effort concurrent Resend + Slack notifications that never block or fail the response once the lead is saved. Shared `lib/types/lead.ts` and `lib/validation/lead.ts` keep client and server validation in sync per `docs/ARCHITECTURE.md` §4.5. `lib/sanitize.ts` escapes all lead fields before they're interpolated into the email/Slack templates per `docs/SECURITY_AUDIT.md` finding #3.
 - `supabase/migrations/0001_create_leads_table.sql` — the `leads` table DDL with RLS enabled and zero public policies, per `docs/TRD.md` §4.3.
 - Verified in-browser against the real (unconfigured) backend: client-side validation errors, the honeypot's stealth 200 response, and the graceful 500 + generic retry message shown when Supabase/Upstash aren't configured — confirming the "lead insert is the only thing that can fail the request" reliability contract holds even under real failure conditions.
+- Real homepage content per `docs/DESIGN.md` §6.1: staggered hero entrance, service summary grid (`content/services.ts`, `ServiceCard`), credibility marquee, featured case study teaser, deliberately lower-emphasis investor callout, and a final CTA band. `Reveal` (Motion `whileInView`) and `Marquee` (CSS keyframes, respects `prefers-reduced-motion`) added as reusable scroll-reveal primitives per `docs/DESIGN.md` §3.
 - Product Requirements Document (`docs/PRD.md`) — problem statement, target users, goals/non-goals, user stories, MVP scope, success metrics, phased rollout plan.
 - Technical Requirements Document (`docs/TRD.md`) — tech stack, data models, API contracts, third-party integrations, performance/scalability and non-functional requirements.
 - Architecture Document (`docs/ARCHITECTURE.md`) — system/data-flow diagrams, request lifecycle, folder/module structure, key architectural decisions with rationale.
@@ -28,12 +29,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - TRD and ARCHITECTURE updated to resolve Security Audit High/Medium findings: rate limiting locked to Upstash Redis (ruling out an in-memory limiter, which doesn't work reliably on stateless serverless functions), production/preview environment isolation required for Supabase and Resend/Slack credentials, explicit sanitization rules for content interpolated into email/Slack notifications, explicit same-origin/no-CORS policy for `/api/leads`, and centralized security response headers.
 - DESIGN.md logo section updated after reviewing the actual brand asset (`logo.svg`): documented that the file is an auto-traced conversion of the source JPEG rather than clean vector art, and specified a safe interim usage pattern instead of attempting a risky hand-edit.
 - DESIGN.md icon set decided as Lucide (over Phosphor), for consistency with the Next.js/Tailwind stack.
-
-### Fixed
-- N/A — no application code has shipped yet.
-
-### Removed
-- N/A
 
 ---
 

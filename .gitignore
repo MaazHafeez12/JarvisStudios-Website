@@ -29,3 +29,6 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Local Claude Code tooling state (machine/user-specific, not project config)
+.claude/settings.local.json
