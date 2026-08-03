@@ -31,6 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Security Audit (`docs/SECURITY_AUDIT.md`) — design-level review covering auth, input validation/sanitization, CORS, rate limiting, secrets handling, and OWASP Top 10 exposure, with findings by severity.
 - `README.md` — project overview, planned tech stack, planned setup/env vars/scripts, folder structure, documentation index.
 - `CHANGELOG.md` — this file.
+- Self-hosted Clash Display (Medium/Semibold/Bold, WOFF2) via `next/font/local`, resolving the `docs/DESIGN.md` §2.3 heading font — previously fell back to system sans. License confirmed (Fontshare Free Font EULA: free for commercial/web use, unlimited time, no attribution required); full text at `public/fonts/clash-display/LICENSE.txt`. Verified via computed styles and network requests that the real font loads and renders, fully self-hosted rather than pulled from Fontshare's CDN at runtime.
 
 ### Changed
 - Replaced the placeholder domain with the real production domain, `jarvisstudios.net`, in `app/sitemap.ts`, `app/robots.ts`, and `app/layout.tsx` (`metadataBase`, needed for correct absolute OG/canonical URLs).

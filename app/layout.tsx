@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import "./globals.css";
@@ -10,11 +11,21 @@ const inter = Inter({
   display: "swap",
 });
 
-// TODO: Clash Display (docs/DESIGN.md §2.3) is not on Google Fonts — it needs
-// to be self-hosted via next/font/local once the font files are downloaded
-// from Fontshare (https://www.fontshare.com/fonts/clash-display) and license
-// terms re-checked (docs/DESIGN.md §10 open question). Falls back to the
-// system sans stack until then; see tailwind.config.ts `fontFamily.display`.
+// Clash Display (docs/DESIGN.md §2.3) isn't on Google Fonts — self-hosted
+// via next/font/local. Downloaded from Fontshare directly (not via their
+// CDN <link>) so it's subject to Next.js's own font optimization/caching.
+// License: Fontshare Free Font EULA — free for commercial use, unlimited
+// time, web included, no attribution required (docs/DESIGN.md §10
+// resolved). Full license text: public/fonts/clash-display/LICENSE.txt.
+const clashDisplay = localFont({
+  src: [
+    { path: "../public/fonts/clash-display/ClashDisplay-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/clash-display/ClashDisplay-Semibold.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/clash-display/ClashDisplay-Bold.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-clash-display",
+  display: "swap",
+});
 
 const themeInitScript = `
   (function () {
@@ -43,7 +54,11 @@ export default function RootLayout({
   // legitimately differs between the server-rendered and initial client
   // markup — this is expected, not a real hydration bug.
   return (
-    <html lang="en" className={inter.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${inter.variable} ${clashDisplay.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
