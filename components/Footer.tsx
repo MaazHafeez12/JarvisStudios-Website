@@ -30,9 +30,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+            <h2 className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
               Services
-            </h3>
+            </h2>
             <ul className="mt-4 space-y-2">
               {SERVICE_LINKS.map((link) => (
                 <li key={link.href}>
@@ -48,9 +48,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+            <h2 className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
               Company
-            </h3>
+            </h2>
             <ul className="mt-4 space-y-2">
               {COMPANY_LINKS.map((link) => (
                 <li key={link.href}>

@@ -15,7 +15,7 @@ export default function HomePage() {
             Jarvis Studios
           </p>
         </Reveal>
-        <Reveal delay={0.1}>
+        <Reveal delay={0.1} lcpSafe>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-tight sm:text-6xl">
             Web, app, and SaaS work built to actually ship.
           </h1>
@@ -96,7 +96,7 @@ export default function HomePage() {
             href="/investors"
             className="text-sm font-medium text-[--text-secondary] underline decoration-[--border] underline-offset-4 transition-colors duration-150 ease-confident hover:text-[--text-primary]"
           >
-            Learn more
+            Learn more about investing
           </Link>
         </div>
       </section>

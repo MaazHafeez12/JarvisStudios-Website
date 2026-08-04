@@ -11,7 +11,7 @@ export default function AboutPage() {
   return (
     <main>
       <section className="mx-auto max-w-3xl px-6 py-20 text-center">
-        <Reveal>
+        <Reveal lcpSafe>
           <h1 className="font-display text-4xl font-semibold sm:text-5xl">
             Software built by people who ship.
           </h1>

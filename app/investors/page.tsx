@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function InvestorsPage() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-24">
-      <Reveal>
+      <Reveal lcpSafe>
         <p className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
           Investors &amp; Partners
         </p>

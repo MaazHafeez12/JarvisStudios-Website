@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function WorkPage() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-24 text-center">
-      <Reveal>
+      <Reveal lcpSafe>
         <h1 className="font-display text-4xl font-semibold">Work</h1>
         <p className="mt-4 text-[--text-secondary]">
           Case studies from our clients are coming soon.

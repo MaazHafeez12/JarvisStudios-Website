@@ -30,7 +30,7 @@ export function ServiceBlock({ service, index }: { service: Service; index: numb
         </div>
 
         <div className="flex-1">
-          <h3 className="font-display text-2xl font-semibold">{service.name}</h3>
+          <h2 className="font-display text-2xl font-semibold">{service.name}</h2>
           <p className="mt-2 text-[--text-secondary]">{service.summary}</p>
           <ul className="mt-5 space-y-2">
             {service.capabilities.map((capability) => (
