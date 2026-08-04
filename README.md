@@ -1,12 +1,12 @@
 # Jarvis Studios Website
 
-![status](https://img.shields.io/badge/status-pre--implementation-lightgrey)
+![status](https://img.shields.io/badge/status-MVP%20live%20on%20preview-brightgreen)
 ![stack](https://img.shields.io/badge/stack-Next.js%20%2B%20Supabase-00ADEF)
 ![license](https://img.shields.io/badge/license-proprietary-black)
 
 Marketing website rebuild for **Jarvis Studios**, a software agency offering web development, app development, SaaS builds, CRM implementation, and marketing/design services. The site's job is to communicate the studio's service lines, showcase real client work, and convert prospective clients and investors/partners into inbound inquiries.
 
-> **Project status: pre-implementation.** This repository currently contains planning documentation only — no application code has been scaffolded yet. Sections below describe the *planned* setup and structure per [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md); they will become accurate, runnable instructions once the project is scaffolded.
+> **Project status: MVP built and deployed to a Vercel preview URL**, per the staged rollout in `docs/PRD.md` §9. DNS cutover to the production domain (`jarvisstudios.net`) is intentionally on hold — see [`TODO.md`](./TODO.md) (untracked, local) for what's still open.
 
 ## Documentation
 
@@ -23,8 +23,9 @@ Full context lives in [`/docs`](./docs) — read these before making product or 
 ## Overview
 
 - **No login/auth** — fully public marketing site.
-- **One dynamic feature**: a contact form (`/api/leads`) that captures prospective-client and investor/partner inquiries, stores them in Supabase, and notifies the team by email (Resend) and Slack.
-- **Everything else is static** — service pages, case studies, and about/investor content are statically generated at build time from in-repo content, not a CMS (deferred to a later phase per the PRD).
+- **One dynamic feature**: a contact form (`/api/leads`) that captures prospective-client and investor/partner inquiries, stores them in Supabase, and notifies the team by email (Resend) and Slack. Verified end-to-end against the live deployment.
+- **Everything else is static** — all marketing pages are statically generated at build time from in-repo content (`content/`), not a CMS (deferred to a later phase per the PRD).
+- **Work (case studies) and About (team bios) are honest placeholders** — the PRD calls for 2 real case studies and real team bios; that content doesn't exist yet, so those sections say so rather than showing fabricated content.
 
 See [`docs/PRD.md`](./docs/PRD.md) §6 for the full MVP page list.
 
@@ -32,22 +33,22 @@ See [`docs/PRD.md`](./docs/PRD.md) §6 for the full MVP page list.
 
 | Layer | Choice |
 |---|---|
-| Framework | Next.js 14+ (App Router), TypeScript |
+| Framework | Next.js 16 (App Router), TypeScript, React 19 |
 | Styling | Tailwind CSS |
+| Animation | Motion (`motion/react`) for component-level interactions, CSS keyframes for the credibility marquee |
 | Database | Supabase (Postgres) — single `leads` table for MVP |
 | Backend logic | Next.js Route Handlers (no separate Express/Node server) |
 | Hosting | Vercel |
 | Email | Resend |
 | Team notifications | Slack Incoming Webhook |
 | Rate limiting | Upstash Redis (`@upstash/ratelimit`) |
+| Analytics | Vercel Web Analytics + Speed Insights |
 | Icons | [Lucide](https://lucide.dev) |
-| Fonts | Inter (body/UI) + Clash Display (headings) |
+| Fonts | Inter (body/UI) + self-hosted Clash Display (headings) |
 
 Full rationale for each choice is in [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) §4.
 
-## Setup (planned)
-
-Not yet runnable — no `package.json` exists in this repository. Once the project is scaffolded, setup is expected to be:
+## Setup
 
 ```bash
 npm install
@@ -55,9 +56,9 @@ cp .env.example .env.local   # then fill in the values below
 npm run dev
 ```
 
-## Environment Variables (planned)
+## Environment Variables
 
-Per [`docs/TRD.md`](./docs/TRD.md) §9, all secrets are server-only — none are exposed to the client (`NEXT_PUBLIC_*`), since the app has no client-side Supabase usage in MVP. Production and Preview/Development environments **must use separate values**, pointing at separate Supabase projects and separate Resend/Slack credentials, per the [security audit](./docs/SECURITY_AUDIT.md) finding #2.
+Per [`docs/TRD.md`](./docs/TRD.md) §9, all secrets are server-only — none are exposed to the client (`NEXT_PUBLIC_*`), since the app has no client-side Supabase usage in MVP.
 
 | Variable | Used for |
 |---|---|
@@ -69,11 +70,11 @@ Per [`docs/TRD.md`](./docs/TRD.md) §9, all secrets are server-only — none are
 | `UPSTASH_REDIS_REST_URL` | Rate limiting store for `/api/leads` |
 | `UPSTASH_REDIS_REST_TOKEN` | Rate limiting store for `/api/leads` |
 
-A committed `.env.example` (placeholder values only) will document this list once scaffolded. Never commit `.env.local` or any file containing real values.
+`.env.example` documents this list with placeholder values. Never commit `.env.local` or any file containing real values (it's gitignored).
 
-## Scripts (planned)
+> **Note:** the deployed Vercel project currently uses the same (production) credentials for all environments — Preview/Development environment isolation per the security audit is deliberately deferred (tracked locally, not currently a live risk since only `master` gets pushed).
 
-Standard Next.js scripts are expected once scaffolded:
+## Scripts
 
 | Script | Purpose |
 |---|---|
@@ -82,19 +83,25 @@ Standard Next.js scripts are expected once scaffolded:
 | `npm run start` | Serve the production build locally |
 | `npm run lint` | Lint the codebase |
 
-## Folder Structure (planned)
+## Folder Structure
 
-Full structure with per-file rationale is in [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) §3. Summary:
+Full structure with per-file rationale is in [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) §3. Current layout:
 
 ```
-app/                # Next.js App Router — pages + the one API route (app/api/leads)
-components/         # Reusable UI components (ContactForm, Nav, Footer, cards, ui/ primitives)
-content/            # Typed, in-repo content (services, case studies, team) — not a database
-lib/                # Types, validation, Supabase server client, notifications, rate limiting
-public/             # Static assets
-supabase/migrations/ # SQL migrations, checked into version control
+app/                 # Next.js App Router — pages, app/api/leads route, opengraph-image, sitemap.ts, robots.ts
+components/          # Nav, Footer, ContactForm, ProcessSteps, ServiceBlock, ServiceCard
+components/ui/       # Logo, ThemeToggle, Reveal (scroll-reveal), Marquee
+content/             # Typed, in-repo content (services, process steps, differentiators) — not a database
+lib/                 # Types, validation, Supabase server client, notifications, rate limiting, sanitize
+public/               # Static assets, self-hosted Clash Display font files
+supabase/migrations/  # SQL migrations, checked into version control
+.github/              # CI dependency-audit workflow, Dependabot config
 ```
 
 ## Security
 
-See [`docs/SECURITY_AUDIT.md`](./docs/SECURITY_AUDIT.md) for the full design-level review. Key points to preserve during implementation: Supabase RLS is enabled on `leads` with **zero public policies** (server-only writes via service role key), no CORS headers are added to `/api/leads` (same-origin only), and all user input is sanitized before being interpolated into email/Slack notification content.
+See [`docs/SECURITY_AUDIT.md`](./docs/SECURITY_AUDIT.md) for the full design-level review. Key points preserved in implementation: Supabase RLS is enabled on `leads` with **zero public policies** (server-only writes via service role key), no CORS headers are added to `/api/leads` (same-origin only), all user input is sanitized before being interpolated into email/Slack notification content, and centralized security response headers (CSP, HSTS, X-Frame-Options, etc.) are set in `next.config.ts`.
+
+## CI
+
+`.github/workflows/dependency-audit.yml` runs `npm audit --audit-level=high` on push/PR and weekly; `.github/dependabot.yml` opens weekly update PRs for npm and GitHub Actions dependencies. There is no build/lint/test CI gate yet — pushes go straight to `master`, which Vercel auto-deploys.
