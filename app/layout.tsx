@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { MotionConfig } from "motion/react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import "./globals.css";
@@ -65,9 +66,21 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="flex min-h-screen flex-col font-sans antialiased">
-        <Nav />
-        <div className="flex-1">{children}</div>
-        <Footer />
+        {/* WCAG 2.4.1 Bypass Blocks — lets keyboard/screen-reader users
+            skip the nav instead of tabbing through it on every page. */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-brand-500 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-neutral-950"
+        >
+          Skip to content
+        </a>
+        <MotionConfig reducedMotion="user">
+          <Nav />
+          <div id="main-content" className="flex-1">
+            {children}
+          </div>
+          <Footer />
+        </MotionConfig>
         <Analytics />
         <SpeedInsights />
       </body>

@@ -206,7 +206,7 @@ export function ContactForm() {
       </div>
 
       {state.status === "error" && (
-        <p role="alert" className="text-sm text-error-500">
+        <p role="alert" className="text-sm text-[--error-text]">
           {state.message}
         </p>
       )}
@@ -246,7 +246,7 @@ function Field({
       </label>
       {children}
       {error && (
-        <p id={`${htmlFor}-error`} className="mt-1.5 text-sm text-error-500">
+        <p id={`${htmlFor}-error`} className="mt-1.5 text-sm text-[--error-text]">
           {error}
         </p>
       )}

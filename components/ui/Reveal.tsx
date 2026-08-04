@@ -4,9 +4,8 @@ import { motion, type Variants } from "motion/react";
 
 // Shared scroll-reveal wrapper (docs/DESIGN.md §3.2 "scroll-triggered
 // reveals") — fades/slides content in once as it enters the viewport.
-// Motion respects prefers-reduced-motion for users who've asked for less
-// motion (docs/DESIGN.md §3.1); no extra handling needed here since Motion
-// disables transform/opacity animation automatically in that case.
+// Reduced-motion support (docs/DESIGN.md §3.1) comes from <MotionConfig
+// reducedMotion="user"> in app/layout.tsx, not from anything here.
 
 const variants: Variants = {
   hidden: { opacity: 0, y: 16 },

@@ -18,6 +18,7 @@ const config: Config = {
           0: "#FFFFFF",
         },
         brand: {
+          800: "#00749F", // light-mode-only: brand-500 as text/border on white is 2.55:1, fails WCAG AA — this hits 5.25:1
           700: "#0088BE",
           500: "#00ADEF", // brand base
           300: "#5FD0FF",

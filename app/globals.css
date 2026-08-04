@@ -17,6 +17,11 @@
   --border: theme("colors.neutral.600");
   --accent: theme("colors.brand.500");
   --accent-hover: theme("colors.brand.300");
+  /* error-500 (#E5484D) as text only hits 4.71:1 on this surface — just
+     over the WCAG AA 4.5:1 body-text minimum, no margin for rounding/
+     rendering differences. Lightened for a safer 5.3:1 (docs/DESIGN.md
+     §2.2's flagged contrast check for form error states). */
+  --error-text: #e85a5f;
 }
 
 :root[data-theme="light"] {
@@ -25,8 +30,14 @@
   --text-primary: theme("colors.neutral.800");
   --text-secondary: theme("colors.neutral.600");
   --border: theme("colors.neutral.200");
-  --accent: theme("colors.brand.500");
+  /* brand-500 as text/border on white is only 2.55:1 — fails WCAG AA
+     even for the 3:1 UI-component minimum (docs/DESIGN.md §2.2's flagged
+     check). brand-800 hits 5.25:1, safe for both text and borders. */
+  --accent: theme("colors.brand.800");
   --accent-hover: theme("colors.brand.700");
+  /* error-500 as text only hits 3.91:1 on white — fails WCAG AA 4.5:1 for
+     body text. Darkened to 5.7:1 for the light-mode form error messages. */
+  --error-text: #c4282e;
 }
 
 body {
