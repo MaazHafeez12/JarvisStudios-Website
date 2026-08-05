@@ -35,7 +35,17 @@ export function ContactForm() {
   const searchParams = useSearchParams();
   const initialType: LeadType = searchParams.get("type") === "investor" ? "investor" : "client";
 
-  const [form, setForm] = useState<LeadInput>({ ...EMPTY_FORM, type: initialType });
+  // /services links here with the line already chosen, so someone who has
+  // decided doesn't re-pick it from a dropdown. Validated against
+  // PROJECT_TYPES rather than trusted: the value arrives from the URL.
+  const serviceParam = searchParams.get("service");
+  const initialProjectType = PROJECT_TYPES.find((pt) => pt === serviceParam);
+
+  const [form, setForm] = useState<LeadInput>({
+    ...EMPTY_FORM,
+    type: initialType,
+    projectType: initialProjectType,
+  });
   const [state, setState] = useState<SubmitState>({ status: "idle" });
 
   function update<K extends keyof LeadInput>(key: K, value: LeadInput[K]) {

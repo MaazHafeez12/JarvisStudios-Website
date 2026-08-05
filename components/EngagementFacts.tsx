@@ -12,22 +12,19 @@ import { ENGAGEMENT_FACTS } from "@/content/engagement";
 
 export function EngagementFacts() {
   return (
-    <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2">
+    <dl className="grid gap-x-12 gap-y-10 sm:grid-cols-2">
       {ENGAGEMENT_FACTS.map((fact, i) => (
-        <Reveal key={fact.label} delay={i * 0.06}>
-          <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
-              {fact.label}
-            </p>
-            <p className="mt-2 font-display text-2xl font-semibold">
-              {fact.value}
-            </p>
-            <p className="mt-2 max-w-sm text-sm text-[--text-secondary]">
+        <Reveal key={fact.headline} delay={i * 0.06}>
+          <div className="border-t border-[--border] pt-5">
+            <dt className="font-display text-xl font-semibold">
+              {fact.headline}
+            </dt>
+            <dd className="mt-2 max-w-sm text-sm leading-relaxed text-[--text-secondary]">
               {fact.detail}
-            </p>
+            </dd>
           </div>
         </Reveal>
       ))}
-    </div>
+    </dl>
   );
 }
