@@ -36,6 +36,17 @@ import { ServiceVignette } from "./ServiceVignette";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
+/**
+ * Service names go into the CTA verbatim. Lowercasing them turned "SaaS"
+ * into "saas" and "CRM" into "crm"; the article is chosen from the leading
+ * vowel instead, which is correct for all six ("an App Development", "an AI
+ * Automation", "a SaaS").
+ */
+function ctaLabel(name: string): string {
+  const article = /^[AEIOU]/.test(name) ? "an" : "a";
+  return `Start ${article} ${name} project`;
+}
+
 const LIST = {
   visible: { transition: { staggerChildren: 0.055 } },
 };
@@ -189,7 +200,7 @@ export function ServiceExplorer() {
                       href={`/contact?service=${service.id}`}
                       className="group mt-6 inline-flex items-center gap-2 text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
                     >
-                      Start a {service.name.toLowerCase()} project
+                      {ctaLabel(service.name)}
                       <ArrowRight
                         className="h-4 w-4 transition-transform duration-200 ease-confident motion-safe:group-hover:translate-x-1"
                         aria-hidden="true"
