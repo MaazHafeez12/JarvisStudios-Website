@@ -8,6 +8,8 @@
 // client render, and the 3D scene — no hydration mismatch, and the
 // composition doesn't reshuffle on every reload.
 
+import { seeded, stable } from "@/lib/seeded-random";
+
 // Palette per docs/DESIGN.md §2.2 — charcoal/brand-blue family only.
 // neutral-800 (#222) is deliberately absent: it's invisible against the
 // dark surface (#141414). These four read on both themes.
@@ -33,31 +35,6 @@ export type Shard = {
   driftSpeed: number;
   spin: [number, number, number];
 };
-
-/** mulberry32 — small deterministic PRNG, plenty for layout jitter. */
-function seeded(seed: number) {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/**
- * Math.sin/cos are implementation-defined in ECMAScript — Node and the
- * browser can disagree in the last ULP (e.g. …8462919 vs …8462923). Since
- * the fallback SVG is server-rendered and then hydrated, that difference
- * lands in a `transform` attribute and trips a hydration mismatch.
- * Truncating to a precision far below anything visible makes the shard data
- * identical on both sides. Only +-*\/ are used downstream of this, and IEEE
- * 754 requires those to be correctly rounded, so they stay stable.
- */
-function stable(value: number): number {
-  return Math.round(value * 1e5) / 1e5;
-}
 
 function pickColor(r: number): string {
   let acc = 0;
