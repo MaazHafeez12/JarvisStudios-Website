@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Removed
+- The Work surface entirely, while there is nothing real to show: the nav link, the footer link, `/work` from the sitemap, and the route itself (`/work` now 404s rather than serving a placeholder). Removing only the nav link would have left the page reachable from the footer and — worse — still listed in the sitemap, which actively asks search engines to index an empty placeholder. Restoring it is blocked on real case studies and client consent, not on code; the old placeholder is recoverable from git history if useful as a starting point.
 - Homepage featured-work teaser. It read "See what we've built for real clients" and linked to `/work`, which is an intentional placeholder — the two case studies in `docs/PRD.md` don't exist yet and client consent/format is unresolved. A section that promises proof and delivers an empty page costs more trust than not having the section, so it's removed rather than restyled. **To restore**, real case studies and confirmed client consent are needed first, then a rebuilt `/work` page, then the teaser. Tracked as a follow-up.
   - Same root cause, still outstanding and deliberately not changed without a decision: the "Work" nav link and `/work` route still lead to that placeholder, and `/about`'s team bios are a placeholder too.
 

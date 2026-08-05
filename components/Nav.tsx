@@ -8,7 +8,6 @@ import { ThemeToggle } from "./ui/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/services", label: "Services" },
-  { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
   { href: "/investors", label: "Investors" },
 ];
