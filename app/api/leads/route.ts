@@ -4,7 +4,7 @@ import { validateLead } from "@/lib/validation/lead";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getSupabaseServerClient } from "@/lib/supabase/server-client";
 import { sendLeadNotificationEmail } from "@/lib/notifications/email";
-import { postLeadToSlack } from "@/lib/notifications/slack";
+import { postLeadToSlack, alertOpsFailure } from "@/lib/notifications/slack";
 import type { Lead, LeadInput } from "@/lib/types/lead";
 
 // Full contract: docs/TRD.md §5. Request lifecycle: docs/ARCHITECTURE.md §2.2.
@@ -57,6 +57,7 @@ export async function POST(request: NextRequest) {
     }
   } catch (err) {
     console.error("[api/leads] rate limit check failed:", err);
+    await alertOpsFailure("api/leads: rate limit check failed", err);
     return NextResponse.json({ success: false, error: "SERVER_ERROR" }, { status: 500 });
   }
 
@@ -99,6 +100,7 @@ export async function POST(request: NextRequest) {
     };
   } catch (err) {
     console.error("[api/leads] Supabase insert failed:", err);
+    await alertOpsFailure("api/leads: Supabase insert failed — a lead was LOST", err);
     return NextResponse.json({ success: false, error: "SERVER_ERROR" }, { status: 500 });
   }
 

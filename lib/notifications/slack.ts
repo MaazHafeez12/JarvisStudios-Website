@@ -34,3 +34,29 @@ export async function postLeadToSlack(lead: Lead): Promise<void> {
     throw new Error(`Slack webhook responded with ${response.status}`);
   }
 }
+
+// Ops alerting for the failure modes that would otherwise go unnoticed
+// until someone thinks to check Vercel's function logs or notices leads
+// have stopped arriving (docs/TRD.md §8.4's "lead insert is the only
+// thing that can fail the request" contract — this is what happens when
+// it does). Reuses the existing Slack webhook rather than adding a new
+// third-party service. Deliberately swallows its own errors — an alert
+// that fails to send must never throw and break the caller's error path.
+export async function alertOpsFailure(context: string, err: unknown): Promise<void> {
+  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
+  if (!webhookUrl) return;
+
+  const detail = err instanceof Error ? err.message : String(err);
+
+  try {
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: `:rotating_light: *${context}*\n${escapeSlackMrkdwn(detail)}`,
+      }),
+    });
+  } catch (alertErr) {
+    console.error("[alertOpsFailure] failed to send ops alert:", alertErr);
+  }
+}

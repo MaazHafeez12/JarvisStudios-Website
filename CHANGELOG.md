@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- Ops alerting for `/api/leads`'s critical failure paths (`lib/notifications/slack.ts`'s `alertOpsFailure`, wired into `app/api/leads/route.ts`) — if the rate-limit check or, worse, the Supabase insert itself fails, a distinct `:rotating_light:` alert now posts to the same Slack webhook already used for lead notifications, instead of the failure only being visible in Vercel's function logs. Addresses the gap where a broken `/api/leads` would previously go unnoticed until someone noticed leads had stopped arriving. Deliberately reuses existing infra rather than adding a new third-party service (e.g. Sentry) — that's a bigger, separate call left to whoever owns the decision to add one. Verified the alert payload posts successfully against the real Slack webhook.
 - Project scaffold: Next.js 16 (App Router) + TypeScript + Tailwind CSS, initialized per `docs/ARCHITECTURE.md`. Includes root layout with dark/light theme initialization (no-flash, `prefers-color-scheme`-aware), brand color/typography tokens from `docs/DESIGN.md` wired into Tailwind config and CSS custom properties, and centralized security response headers (CSP, HSTS, X-Frame-Options, etc.) in `next.config.ts` per `docs/SECURITY_AUDIT.md` finding #4.
 - `.env.example` documenting all planned environment variables (Supabase, Resend, Slack, Upstash) per `docs/TRD.md` §9.
 - `.claude/launch.json` dev server config for local preview.
