@@ -1,5 +1,5 @@
 // Shared deterministic-randomness helpers for the site's generated angular
-// geometry (lib/hero-shards.ts, lib/service-shards.ts).
+// geometry (lib/hero-shards.ts).
 //
 // Determinism matters for more than tidiness here: these compositions are
 // server-rendered and then hydrated, so anything non-reproducible between

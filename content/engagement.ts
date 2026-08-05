@@ -13,35 +13,36 @@
 // well-defined scope, while 4–8 weeks describes a typical project. The
 // `detail` on each says so explicitly rather than relying on the reader.
 
+// Each fact leads with a headline that carries its own meaning. An earlier
+// version split these into a small uppercase label above a large value —
+// which is the eyebrow/kicker pattern, and used monospace as decoration
+// rather than for data. A heading that needs a label above it to be
+// understood is a heading that hasn't been written yet.
+
 export interface EngagementFact {
-  label: string;
-  value: string;
+  headline: string;
   detail: string;
 }
 
 export const ENGAGEMENT_FACTS: EngagementFact[] = [
   {
-    label: "Discovery",
-    value: "Free",
+    headline: "Discovery is free",
     detail:
       "We'll dig into your business, users, and constraints before either side commits to anything. No charge, no obligation.",
   },
   {
-    label: "Projects start from",
-    value: "$1,000",
+    headline: "Projects start at $1,000",
     detail:
       "That's the entry point for a small, well-defined scope. Larger builds are quoted against the actual work — we'll give you a number before we start, not after.",
   },
   {
-    label: "How we work together",
-    value: "Fixed scope or retainer",
+    headline: "Fixed scope or retainer",
     detail:
       "Fixed scope when the brief is clear and the finish line is known. A retainer when the work is ongoing. We'll tell you which one we think fits.",
   },
   {
-    label: "Typical timeline",
-    value: "4–8 weeks",
+    headline: "Most work runs 4–8 weeks",
     detail:
-      "Most projects run four to eight weeks from kickoff to launch. Larger scopes take longer, and we'll say so upfront rather than discovering it halfway through.",
+      "Four to eight weeks from kickoff to launch is typical. Larger scopes take longer, and we'll say so upfront rather than discovering it halfway through.",
   },
 ];
