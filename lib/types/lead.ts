@@ -5,7 +5,7 @@
 export type LeadType = "client" | "investor";
 export type LeadStatus = "new" | "contacted" | "archived";
 
-export const PROJECT_TYPES = ["web", "app", "saas", "crm", "design"] as const;
+export const PROJECT_TYPES = ["web", "app", "saas", "crm", "ai", "design"] as const;
 export type ProjectType = (typeof PROJECT_TYPES)[number];
 
 export interface LeadInput {

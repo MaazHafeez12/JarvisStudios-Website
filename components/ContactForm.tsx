@@ -10,6 +10,7 @@ const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
   app: "App Development",
   saas: "SaaS",
   crm: "CRM",
+  ai: "AI Automation",
   design: "Marketing & Design",
 };
 

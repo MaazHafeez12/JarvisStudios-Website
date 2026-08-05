@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
+import { HeroVisual } from "@/components/hero/HeroVisual";
 import { Marquee } from "@/components/ui/Marquee";
 import { ServiceCard } from "@/components/ServiceCard";
 import { SERVICES } from "@/content/services";
@@ -8,8 +9,11 @@ import { SERVICES } from "@/content/services";
 export default function HomePage() {
   return (
     <main>
-      {/* Hero — staggered entrance per docs/DESIGN.md §3.2 */}
-      <section className="mx-auto max-w-4xl px-6 py-24 text-center sm:py-32">
+      {/* Hero — staggered entrance per docs/DESIGN.md §3.2, over the
+          assembling shard field from docs/MOTION_REDESIGN.md §3 (Option C).
+          The copy stays server-rendered inside the client shell so the H1
+          remains the LCP candidate and never waits on the 3D bundle. */}
+      <HeroVisual>
         <Reveal>
           <p className="font-mono text-sm uppercase tracking-widest text-[--text-secondary]">
             Jarvis Studios
@@ -35,7 +39,7 @@ export default function HomePage() {
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </Reveal>
-      </section>
+      </HeroVisual>
 
       {/* Service summary */}
       <section className="border-t border-[--border] px-6 py-20">

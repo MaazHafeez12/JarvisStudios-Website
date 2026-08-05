@@ -56,6 +56,16 @@ export const SERVICES: Service[] = [
     ],
   },
   {
+    id: "ai",
+    name: "AI Automation",
+    summary: "Automation and AI built into the workflows your team already runs.",
+    capabilities: [
+      "Internal workflow and back-office automation",
+      "LLM features in your product — search, drafting, classification",
+      "Document and data pipelines with human review built in",
+    ],
+  },
+  {
     id: "design",
     name: "Marketing & Design",
     summary: "Brand, UI, and campaign design that makes the rest of the work land.",

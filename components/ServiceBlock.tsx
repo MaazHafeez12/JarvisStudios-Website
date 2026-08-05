@@ -1,4 +1,4 @@
-import { Globe, Smartphone, Layers, Users, Palette, Check, type LucideIcon } from "lucide-react";
+import { Globe, Smartphone, Layers, Users, Workflow, Palette, Check, type LucideIcon } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import type { Service } from "@/content/services";
 
@@ -10,6 +10,9 @@ const SERVICE_ICONS: Record<Service["id"], LucideIcon> = {
   app: Smartphone,
   saas: Layers,
   crm: Users,
+  // Workflow, not Sparkles/Bot — the work is automating pipelines, and the
+  // sparkle-for-AI icon is exactly the cliché docs/DESIGN.md §5 warns off.
+  ai: Workflow,
   design: Palette,
 };
 
