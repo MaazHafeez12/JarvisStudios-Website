@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Removed
+- Homepage featured-work teaser. It read "See what we've built for real clients" and linked to `/work`, which is an intentional placeholder — the two case studies in `docs/PRD.md` don't exist yet and client consent/format is unresolved. A section that promises proof and delivers an empty page costs more trust than not having the section, so it's removed rather than restyled. **To restore**, real case studies and confirmed client consent are needed first, then a rebuilt `/work` page, then the teaser. Tracked as a follow-up.
+  - Same root cause, still outstanding and deliberately not changed without a decision: the "Work" nav link and `/work` route still lead to that placeholder, and `/about`'s team bios are a placeholder too.
+
 ### Added
 - Services page pass — commercial terms, per-service angular compositions, plus three defect fixes:
   - **"What working with us looks like"** (`content/engagement.ts`, `components/EngagementFacts.tsx`): free discovery, $1,000 entry point, fixed-scope or retainer, 4–8 week typical timeline. Sits after the service lines and immediately before the CTA, since these are the questions a reader would otherwise have to email to answer. Page went from ~265 to ~443 words. Figures are supplied business facts; the surrounding framing is copy and should be reviewed. Deliberately restrained — ambient content, per §2 as amended, only interaction feedback gets the bolder treatment.
