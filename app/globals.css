@@ -45,6 +45,105 @@ body {
   color: var(--text-primary);
 }
 
+/* Hero shard field (docs/MOTION_REDESIGN.md §3 Option C). Backstop for the
+   banded shard layout in lib/hero-shards.ts: fades the whole visual layer
+   out across the middle of the hero, where the copy sits. Positioning alone
+   isn't enough of a guarantee — shards travel well past their resting
+   positions during the entrance and the scroll dispersal — so this makes it
+   impossible for one to render behind the headline at any point in the
+   animation, keeping `f8a918c`'s contrast work intact
+   (docs/MOTION_REDESIGN.md §6). Applies to the canvas and the static SVG
+   fallback alike, so both read identically. */
+.hero-shard-mask {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    transparent 26%,
+    transparent 76%,
+    #000 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    transparent 26%,
+    transparent 76%,
+    #000 100%
+  );
+}
+
+/* Service card hover: angular wipe + shard burst (docs/MOTION_REDESIGN.md
+   §5.1, revised to the bolder treatment).
+
+   The wipe is an animated clip-path polygon on a full-size panel, not a
+   skewed panel that translates. That choice is what makes the text
+   inversion safe: because the panel never moves, an inverted copy of the
+   card's content can sit inside it, permanently pixel-aligned with the real
+   content underneath. Blue is therefore only ever revealed together with
+   the near-black text that belongs on it, so there is no window mid-sweep
+   where light text sits on a half-arrived blue field. A translating panel
+   with a `color` transition on the real text — the obvious first approach —
+   has exactly that flaw for ~250ms of every hover.
+
+   brand-500 + neutral-950 is the same pairing the primary CTA already uses
+   (7.4:1), and it holds in both themes, so the inverted copy needs no
+   light/dark branching. The card's *border* stays on --accent rather than
+   brand-500: in light mode a brand-500 edge against white is only 2.55:1,
+   below WCAG 1.4.11's 3:1 for identifying a component, while --accent
+   (brand-800 there) keeps a crisp 5.25:1 boundary around the blue fill. */
+.service-card-wipe {
+  /* Parked off the left edge. Point count and order match the hover state
+     so the polygon interpolates rather than snapping. */
+  clip-path: polygon(-200% 0%, -10% 0%, -25% 100%, -200% 100%);
+  transition: clip-path 380ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.group:hover .service-card-wipe,
+.group:focus-visible .service-card-wipe {
+  clip-path: polygon(-200% 0%, 128% 0%, 113% 100%, -200% 100%);
+}
+
+/* The leading edge leads by 15% of the card's width across its height —
+   roughly 16°, echoing the hero shards rather than a flat vertical wipe. */
+.service-card-shard {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  transform: translate(0, 0) rotate(0deg) scale(0.4);
+  transition:
+    transform 460ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 200ms linear;
+  transition-delay: var(--shard-delay, 0ms);
+}
+
+.group:hover .service-card-shard,
+.group:focus-visible .service-card-shard {
+  opacity: 1;
+  transform: translate(var(--shard-x), var(--shard-y)) rotate(var(--shard-r)) scale(1);
+}
+
+/* Reduced motion: the state still reads, it just doesn't travel. The wipe
+   becomes an instant fill (clip-path dropped entirely so the panel covers
+   the card the moment it's shown), and the burst — which is nothing *but*
+   motion — is removed rather than popped in. CSS transitions are invisible
+   to <MotionConfig reducedMotion="user">, so this has to be handled here. */
+@media (prefers-reduced-motion: reduce) {
+  .service-card-wipe {
+    clip-path: none;
+    opacity: 0;
+    transition: none;
+  }
+
+  .group:hover .service-card-wipe,
+  .group:focus-visible .service-card-wipe {
+    clip-path: none;
+    opacity: 1;
+  }
+
+  .service-card-shard {
+    display: none;
+  }
+}
+
 /* Credibility marquee (docs/DESIGN.md §3.2). Track is duplicated in markup
    so translating by -50% loops seamlessly. */
 @keyframes marquee {

@@ -6,6 +6,7 @@ const SERVICE_LINKS = [
   { href: "/services#app", label: "App Development" },
   { href: "/services#saas", label: "SaaS" },
   { href: "/services#crm", label: "CRM" },
+  { href: "/services#ai", label: "AI Automation" },
   { href: "/services#design", label: "Marketing & Design" },
 ];
 
