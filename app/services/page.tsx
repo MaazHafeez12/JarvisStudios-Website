@@ -113,6 +113,14 @@ export default function ServicesPage() {
                 aria-hidden="true"
               />
             </Link>
+            {/* Risk reversal sits under the button rather than above it: it
+                answers the hesitation a reader has at the moment of
+                clicking, not one they have while still reading the offer. */}
+            <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-[--text-secondary]">
+              If discovery shows we&rsquo;re not the right fit, we&rsquo;ll
+              tell you and point you elsewhere. You lose nothing but a phone
+              call.
+            </p>
           </Reveal>
         </div>
       </section>
