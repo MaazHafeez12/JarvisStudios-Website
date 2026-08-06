@@ -14,6 +14,12 @@ export function ThemeToggle() {
     const current = document.documentElement.getAttribute("data-theme") as
       | Theme
       | null;
+    // The value lives in the DOM, written by layout.tsx's inline script
+    // before paint, so it cannot be read during render without diverging
+    // from the server render. Starting null and setting once on mount is
+    // what keeps hydration consistent. useSyncExternalStore is the
+    // rule-clean version of this and is tracked in TODO.md.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTheme(current ?? "dark");
   }, []);
 

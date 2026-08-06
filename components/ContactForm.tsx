@@ -103,7 +103,7 @@ export function ContactForm() {
       >
         <p className="font-display text-xl font-semibold">Message sent.</p>
         <p className="mt-2 text-sm text-[--text-secondary]">
-          Thanks for reaching out — we'll get back to you soon.
+          Thanks for reaching out — we&rsquo;ll get back to you soon.
         </p>
       </div>
     );
