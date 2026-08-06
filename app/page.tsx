@@ -21,13 +21,12 @@ export default function HomePage() {
         </Reveal>
         <Reveal delay={0.1} lcpSafe>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-tight sm:text-6xl">
-            Web, app, and SaaS work built to actually ship.
+            Software that ships. Growth that compounds.
           </h1>
         </Reveal>
         <Reveal delay={0.2}>
           <p className="mx-auto mt-6 max-w-xl text-[--text-secondary]">
-            Web development, app development, SaaS, CRM, and marketing/design
-            for businesses that need real software, not just a pitch deck.
+            Web, app, SaaS, CRM, and AI automation.
           </p>
         </Reveal>
         <Reveal delay={0.3}>
