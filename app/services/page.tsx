@@ -97,7 +97,7 @@ export default function ServicesPage() {
         <div className="mx-auto max-w-2xl text-center">
           <Reveal>
             <h2 className="text-balance font-display text-3xl font-semibold sm:text-4xl">
-              Still not sure which of these you need?
+              Get a scoped project and a real price in 48 hours. Free.
             </h2>
             <p className="mx-auto mt-4 max-w-md text-[--text-secondary]">
               Describe the problem in your own words. Working out which
