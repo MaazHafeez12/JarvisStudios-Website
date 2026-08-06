@@ -196,6 +196,23 @@ export function ServiceExplorer() {
                       ))}
                     </ul>
 
+                    {/* Proof sits between what we do and the ask, and only
+                        on the service lines that have it. No kicker above
+                        it and no panel around it: the capability list ends
+                        in a hairline that already separates them, and a
+                        result this specific doesn't need a label telling
+                        the reader it's a result. */}
+                    {service.proof ? (
+                      <div className="mt-6 max-w-sm">
+                        <p className="text-sm font-medium leading-relaxed">
+                          {service.proof.result}
+                        </p>
+                        <p className="mt-1.5 text-sm leading-relaxed text-[--text-secondary]">
+                          {service.proof.detail}
+                        </p>
+                      </div>
+                    ) : null}
+
                     <Link
                       href={`/contact?service=${service.id}`}
                       className="group mt-6 inline-flex items-center gap-2 text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
