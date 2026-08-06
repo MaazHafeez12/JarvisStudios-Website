@@ -72,18 +72,18 @@ export default function HomePage() {
           having no section at all. Restore it when there is real work to
           link to; see CHANGELOG [Unreleased]. */}
 
-      {/* Investor/partner callout — deliberately lower-emphasis, secondary
-          styling per docs/PRD.md (must not compete with the client CTA). */}
+      {/* Insights callout — replaces the investor/partner callout that used
+          to live here. */}
       <section className="border-t border-[--border] px-6 py-12">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
           <p className="text-sm text-[--text-secondary]">
-            Investor or partner? We'd like to hear from you too.
+            Notes on process and engineering decisions.
           </p>
           <Link
-            href="/investors"
+            href="/insights"
             className="text-sm font-medium text-[--text-secondary] underline decoration-[--border] underline-offset-4 transition-colors duration-150 ease-confident hover:text-[--text-primary]"
           >
-            Learn more about investing
+            Read our insights
           </Link>
         </div>
       </section>
