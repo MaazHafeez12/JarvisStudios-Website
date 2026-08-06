@@ -118,8 +118,7 @@ export default function HomePage() {
         </Reveal>
       </section>
 
-      {/* Insights callout — replaces the investor/partner callout that used to
-          live here. Sits after the CTA deliberately: it's a secondary,
+      {/* Insights callout. Sits after the CTA deliberately: it's a secondary,
           low-commitment path, so it shouldn't come between the featured result
           and the ask. */}
       <section className="border-t border-[--border] px-6 py-12">

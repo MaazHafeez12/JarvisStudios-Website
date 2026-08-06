@@ -4,7 +4,7 @@
 ![stack](https://img.shields.io/badge/stack-Next.js%20%2B%20Supabase-00ADEF)
 ![license](https://img.shields.io/badge/license-proprietary-black)
 
-Marketing website rebuild for **Jarvis Studios**, a software agency offering web development, app development, SaaS builds, CRM implementation, and marketing/design services. The site's job is to communicate the studio's service lines, showcase real client work, and convert prospective clients and investors/partners into inbound inquiries.
+Marketing website rebuild for **Jarvis Studios**, a software agency offering web development, app development, SaaS builds, CRM implementation, and marketing/design services. The site's job is to communicate the studio's service lines, showcase real client work, and convert prospective clients into inbound inquiries.
 
 > **Project status: MVP built and deployed to a Vercel preview URL**, per the staged rollout in `docs/PRD.md` §9. DNS cutover to the production domain (`jarvisstudios.net`) is intentionally on hold — see [`TODO.md`](./TODO.md) (untracked, local) for what's still open.
 
@@ -23,7 +23,7 @@ Full context lives in [`/docs`](./docs) — read these before making product or 
 ## Overview
 
 - **No login/auth** — fully public marketing site.
-- **One dynamic feature**: a contact form (`/api/leads`) that captures prospective-client and investor/partner inquiries, stores them in Supabase, and notifies the team by email (Resend) and Slack. Verified end-to-end against the live deployment.
+- **One dynamic feature**: a contact form (`/api/leads`) that captures prospective-client inquiries, stores them in Supabase, and notifies the team by email (Resend) and Slack. Verified end-to-end against the live deployment.
 - **Everything else is static** — all marketing pages are statically generated at build time from in-repo content (`content/`), not a CMS (deferred to a later phase per the PRD).
 - **Work (case studies) and About (team bios) are honest placeholders** — the PRD calls for 2 real case studies and real team bios; that content doesn't exist yet, so those sections say so rather than showing fabricated content.
 
