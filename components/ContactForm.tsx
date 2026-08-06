@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import { validateLead, type FieldErrors } from "@/lib/validation/lead";
-import { PROJECT_TYPES, type LeadInput, type LeadType, type ProjectType } from "@/lib/types/lead";
+import { PROJECT_TYPES, type LeadInput, type ProjectType } from "@/lib/types/lead";
 
 const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
   web: "Web Development",
@@ -33,7 +33,6 @@ const EMPTY_FORM: LeadInput = {
 
 export function ContactForm() {
   const searchParams = useSearchParams();
-  const initialType: LeadType = searchParams.get("type") === "investor" ? "investor" : "client";
 
   // /services links here with the line already chosen, so someone who has
   // decided doesn't re-pick it from a dropdown. Validated against
@@ -43,7 +42,6 @@ export function ContactForm() {
 
   const [form, setForm] = useState<LeadInput>({
     ...EMPTY_FORM,
-    type: initialType,
     projectType: initialProjectType,
   });
   const [state, setState] = useState<SubmitState>({ status: "idle" });
@@ -75,7 +73,7 @@ export function ContactForm() {
 
       if (res.status === 200 && data.success) {
         setState({ status: "success" });
-        setForm({ ...EMPTY_FORM, type: initialType });
+        setForm({ ...EMPTY_FORM });
       } else if (res.status === 400 && data.error === "VALIDATION_ERROR") {
         setState({ status: "field-errors", fields: data.fields ?? {} });
       } else if (res.status === 429) {
@@ -116,25 +114,6 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="relative flex flex-col gap-5">
-      {/* Type selector */}
-      <div className="flex gap-2 rounded-lg border border-[--border] p-1">
-        {(["client", "investor"] as LeadType[]).map((type) => (
-          <button
-            key={type}
-            type="button"
-            onClick={() => update("type", type)}
-            aria-pressed={form.type === type}
-            className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors duration-150 ease-confident ${
-              form.type === type
-                ? "bg-brand-500 text-neutral-950"
-                : "text-[--text-secondary] hover:text-[--text-primary]"
-            }`}
-          >
-            {type === "client" ? "I'm a prospective client" : "I'm an investor / partner"}
-          </button>
-        ))}
-      </div>
-
       <Field label="Name" htmlFor="name" error={fieldErrors.name}>
         <input
           id="name"
@@ -169,25 +148,25 @@ export function ContactForm() {
         />
       </Field>
 
-      {form.type === "client" && (
-        <Field label="Project type (optional)" htmlFor="projectType" error={fieldErrors.projectType}>
-          <select
-            id="projectType"
-            value={form.projectType ?? ""}
-            onChange={(e) =>
-              update("projectType", (e.target.value || undefined) as ProjectType | undefined)
-            }
-            className={inputClass(!!fieldErrors.projectType)}
-          >
-            <option value="">Select one…</option>
-            {PROJECT_TYPES.map((pt) => (
-              <option key={pt} value={pt}>
-                {PROJECT_TYPE_LABELS[pt]}
-              </option>
-            ))}
-          </select>
-        </Field>
-      )}
+      {/* Always rendered. It used to be gated on type === "client", which
+          only ever hid it for the investor path that no longer exists. */}
+      <Field label="Project type (optional)" htmlFor="projectType" error={fieldErrors.projectType}>
+        <select
+          id="projectType"
+          value={form.projectType ?? ""}
+          onChange={(e) =>
+            update("projectType", (e.target.value || undefined) as ProjectType | undefined)
+          }
+          className={inputClass(!!fieldErrors.projectType)}
+        >
+          <option value="">Select one…</option>
+          {PROJECT_TYPES.map((pt) => (
+            <option key={pt} value={pt}>
+              {PROJECT_TYPE_LABELS[pt]}
+            </option>
+          ))}
+        </select>
+      </Field>
 
       <Field label="Message" htmlFor="message" error={fieldErrors.message}>
         <textarea

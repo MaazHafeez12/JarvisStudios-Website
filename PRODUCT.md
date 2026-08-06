@@ -10,7 +10,7 @@ web
 
 **Primary — prospective clients.** Owners and operators at growing businesses who need software built and shipped: a marketing site, a mobile app, a SaaS product, a CRM, automation, or design work. They arrive mid-evaluation and, per the user, in all three states at once: comparing Jarvis Studios against other studios, confirming a studio they've already been referred to covers their specific need, and browsing early with a vague problem and no fixed scope. A single services surface has to serve all three — fast wayfinding to one service, side-by-side comparison across services, and help locating a problem before it has a name.
 
-**Secondary — investors.** Deliberately kept on a separate, lower-emphasis path with its own CTA so the two audiences never compete. Not an audience for the services surface.
+**No secondary audience.** The site addresses prospective clients only. An investor/partner path previously ran alongside — its own page, its own callout, its own contact-form lead type — and has been removed end to end; the site no longer mentions investors anywhere. `docs/PRD.md` §3 still describes them as a target segment and is stale on this point.
 
 ## Product Purpose
 
@@ -22,7 +22,7 @@ A studio that ships working software rather than selling strategy: the site's ow
 
 ## Operating Context
 
-- Enquiries arrive through one contact form covering both client and investor paths; project type is selectable per service line.
+- Enquiries arrive through one contact form; project type is selectable per service line.
 - Leads persist to Supabase, with best-effort Resend email and Slack notification, and Slack alerting on critical failures.
 - Prospects can deep-link to a specific service via `/services#<id>` from the homepage grid and the footer.
 

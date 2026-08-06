@@ -2,7 +2,12 @@
 // and docs/TRD.md §4.2. Imported by both components/ContactForm.tsx and
 // app/api/leads/route.ts so client and server never disagree on shape.
 
-export type LeadType = "client" | "investor";
+// Every lead is a client lead — the investor/partner path is gone from the
+// site. The `leads` table's check constraint still permits 'investor' and is
+// deliberately left alone: narrowing it would reject rows already stored
+// under that type, and a constraint that allows a value nothing writes costs
+// nothing.
+export type LeadType = "client";
 export type LeadStatus = "new" | "contacted" | "archived";
 
 export const PROJECT_TYPES = ["web", "app", "saas", "crm", "ai", "design"] as const;

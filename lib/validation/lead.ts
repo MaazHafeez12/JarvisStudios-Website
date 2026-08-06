@@ -6,7 +6,7 @@ import { PROJECT_TYPES, type LeadInput, type LeadType } from "@/lib/types/lead";
 // server-side validation regardless of what the client already checked).
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const LEAD_TYPES: LeadType[] = ["client", "investor"];
+const LEAD_TYPES: LeadType[] = ["client"];
 
 export type FieldErrors = Partial<Record<keyof LeadInput, string>>;
 
@@ -19,7 +19,7 @@ export function validateLead(input: Partial<LeadInput>): ValidationResult {
   const fields: FieldErrors = {};
 
   if (!input.type || !LEAD_TYPES.includes(input.type)) {
-    fields.type = 'Must be "client" or "investor"';
+    fields.type = 'Must be "client"';
   }
 
   const name = input.name?.trim() ?? "";
