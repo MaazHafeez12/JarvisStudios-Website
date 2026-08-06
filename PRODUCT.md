@@ -18,7 +18,7 @@ The studio's own website. Its job is to turn a prospective client's interest int
 
 ## Positioning
 
-A studio that ships working software rather than selling strategy: the site's own copy frames it as "web, app, and SaaS work built to actually ship" and "real software, not just a pitch deck." The differentiator is delivery and breadth across six connected service lines under one process, not a single specialism.
+A studio that ships working software rather than selling strategy: the site's own copy frames it as "software that ships, growth that compounds" and "real software, not just a pitch deck." The differentiator is delivery and breadth across six connected service lines under one process, not a single specialism.
 
 ## Operating Context
 

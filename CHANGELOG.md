@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+- Homepage hero copy. The H1 is now "Software that ships. Growth that compounds." (was "Web, app, and SaaS work built to actually ship.") and the subhead is "Web, app, SaaS, CRM, and AI automation." (was the longer "Web development, app development, SaaS, CRM, and marketing/design for businesses that need real software, not just a pitch deck."). The service list in the subhead now names AI automation and drops marketing/design, so it no longer enumerates all six lines in `content/services.ts` — the "What we do" grid immediately below still does. `PRODUCT.md`'s positioning section quoted the old H1 verbatim and was updated to match.
+
 ### Added
 - Homepage "Featured work" section, restored with a real named-client result (SNF Construction Group, 10% month-over-month social impression growth from content and social management) instead of the removed placeholder teaser. Links to `/contact` rather than `/work`, since `/work` still has no case studies to land on. Client sign-off to publish the name and figure should be confirmed before this ships to production.
 - Insights section (`/insights`, `/insights/[slug]`) replacing the Investors page in the nav, footer, and sitemap: `content/insights.ts` holds three studio-authored process/engineering posts (statically rendered via `generateStaticParams`, `dynamicParams = false`), `lib/format-date.ts` renders publish dates deterministically (explicit locale + UTC timezone to avoid the hydration mismatch pattern already known from `lib/seeded-random.ts`). Homepage's investor/partner callout now points to Insights instead.
