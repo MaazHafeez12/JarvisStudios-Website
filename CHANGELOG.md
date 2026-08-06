@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- Homepage "Featured work" section, restored with a real named-client result (SNF Construction Group, 10% month-over-month social impression growth from content and social management) instead of the removed placeholder teaser. Links to `/contact` rather than `/work`, since `/work` still has no case studies to land on. Client sign-off to publish the name and figure should be confirmed before this ships to production.
 - Insights section (`/insights`, `/insights/[slug]`) replacing the Investors page in the nav, footer, and sitemap: `content/insights.ts` holds three studio-authored process/engineering posts (statically rendered via `generateStaticParams`, `dynamicParams = false`), `lib/format-date.ts` renders publish dates deterministically (explicit locale + UTC timezone to avoid the hydration mismatch pattern already known from `lib/seeded-random.ts`). Homepage's investor/partner callout now points to Insights instead.
 
 ### Removed
