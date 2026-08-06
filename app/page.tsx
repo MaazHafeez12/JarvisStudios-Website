@@ -26,7 +26,7 @@ export default function HomePage() {
         </Reveal>
         <Reveal delay={0.2}>
           <p className="mx-auto mt-6 max-w-xl text-[--text-secondary]">
-            Web, app, SaaS, CRM, and AI automation.
+            Web, app, SaaS, CRM, AI automation, and marketing &amp; design.
           </p>
         </Reveal>
         <Reveal delay={0.3}>
@@ -98,22 +98,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Insights callout — replaces the investor/partner callout that used
-          to live here. */}
-      <section className="border-t border-[--border] px-6 py-12">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
-          <p className="text-sm text-[--text-secondary]">
-            Notes on process and engineering decisions.
-          </p>
-          <Link
-            href="/insights"
-            className="text-sm font-medium text-[--text-secondary] underline decoration-[--border] underline-offset-4 transition-colors duration-150 ease-confident hover:text-[--text-primary]"
-          >
-            Read our insights
-          </Link>
-        </div>
-      </section>
-
       {/* Final CTA band */}
       <section className="border-t border-[--border] px-6 py-20 text-center">
         <Reveal>
@@ -132,6 +116,24 @@ export default function HomePage() {
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </Reveal>
+      </section>
+
+      {/* Insights callout — replaces the investor/partner callout that used to
+          live here. Sits after the CTA deliberately: it's a secondary,
+          low-commitment path, so it shouldn't come between the featured result
+          and the ask. */}
+      <section className="border-t border-[--border] px-6 py-12">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
+          <p className="text-sm text-[--text-secondary]">
+            Notes on process and engineering decisions.
+          </p>
+          <Link
+            href="/insights"
+            className="text-sm font-medium text-[--text-secondary] underline decoration-[--border] underline-offset-4 transition-colors duration-150 ease-confident hover:text-[--text-primary]"
+          >
+            Read our insights
+          </Link>
+        </div>
       </section>
     </main>
   );
