@@ -117,11 +117,12 @@ export default function HomePage() {
       {/* Final CTA band */}
       <section className="border-t border-[--border] px-6 py-20 text-center">
         <Reveal>
-          <h2 className="font-display text-3xl font-semibold">
-            Have a project in mind?
+          <h2 className="mx-auto max-w-2xl text-balance font-display text-3xl font-semibold">
+            Get a scoped project and a real price in 48 hours. Free.
           </h2>
-          <p className="mx-auto mt-3 max-w-md text-[--text-secondary]">
-            Tell us what you're building — we'll get back to you quickly.
+          <p className="mx-auto mt-3 max-w-xl text-balance text-[--text-secondary]">
+            No sales call, no pitch deck. Tell us what you&rsquo;re building, and
+            we&rsquo;ll tell you what it costs and how long it takes.
           </p>
           <Link
             href="/contact"
