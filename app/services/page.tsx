@@ -55,6 +55,9 @@ export default function ServicesPage() {
             <h1 className="max-w-3xl text-balance font-display text-4xl font-semibold sm:text-5xl">
               Six ways we build. Usually you need two of them.
             </h1>
+            <p className="mt-5 max-w-xl text-balance text-[--text-secondary]">
+              Tell us which. We&rsquo;ll tell you what it takes to get it live.
+            </p>
           </Reveal>
         </div>
         <ServiceExplorer />
