@@ -25,6 +25,12 @@ export function HeroVisual({ children }: { children: React.ReactNode }) {
   const [tier, setTier] = useState<HeroTier | null>(null);
 
   useEffect(() => {
+    // Device capability is unknowable on the server, so this cannot move
+    // into render without breaking hydration. The null-first window is
+    // deliberate and covered by HeroFallback (see comment above).
+    // useSyncExternalStore is the rule-clean version of this and is tracked
+    // in TODO.md.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTier(detectHeroTier());
   }, []);
 

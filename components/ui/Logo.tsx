@@ -19,6 +19,9 @@ export function Logo() {
       aria-label="Jarvis Studios — home"
     >
       <span className="block h-9 w-9 overflow-hidden rounded-md">
+        {/* eslint-disable-next-line @next/next/no-img-element -- next/image
+            has nothing to optimize on an SVG, and the docblock above explains
+            why this stays an out-of-bundle fetch. */}
         <img
           src="/logo.svg"
           alt=""
