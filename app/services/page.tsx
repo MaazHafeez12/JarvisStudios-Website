@@ -103,6 +103,15 @@ export default function ServicesPage() {
               Describe the problem in your own words. Working out which
               service it is happens to be our job, not yours.
             </p>
+            {/* Risk reversal clears the objection immediately before the
+                ask, not after it. Below the button it only reached readers
+                who had already decided — the ones it exists to convince had
+                passed it. */}
+            <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-[--text-secondary]">
+              If discovery shows we&rsquo;re not the right fit, we&rsquo;ll
+              tell you and point you elsewhere. You lose nothing but a phone
+              call.
+            </p>
             <Link
               href="/contact"
               className="group mt-8 inline-flex items-center gap-2 rounded-md bg-brand-500 px-6 py-3 text-sm font-medium text-neutral-950 transition-colors duration-200 ease-confident hover:bg-brand-300"
@@ -113,14 +122,6 @@ export default function ServicesPage() {
                 aria-hidden="true"
               />
             </Link>
-            {/* Risk reversal sits under the button rather than above it: it
-                answers the hesitation a reader has at the moment of
-                clicking, not one they have while still reading the offer. */}
-            <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-[--text-secondary]">
-              If discovery shows we&rsquo;re not the right fit, we&rsquo;ll
-              tell you and point you elsewhere. You lose nothing but a phone
-              call.
-            </p>
           </Reveal>
         </div>
       </section>
