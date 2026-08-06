@@ -4,6 +4,24 @@
 
 import type { ProjectType } from "@/lib/types/lead";
 
+/**
+ * A delivered client result, attached to the service line that produced it.
+ *
+ * Optional, and deliberately so: only `design` has one today. A field that
+ * every service is required to fill is a field that gets filled with
+ * something — and an invented number beside a real one devalues both. A
+ * service line carries proof when there is proof to carry.
+ *
+ * Everything here is published under the client's name, so adding an entry
+ * is a consent question before it is a code question.
+ */
+export interface ServiceProof {
+  /** The result, phrased to stand on its own without a "case study" label. */
+  result: string;
+  /** What the work actually was, and over what period. */
+  detail: string;
+}
+
 export interface Service {
   id: ProjectType;
   name: string;
@@ -12,6 +30,7 @@ export interface Service {
    *  want to immediately tell if the studio does what they need, not
    *  read vague marketing copy. */
   capabilities: string[];
+  proof?: ServiceProof;
 }
 
 export const SERVICES: Service[] = [
@@ -74,5 +93,14 @@ export const SERVICES: Service[] = [
       "UI/UX design for web and app products",
       "Campaign and marketing asset design",
     ],
+    // Same client and same figures as the homepage featured-work section —
+    // one source would be better, but the two surfaces phrase it differently
+    // enough that sharing a string would force one of them to read wrong.
+    proof: {
+      result:
+        "SNF Construction Group’s social reach is growing 10%, every month.",
+      detail:
+        "Content and social management, run and measured monthly since we took over.",
+    },
   },
 ];
