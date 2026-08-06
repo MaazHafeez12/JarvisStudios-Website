@@ -105,7 +105,7 @@ export default function HomePage() {
             Get a scoped project and a real price in 48 hours. Free.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-balance text-[--text-secondary]">
-            No sales call, no pitch deck. Tell us what you&rsquo;re building, and
+            No sales pitch, no pitch deck. Tell us what you&rsquo;re building, and
             we&rsquo;ll tell you what it costs and how long it takes.
           </p>
           <Link
