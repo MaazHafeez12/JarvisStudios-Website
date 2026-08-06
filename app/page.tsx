@@ -64,13 +64,40 @@ export default function HomePage() {
         />
       </section>
 
-      {/* The featured-work teaser was removed here, not restyled. It read
-          "See what we've built for real clients" and linked to /work, which
-          is an intentional placeholder — the two case studies in docs/PRD.md
-          don't exist yet and client consent is unresolved. A teaser that
-          promises proof and delivers an empty page costs more trust than
-          having no section at all. Restore it when there is real work to
-          link to; see CHANGELOG [Unreleased]. */}
+      {/* Featured work — restored with a real, named client result instead
+          of the removed placeholder teaser. Links to /contact rather than
+          /work since /work still has no case studies to land on. */}
+      <section className="border-t border-[--border] px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <Reveal>
+            <div className="flex flex-col items-start gap-6 rounded-lg border border-[--border] bg-[--surface-raised] p-8 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+                  Real client, real numbers
+                </p>
+                <h2 className="mt-2 max-w-xl text-balance font-display text-2xl font-semibold sm:text-3xl">
+                  SNF Construction Group&rsquo;s social reach is growing 10%,
+                  every month.
+                </h2>
+                <p className="mt-3 max-w-md text-sm leading-relaxed text-[--text-secondary]">
+                  Content and social management, run and measured monthly
+                  since we took over.
+                </p>
+              </div>
+              <Link
+                href="/contact"
+                className="group inline-flex shrink-0 items-center gap-2 rounded-md border border-[--border] px-5 py-2.5 text-sm font-medium transition-colors duration-150 ease-confident hover:border-[--accent] hover:text-[--accent]"
+              >
+                Get results like this
+                <ArrowRight
+                  className="h-4 w-4 transition-transform duration-200 ease-confident motion-safe:group-hover:translate-x-1"
+                  aria-hidden="true"
+                />
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
 
       {/* Insights callout — replaces the investor/partner callout that used
           to live here. */}
