@@ -47,7 +47,7 @@ A studio that ships working software rather than selling strategy: the site's ow
 - **Color:** charcoal family (`#141414`/`#1B1B1B`/`#222222`) with `#00ADEF` as the single accent. Deliberately excludes the indigo/violet range as an anti-templated-AI commitment.
 - **Theme:** dark by default, with a working light mode; both must stay supported.
 - **Icons:** Lucide.
-- **Logo:** `public/logo.svg` is an auto-traced file with a baked-in black background, used as-is inside a fixed rounded container. A clean redraw is a known outstanding task.
+- **Logo:** `public/logo.svg` is a clean vector redraw of the monogram — three polygons, transparent, 1.4KB. Inlined by `components/ui/Logo.tsx` with the "J" on `currentColor` so it follows the theme; the "S" stays literal `#00ADEF`. The wordmark is live text, not part of the mark.
 - **Confirmed by the user for this work:** the brand is fixed. Surface redesigns happen inside this system, not by replacing it.
 
 ## Evidence on Hand
@@ -55,7 +55,7 @@ A studio that ships working software rather than selling strategy: the site's ow
 Deliberately thin, and future work must not fabricate around it:
 
 - **No real case studies.** The Work page is an intentional placeholder; the PRD's two planned case studies don't exist yet and client consent/format is unresolved.
-- **No client screenshots, product screenshots, or photography of any kind.** `public/` contains only fonts and the logo.
+- **No client screenshots, product screenshots, or photography of any kind.** `public/` contains only fonts and the logo mark.
 - **No team bios.** Left as an honest placeholder rather than invented.
 - **No testimonials, client logos, metrics, awards, or press.**
 - **Confirmed by the user:** there is no real visual material for the six service lines. Imagery for them is to be authored as illustrative interface compositions, clearly generic rather than presented as delivered client work.
