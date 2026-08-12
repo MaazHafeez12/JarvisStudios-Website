@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
-import { ProcessSteps } from "@/components/ProcessSteps";
+import { RevealWords } from "@/components/ui/RevealWords";
+import { Hairline } from "@/components/ui/Hairline";
+import { ProcessTour } from "@/components/services/ProcessTour";
+import { ProcessVignette } from "@/components/services/ProcessVignette";
 import { ServiceExplorer } from "@/components/services/ServiceExplorer";
 import { EngagementFacts } from "@/components/EngagementFacts";
 import { SERVICES } from "@/content/services";
+import { PROCESS_STEPS } from "@/content/process";
 
 /*
   DIRECTION CONTRACT — /services  (impeccable, surface scope, seed d61330c2)
@@ -51,14 +55,18 @@ export default function ServicesPage() {
           nothing has still been asked the question that sorts them. */}
       <section className="pb-16 pt-20 sm:pt-24">
         <div className="mx-auto mb-14 max-w-4xl px-6">
-          <Reveal lcpSafe>
-            <h1 className="max-w-3xl text-balance font-display text-4xl font-semibold sm:text-5xl">
-              Six ways we build. Usually you need two of them.
-            </h1>
-            {/* Outcome only, no "pick one" instruction — ServiceExplorer's
-                own prompt sits ~200px below and owns that language. Two
-                choose-one instructions in a row read as the page asking the
-                same question twice. */}
+          {/* Word by word rather than as a block: the headline is a count
+              ("six", "two") and reading it in cadence is the point. lcpSafe
+              because this is the page's LCP candidate — it moves, it never
+              fades. */}
+          <h1 className="max-w-3xl text-balance font-display text-4xl font-semibold sm:text-5xl">
+            <RevealWords text="Six ways we build. Usually you need two of them." lcpSafe />
+          </h1>
+          {/* Outcome only, no "pick one" instruction — ServiceExplorer's
+              own prompt sits ~200px below and owns that language. Two
+              choose-one instructions in a row read as the page asking the
+              same question twice. */}
+          <Reveal delay={0.45}>
             <p className="mt-5 max-w-xl text-balance text-[--text-secondary]">
               We&rsquo;ll tell you what it takes to get it live.
             </p>
@@ -67,23 +75,38 @@ export default function ServicesPage() {
         <ServiceExplorer />
       </section>
 
-      <section className="border-t border-[--border] px-6 py-20">
-        <div className="mx-auto max-w-4xl">
+      {/* Each seam is a Hairline rather than a border-t: the rule drawing
+          across is how a section announces itself, and these three were
+          already the only thing separating them. */}
+      {/* The process as a scroll-scrubbed pinned timeline rather than a tab
+          strip (docs/MOTION_REDESIGN.md §5.7). Wider than the rest of the
+          page at max-w-6xl, because the pinned layout is two columns. The
+          scenes are rendered here, on the server, and passed to the client
+          component as slots so content/process.ts and ProcessVignette.tsx
+          stay out of the client bundle — /services already ships six
+          ServiceVignette scenes through ServiceExplorer. */}
+      <section className="relative px-6 py-20">
+        <Hairline className="absolute inset-x-0 top-0" />
+        <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-2xl font-semibold sm:text-3xl">
               However we get there, it goes like this
             </h2>
           </Reveal>
-          <div className="mt-10">
-            <ProcessSteps />
-          </div>
+          <ProcessTour
+            steps={PROCESS_STEPS}
+            visuals={PROCESS_STEPS.map((step) => (
+              <ProcessVignette key={step.id} step={step.id} />
+            ))}
+          />
         </div>
       </section>
 
       {/* Commercial terms sit after the service lines and immediately before
           the CTA — by this point the reader knows what's on offer, and these
           are the questions they'd otherwise have to email to find out. */}
-      <section className="border-t border-[--border] px-6 py-20">
+      <section className="relative px-6 py-20">
+        <Hairline className="absolute inset-x-0 top-0" />
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <h2 className="max-w-2xl text-balance font-display text-2xl font-semibold sm:text-3xl">
@@ -97,28 +120,38 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="border-t border-[--border] px-6 py-24">
+      <section className="relative px-6 py-24">
+        <Hairline className="absolute inset-x-0 top-0" />
         <div className="mx-auto max-w-2xl text-center">
+          {/* Four reveals rather than one: the close is an argument in four
+              beats — offer, instruction, risk reversal, ask — and arriving as
+              a single slab reads as a footer. */}
           <Reveal>
             <h2 className="text-balance font-display text-3xl font-semibold sm:text-4xl">
               Get a scoped project and a real price in 48 hours. Free.
             </h2>
+          </Reveal>
+          <Reveal delay={0.08}>
             <p className="mx-auto mt-4 max-w-md text-[--text-secondary]">
               Describe the problem in your own words. Working out which
               service it is happens to be our job, not yours.
             </p>
-            {/* Risk reversal clears the objection immediately before the
-                ask, not after it. Below the button it only reached readers
-                who had already decided — the ones it exists to convince had
-                passed it. */}
+          </Reveal>
+          {/* Risk reversal clears the objection immediately before the
+              ask, not after it. Below the button it only reached readers
+              who had already decided — the ones it exists to convince had
+              passed it. */}
+          <Reveal delay={0.16}>
             <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-[--text-secondary]">
               If discovery shows we&rsquo;re not the right fit, we&rsquo;ll
               tell you and point you elsewhere. You lose nothing but a phone
               call.
             </p>
+          </Reveal>
+          <Reveal delay={0.24}>
             <Link
               href="/contact"
-              className="group mt-8 inline-flex items-center gap-2 rounded-md bg-brand-500 px-6 py-3 text-sm font-medium text-neutral-950 transition-colors duration-200 ease-confident hover:bg-brand-300"
+              className="group mt-8 inline-flex items-center gap-2 rounded-md bg-brand-500 px-6 py-3 text-sm font-medium text-neutral-950 transition-[background-color,transform] duration-200 ease-confident hover:bg-brand-300 motion-safe:hover:scale-[1.02]"
             >
               Start a project
               <ArrowRight
