@@ -69,14 +69,16 @@ export default function InsightPostPage({
         ))}
       </div>
 
-      <div className="mt-14 border-t border-[--border] pt-8">
-        <Link
-          href="/contact"
-          className="text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
-        >
-          Have a project this touches on? Get in touch →
-        </Link>
-      </div>
+      <Reveal>
+        <div className="mt-14 border-t border-[--border] pt-8">
+          <Link
+            href="/contact"
+            className="text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
+          >
+            Have a project this touches on? Get in touch →
+          </Link>
+        </div>
+      </Reveal>
     </main>
   );
 }

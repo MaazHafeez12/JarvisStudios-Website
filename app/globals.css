@@ -71,75 +71,215 @@ body {
   );
 }
 
-/* Service card hover: angular wipe + shard burst (docs/MOTION_REDESIGN.md
-   §5.1, revised to the bolder treatment).
+/* ─────────────────────────────────────────────────────────────────────────
+   Homepage service tour (docs/MOTION_REDESIGN.md §5.5).
 
-   The wipe is an animated clip-path polygon on a full-size panel, not a
-   skewed panel that translates. That choice is what makes the text
-   inversion safe: because the panel never moves, an inverted copy of the
-   card's content can sit inside it, permanently pixel-aligned with the real
-   content underneath. Blue is therefore only ever revealed together with
-   the near-black text that belongs on it, so there is no window mid-sweep
-   where light text sits on a half-arrived blue field. A translating panel
-   with a `color` transition on the real text — the obvious first approach —
-   has exactly that flaw for ~250ms of every hover.
+   Six service lines as a scroll-linked pinned sequence at `lg`, a horizontal
+   snap rail below it, and a plain stack under reduced motion. All three come
+   out of one DOM — components/services/ServiceTour.tsx contains no layout
+   branch at all — which is what keeps the section shift-free. Everything
+   below is layout and the vignette handoff; card chrome stays in Tailwind at
+   the call site.
+   ───────────────────────────────────────────────────────────────────────── */
 
-   brand-500 + neutral-950 is the same pairing the primary CTA already uses
-   (7.4:1), and it holds in both themes, so the inverted copy needs no
-   light/dark branching. The card's *border* stays on --accent rather than
-   brand-500: in light mode a brand-500 edge against white is only 2.55:1,
-   below WCAG 1.4.11's 3:1 for identifying a component, while --accent
-   (brand-800 there) keeps a crisp 5.25:1 boundary around the blue fill. */
-.service-card-wipe {
-  /* Parked off the left edge. Point count and order match the hover state
-     so the polygon interpolates rather than snapping. */
-  clip-path: polygon(-200% 0%, -10% 0%, -25% 100%, -200% 100%);
-  transition: clip-path 380ms cubic-bezier(0.16, 1, 0.3, 1);
+:root {
+  /* Nav.tsx is `sticky top-0`: py-4 (32) + its tallest control (36 — Logo's
+     h-9 box, the h-9 mobile menu button, and the desktop CTA's py-2/text-sm
+     all measure 36) + 1px border-b = 69.
+
+     Duplicating a Tailwind-derived value here is accepted debt: measuring it
+     at runtime with a ResizeObserver costs JS and a forced layout read to
+     save a few pixels of accuracy. The tradeoff is that changing Nav's
+     padding or control height misaligns every pinned surface on the site
+     with nothing failing — so change this line when you change that one. */
+  --nav-h: 69px;
 }
 
-.group:hover .service-card-wipe,
-.group:focus-visible .service-card-wipe {
-  clip-path: polygon(-200% 0%, 128% 0%, 113% 100%, -200% 100%);
+/* Baseline. This is simultaneously the reduced-motion layout, the no-JS
+   layout, and the layout for any browser that doesn't parse the queries
+   below: six blocks stacked down the page, each carrying its own vignette.
+   Nothing pinned, nothing sideways, nothing hidden, nothing unreachable.
+
+   Note this is a *complete alternative layout*, not a neutered pin. Merely
+   setting `position: static` on the stage would leave one visual stranded
+   beside four screens of copy. */
+.tour-stage {
+  display: none;
 }
 
-/* The leading edge leads by 15% of the card's width across its height —
-   roughly 16°, echoing the hero shards rather than a flat vertical wipe. */
-.service-card-shard {
-  transform-box: fill-box;
-  transform-origin: center;
-  opacity: 0;
-  transform: translate(0, 0) rotate(0deg) scale(0.4);
-  transition:
-    transform 460ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 200ms linear;
-  transition-delay: var(--shard-delay, 0ms);
+.tour-panel {
+  /* Keeps a focused in-panel link from landing behind the sticky nav. */
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
 }
 
-.group:hover .service-card-shard,
-.group:focus-visible .service-card-shard {
-  opacity: 1;
-  transform: translate(var(--shard-x), var(--shard-y)) rotate(var(--shard-r)) scale(1);
+.tour-panel + .tour-panel {
+  margin-top: 1.5rem;
 }
 
-/* Reduced motion: the state still reads, it just doesn't travel. The wipe
-   becomes an instant fill (clip-path dropped entirely so the panel covers
-   the card the moment it's shown), and the burst — which is nothing *but*
-   motion — is removed rather than popped in. CSS transitions are invisible
-   to <MotionConfig reducedMotion="user">, so this has to be handled here. */
+/* In the stacked layout the panel carries its own vignette. Left uncapped it
+   spans the full 1152px content column while the copy above it stops at
+   max-w-md — a diagram four times the width of the text it illustrates,
+   which reads as a figure that escaped its caption. Only visible under
+   reduced motion at desktop widths, since every other layout either hides
+   this copy (the pinned stage owns the visual at `lg`) or is too narrow for
+   it to matter (mobile cards are ~270px). */
+.tour-panel-visual {
+  max-width: 32rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ── Below lg: horizontal snap rail — the "swipe" half of the section.
+        CSS scroll-snap, deliberately not a JS drag handler: the platform
+        already has momentum, rubber-banding, trackpad and keyboard support,
+        and correct reduced-motion behaviour, and a hand-rolled pointer
+        handler would be worse on every one of those axes. ── */
+  @media (max-width: 1023.98px) {
+    .tour-list {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      /* Without this, over-swiping at either end of the rail triggers iOS
+         Safari's back-navigation gesture. */
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: 1.5rem;
+      /* Bleed out to the viewport edge and re-pad, so cards rest on the
+         page gutter but can still travel edge to edge. Matches the
+         section's px-6. */
+      margin-inline: -1.5rem;
+      padding-inline: 1.5rem;
+      padding-bottom: 1rem;
+    }
+
+    .tour-panel,
+    .tour-panel + .tour-panel {
+      /* 82% leaves the next card peeking. That peek is the only affordance
+         telling the visitor there is more, and it costs no JS and no dot
+         row. */
+      flex: 0 0 82%;
+      scroll-snap-align: start;
+      margin-top: 0;
+    }
+  }
+
+  /* ── lg and up: copy scrolls, the visual pins. ── */
+  @media (min-width: 1024px) {
+    .tour-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 4rem;
+    }
+
+    .tour-panel,
+    .tour-panel + .tour-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /* svh, never dvh. dvh re-resolves as a mobile URL bar shows and hides,
+         which across a ~420svh section means continuous reflow for the
+         entire scroll. svh resolves once to the smallest viewport and never
+         changes. vh first as a fallback for pre-svh browsers — a slightly
+         tall panel is a far better failure than an unparsed declaration. */
+      min-height: 70vh;
+      min-height: 70svh;
+      margin-top: 0;
+    }
+
+    .tour-stage {
+      display: grid;
+      place-items: center;
+      position: sticky;
+      /* Grid items default to `align-self: stretch`, and a stretched sticky
+         item is exactly as tall as its container — zero room to travel, so
+         it never appears to stick at all. This line is the whole trick. */
+      align-self: start;
+      /* Clears the 69px nav by 24px, and is inset by a matching 24px at the
+         bottom, so the pinned stage is symmetric in the visible area. */
+      top: calc(var(--nav-h) + 1.5rem);
+      height: calc(100vh - var(--nav-h) - 3rem);
+      height: calc(100svh - var(--nav-h) - 3rem);
+    }
+  }
+}
+
+/* Same frame as ServiceExplorer's vignette panel, so the homepage and
+   /services read as one family. overflow on a *descendant* of the sticky
+   element is harmless — only a scrolling *ancestor* breaks position: sticky.
+   For the same reason, never put `overflow-x: hidden` on body, #main-content
+   or main to stop a sideways scroll: it silently kills the pin and the stage
+   just scrolls away. Use `overflow-x: clip` if you ever need it. */
+.tour-stage-card {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+}
+
+/* Handoff. Deliberately the same gesture as the retired .service-card-wipe:
+   a four-point polygon whose leading edge leads by 15% of the width across
+   its height — roughly 16°, echoing the hero shards rather than reading as a
+   flat vertical wipe. Equal point counts and matching order in all three
+   states, so the polygon interpolates rather than snapping.
+
+   Both transitions sweep leftward: the incoming layer's left edge crosses in
+   from the right while the outgoing layer's right edge exits to the left.
+   The incoming one holds z-index, so a new vignette wipes *over* the old
+   rather than the old tearing away to expose it. */
+.tour-layer {
+  position: absolute;
+  inset: 1.25rem;
+  transition: clip-path 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tour-layer[data-state="future"] {
+  clip-path: polygon(115% 0%, 130% 0%, 115% 100%, 100% 100%);
+}
+
+.tour-layer[data-state="active"] {
+  clip-path: polygon(-30% 0%, 130% 0%, 115% 100%, -45% 100%);
+  z-index: 1;
+}
+
+.tour-layer[data-state="past"] {
+  clip-path: polygon(-45% 0%, -30% 0%, -45% 100%, -60% 100%);
+}
+
+/* Sits in the column gap. The fill is written by Motion as a composited
+   scaleY, so it never touches layout and never re-renders React — animating
+   `height` here instead would put layout work on every scroll frame. */
+.tour-rail {
+  position: absolute;
+  left: -2rem;
+  top: 10%;
+  bottom: 10%;
+  width: 1px;
+  background: var(--border);
+}
+
+.tour-rail-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: top;
+  transform: scaleY(0);
+}
+
+/* Defensive: the stage is display:none on this path already, but a wipe must
+   never be reachable. <MotionConfig reducedMotion="user"> governs Motion
+   components and does nothing for CSS — docs/MOTION_REDESIGN.md §5 item 1. */
 @media (prefers-reduced-motion: reduce) {
-  .service-card-wipe {
-    clip-path: none;
-    opacity: 0;
+  .tour-layer {
     transition: none;
-  }
-
-  .group:hover .service-card-wipe,
-  .group:focus-visible .service-card-wipe {
     clip-path: none;
-    opacity: 1;
   }
 
-  .service-card-shard {
+  .tour-rail {
     display: none;
   }
 }
