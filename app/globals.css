@@ -284,6 +284,375 @@ body {
   }
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   /services process timeline (docs/MOTION_REDESIGN.md §5.7).
+
+   Four process steps as a scroll-scrubbed pinned sequence at `lg`, a
+   horizontal snap rail below it, and a plain stack under reduced motion —
+   the same three-layout-from-one-DOM construction as the homepage tour
+   above, applied to different content.
+
+   ON THE DUPLICATION. The pin mechanics below repeat about ten declarations
+   from `.tour-stage`, and `.tour-layer` / `.tour-stage-card` are reused
+   outright rather than copied. Folding the pin rules into one shared set is
+   the tidier refactor and is deliberately not done here: the homepage tour is
+   profiled and documented at 55.6fps mid-tier (§7), and re-plumbing its CSS
+   to save forty lines trades a verified section for a tidier stylesheet.
+   If you do generalise them one day, do both blocks in one change.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Baseline — simultaneously the reduced-motion layout, the no-JS layout, and
+   the layout for anything that does not parse the queries below: four blocks
+   stacked down the page, each carrying its own visual. All four descriptions
+   readable at once, which is what the tab pattern this replaced could not do.
+   A complete alternative layout, not a neutered pin. */
+.ptour-stage {
+  display: none;
+}
+
+.ptour-panel {
+  /* Keeps a focused in-panel element from landing behind the sticky nav. */
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}
+
+.ptour-panel + .ptour-panel {
+  margin-top: 1.5rem;
+}
+
+/* In the stacked layout the panel carries its own visual. Left uncapped it
+   spans the full content column while the copy above it stops at max-w-md.
+   Same cap and same reason as .tour-panel-visual. */
+.ptour-panel-visual {
+  max-width: 32rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ── Below lg: horizontal snap rail. CSS scroll-snap rather than a JS drag
+        handler — the platform already has momentum, rubber-banding, keyboard
+        support and correct reduced-motion behaviour. ── */
+  @media (max-width: 1023.98px) {
+    .ptour-list {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      /* Without this, over-swiping at either end triggers iOS Safari's
+         back-navigation gesture. */
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: 1.5rem;
+      /* Bleed to the viewport edge and re-pad, so cards rest on the page
+         gutter but travel edge to edge. Matches the section's px-6. */
+      margin-inline: -1.5rem;
+      padding-inline: 1.5rem;
+      padding-bottom: 1rem;
+    }
+
+    .ptour-panel,
+    .ptour-panel + .ptour-panel {
+      /* 82% leaves the next card peeking, which is the only affordance
+         telling the visitor there is more — and it costs no JS and no dots. */
+      flex: 0 0 82%;
+      scroll-snap-align: start;
+      margin-top: 0;
+    }
+  }
+
+  /* ── lg and up: copy scrolls, the stage pins. ── */
+  @media (min-width: 1024px) {
+    .ptour-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 4rem;
+    }
+
+    .ptour-panel,
+    .ptour-panel + .ptour-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      /* 60svh x 4 steps, deliberately tighter than the homepage tour's
+         70svh x 6 — /services is already the longest page on the site.
+
+         svh, never dvh. dvh re-resolves as a mobile URL bar shows and hides,
+         which across a multi-screen section means continuous reflow for the
+         entire scroll. vh first as a fallback for pre-svh browsers: a
+         slightly tall panel is a far better failure than an unparsed
+         declaration. */
+      min-height: 60vh;
+      min-height: 60svh;
+      margin-top: 0;
+    }
+
+    .ptour-stage {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.5rem;
+      position: sticky;
+      /* Grid items default to `align-self: stretch`, and a stretched sticky
+         item is exactly as tall as its container — zero room to travel, so it
+         never appears to stick at all. This line is the whole trick. */
+      align-self: start;
+      /* Clears the 69px nav by 24px, inset by a matching 24px at the bottom. */
+      top: calc(var(--nav-h) + 1.5rem);
+      height: calc(100vh - var(--nav-h) - 3rem);
+      height: calc(100svh - var(--nav-h) - 3rem);
+    }
+
+    /* The card is aspect-ratio driven and shares the stage with the timeline
+       below it, so it must be allowed to shrink rather than overflow a short
+       viewport. */
+    .ptour-stage > .tour-stage-card {
+      flex: 0 1 auto;
+      min-height: 0;
+    }
+  }
+}
+
+/* ── The timeline itself: four nodes on a track, horizontal, beneath the
+      stage. Horizontal because that is what makes it read as a *timeline*
+      rather than a second copy of the homepage tour's gutter rail. ── */
+.ptour-rail {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 10px;
+}
+
+.ptour-rail-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Written by Motion as a composited scaleX, so it never touches layout and
+   never re-renders React. Animating `width` here instead would put layout
+   work on every scroll frame. */
+.ptour-rail-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+.ptour-node {
+  position: relative;
+  /* Above the track it sits on. */
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.ptour-node[data-state="reached"] {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ── Scene assembly. Each visual arrives in three groups with its single
+      brand-blue element last, so a step reads as being built rather than
+      appearing. Keyed on the layer's state, so it re-runs on the way back
+      up as well as down. ── */
+@media (prefers-reduced-motion: no-preference) {
+  .ptour-node {
+    transition:
+      background-color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ptour-layer .pv-1,
+  .ptour-layer .pv-2,
+  .ptour-layer .pv-3 {
+    opacity: 0;
+    /* On an SVG child a unitless-px translate is user units, which is what
+       is wanted here — 8/320 of the frame, consistent at any rendered size. */
+    transform: translateY(8px);
+    transition:
+      opacity 420ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ptour-layer[data-state="active"] .pv-1,
+  .ptour-layer[data-state="active"] .pv-2,
+  .ptour-layer[data-state="active"] .pv-3 {
+    opacity: 1;
+    transform: none;
+  }
+
+  .ptour-layer[data-state="active"] .pv-2 {
+    transition-delay: 90ms;
+  }
+
+  .ptour-layer[data-state="active"] .pv-3 {
+    transition-delay: 180ms;
+  }
+
+  /* Reuses ServiceVignette's accent class — same idea, same curve, same
+     transform-box treatment — rather than inventing a second vocabulary for
+     "the one blue element lands last". Only the trigger differs: there it is
+     an armed card entering view, here it is a layer becoming active. */
+  .ptour-layer .vg-accent {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  .ptour-layer[data-state="active"] .vg-accent {
+    opacity: 1;
+    transform: none;
+    /* Overrides the 260ms baked into .vg-accent's shorthand: here it lands
+       behind three groups rather than behind a single wipe. */
+    transition-delay: 300ms;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   /services — motion pass (docs/MOTION_REDESIGN.md §5.6)
+
+   Everything below is CSS, which means <MotionConfig reducedMotion="user">
+   in app/layout.tsx does not reach any of it. Each block carries its own
+   prefers-reduced-motion handling, and that is not optional — it is the
+   single most repeated mistake in this file's history (§5 item 1).
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Situation buttons: the page's sanctioned second accent moment
+      (MOTION_REDESIGN §2 amendment 1 — restraint governs ambient motion,
+      not interaction feedback).
+
+      A stationary pre-tinted panel revealed by clip-path, NOT a panel that
+      translates in. The distinction is load-bearing: a translating panel
+      needs the label's colour to transition in lockstep with it, and the two
+      never quite agree, so the text flickers mid-sweep. Nothing moves here —
+      only the window onto it. Same leftward 4-point sweep as .tour-layer, so
+      the homepage and /services share one wipe. ── */
+.svc-wipe {
+  position: absolute;
+  inset: 0;
+  /* Behind the label, contained by `isolate` on the button. */
+  z-index: -1;
+  background: var(--accent);
+  opacity: 0.14;
+  clip-path: polygon(115% 0%, 130% 0%, 115% 100%, 100% 100%);
+}
+
+[aria-pressed="true"] > .svc-wipe {
+  clip-path: polygon(-30% 0%, 130% 0%, 115% 100%, -45% 100%);
+}
+
+/* Only the transition is conditional. The two clip states stay unconditional
+   so a reduced-motion visitor still sees which situation is selected — it
+   just arrives instantly instead of sweeping. */
+@media (prefers-reduced-motion: no-preference) {
+  .svc-wipe {
+    transition: clip-path 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* ── Vignettes: the scene wipes in, then the one brand-blue element lands a
+      beat later. ServiceVignette's whole premise is that each scene is
+      greyscale except "the thing the service actually changes"; letting that
+      element arrive last is the animation saying the same thing.
+
+      The hidden state is ARMED by JS, never the default. A vignette must
+      render complete with JS disabled, so the served HTML is the finished
+      state and .vg-armed is added on mount — and only to cards below the
+      fold, so nothing above it can flash. ── */
+@media (prefers-reduced-motion: no-preference) {
+  .vg-scene {
+    transition: clip-path 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .vg-armed .vg-scene {
+    clip-path: polygon(115% 0%, 130% 0%, 115% 100%, 100% 100%);
+  }
+
+  .vg-armed[data-vg="in"] .vg-scene {
+    clip-path: polygon(-30% 0%, 130% 0%, 115% 100%, -45% 100%);
+  }
+
+  .vg-accent {
+    /* Without fill-box an SVG child scales about the viewBox origin, not
+       itself, and the element slides off across the frame. */
+    transform-box: fill-box;
+    transform-origin: center;
+    transition:
+      opacity 420ms cubic-bezier(0.16, 1, 0.3, 1) 260ms,
+      transform 420ms cubic-bezier(0.16, 1, 0.3, 1) 260ms;
+  }
+
+  .vg-armed .vg-accent {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  .vg-armed[data-vg="in"] .vg-accent {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ── Desktop: scroll-linked progress rail in the gutter beside the service
+      list. Same construction as .tour-rail — a full-height bar written as a
+      composited scaleY, never an animated height. ── */
+.svc-rail {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .svc-rail {
+    display: block;
+    position: absolute;
+    /* Sits in the space between the centred max-w-4xl column and the
+       viewport edge. At exactly 1024px that gutter is 64px, so 32px clears
+       it with room; below that the rail is hidden and the strip takes over. */
+    left: -2rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+}
+
+.svc-rail-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: top;
+  transform: scaleY(0);
+}
+
+/* ── Phones: the swipe strip. Native scroll-snap, deliberately not a JS drag
+      handler — the platform already has momentum, rubber-banding, keyboard
+      support and correct reduced-motion behaviour. The scrollbar is hidden
+      because the chips themselves are the affordance; the strip is still a
+      real scroll container, so keyboard and AT reach it unchanged. ── */
+.svc-strip {
+  scrollbar-width: none;
+}
+
+.svc-strip::-webkit-scrollbar {
+  display: none;
+}
+
+/* Both progress readouts are driven by useScroll and so are not Motion
+   *animations* — MotionConfig has nothing to strip. They have to be removed
+   here or a reduced-motion visitor gets a bar sweeping across the page.
+   Their tracks stay, and read as the plain hairlines they already are. */
+@media (prefers-reduced-motion: reduce) {
+  .svc-rail,
+  .svc-strip-fill {
+    display: none;
+  }
+}
+
 /* Credibility marquee (docs/DESIGN.md §3.2). Track is duplicated in markup
    so translating by -50% loops seamlessly. */
 @keyframes marquee {

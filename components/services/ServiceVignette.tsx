@@ -22,7 +22,7 @@ function Frame({ children }: { children: React.ReactNode }) {
   return (
     <svg
       viewBox="0 0 480 320"
-      className="h-full w-full text-[--text-secondary]"
+      className="vg-scene h-full w-full text-[--text-secondary]"
       fill="none"
       aria-hidden="true"
       focusable="false"
@@ -51,7 +51,7 @@ function WebVignette() {
       <rect x="52" y="108" width="140" height="11" rx="2" fill="currentColor" fillOpacity="0.34" />
       <rect x="52" y="134" width="232" height="7" rx="2" fill="currentColor" fillOpacity="0.16" />
       <rect x="52" y="148" width="196" height="7" rx="2" fill="currentColor" fillOpacity="0.16" />
-      <rect x="52" y="176" width="88" height="26" rx="13" fill={ACCENT} />
+      <rect x="52" y="176" width="88" height="26" rx="13" fill={ACCENT} className="vg-accent" />
 
       <rect x="316" y="88" width="112" height="114" rx="6" fill="currentColor" fillOpacity="0.07" />
 
@@ -85,7 +85,7 @@ function AppVignette() {
       <rect x="196" y="224" width="70" height="6" rx="2" fill="currentColor" fillOpacity="0.14" />
 
       <path d="M168 262 H312" {...hair} />
-      <rect x="199" y="274" width="22" height="4" rx="2" fill={ACCENT} />
+      <rect x="199" y="274" width="22" height="4" rx="2" fill={ACCENT} className="vg-accent" />
       <rect x="229" y="274" width="22" height="4" rx="2" fill="currentColor" fillOpacity="0.2" />
       <rect x="259" y="274" width="22" height="4" rx="2" fill="currentColor" fillOpacity="0.2" />
     </Frame>
@@ -101,7 +101,7 @@ function SaasVignette() {
       <path d="M148 76 H456" {...hair} />
 
       <rect x="44" y="52" width="52" height="8" rx="2" fill="currentColor" fillOpacity="0.3" />
-      <rect x="44" y="98" width="84" height="9" rx="2" fill={ACCENT} />
+      <rect x="44" y="98" width="84" height="9" rx="2" fill={ACCENT} className="vg-accent" />
       <rect x="44" y="122" width="72" height="9" rx="2" fill="currentColor" fillOpacity="0.16" />
       <rect x="44" y="146" width="80" height="9" rx="2" fill="currentColor" fillOpacity="0.16" />
       <rect x="44" y="170" width="60" height="9" rx="2" fill="currentColor" fillOpacity="0.16" />
@@ -123,7 +123,12 @@ function SaasVignette() {
       <rect x="380" y="170" width="52" height="7" rx="2" fill="currentColor" fillOpacity="0.13" />
 
       {/* Usage figure — shape only, no axis values to misread as a claim. */}
-      <path d="M172 262 L212 246 L252 252 L292 228 L332 236 L372 214 L412 220" stroke={ACCENT} strokeWidth="2" />
+      <path
+        d="M172 262 L212 246 L252 252 L292 228 L332 236 L372 214 L412 220"
+        stroke={ACCENT}
+        strokeWidth="2"
+        className="vg-accent"
+      />
       <path d="M172 276 H432" {...hairSoft} />
     </Frame>
   );
@@ -158,8 +163,10 @@ function CrmVignette() {
         </g>
       ))}
       {/* The deal that advanced: outlined, in the stage it moved into. */}
-      <rect x="268" y="74" width="92" height="50" rx="6" stroke={ACCENT} strokeWidth="1.5" />
-      <rect x="280" y="88" width="46" height="6" rx="2" fill={ACCENT} fillOpacity="0.5" />
+      <g className="vg-accent">
+        <rect x="268" y="74" width="92" height="50" rx="6" stroke={ACCENT} strokeWidth="1.5" />
+        <rect x="280" y="88" width="46" height="6" rx="2" fill={ACCENT} fillOpacity="0.5" />
+      </g>
       <rect x="280" y="102" width="30" height="5" rx="2" fill="currentColor" fillOpacity="0.16" />
     </Frame>
   );
@@ -189,8 +196,10 @@ function AiVignette() {
       <path d="M280 242 H316 V160" {...hair} />
 
       {/* The human review gate — the part that keeps automation honest. */}
-      <rect x="348" y="138" width="84" height="44" rx="6" stroke={ACCENT} strokeWidth="1.5" />
-      <rect x="360" y="156" width="48" height="7" rx="2" fill={ACCENT} fillOpacity="0.55" />
+      <g className="vg-accent">
+        <rect x="348" y="138" width="84" height="44" rx="6" stroke={ACCENT} strokeWidth="1.5" />
+        <rect x="360" y="156" width="48" height="7" rx="2" fill={ACCENT} fillOpacity="0.55" />
+      </g>
     </Frame>
   );
 }
@@ -223,7 +232,7 @@ function DesignVignette() {
       {/* The palette, as the brand actually defines it. */}
       <rect x="256" y="206" width="42" height="60" rx="4" fill="#141414" stroke="currentColor" strokeOpacity="0.25" />
       <rect x="306" y="206" width="42" height="60" rx="4" fill="#4A4A4A" />
-      <rect x="356" y="206" width="42" height="60" rx="4" fill={ACCENT} />
+      <rect x="356" y="206" width="42" height="60" rx="4" fill={ACCENT} className="vg-accent" />
       <rect x="406" y="206" width="30" height="60" rx="4" fill="#5FD0FF" />
     </Frame>
   );

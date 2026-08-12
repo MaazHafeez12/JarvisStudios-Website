@@ -1,16 +1,51 @@
 import Link from "next/link";
 
 /**
- * The source logo (public/logo.svg) has a black background baked in and
- * can't safely be made transparent without a proper vector redraw — see
- * docs/DESIGN.md §2.1 and §10. Interim fix: contain it in a fixed-size
- * rounded box so it reads correctly on both light and dark nav/footer
- * backgrounds without touching the source file.
+ * The Jarvis Studios monogram, inlined.
  *
- * Loaded as a plain <img> (not inlined) so the browser fetches and caches
- * it once across all pages, rather than bundling all ~250KB of its
- * auto-traced path data into the JS bundle.
+ * This used to be an <img src="/logo.svg"> contained inside a fixed black
+ * rounded box. Both of those existed for the same reason: the old asset was
+ * ~250KB of auto-traced path data with a black rectangle baked in, which
+ * could not safely be made transparent by hand (docs/DESIGN.md §2.1), and was
+ * far too heavy to inline. The clean redraw closes docs/DESIGN.md §10, and
+ * with it both workarounds go:
+ *
+ *  - **Inlined rather than fetched.** Three polygons is well under the weight
+ *    of the extra request it replaces, and inlining is what makes the next
+ *    point possible at all.
+ *  - **The "J" is `currentColor`, so the mark follows the theme.** An SVG
+ *    referenced through <img> is an isolated document — `currentColor` there
+ *    resolves against the SVG's own root, not the page — so a themed mark is
+ *    only reachable inline. The redraw ships its "J" white, which is correct
+ *    for a standalone brand asset and invisible on this site's light surface.
+ *  - **No container, and the real aspect ratio.** The old box cropped a
+ *    square out of the mark with `object-cover`; the mark is 4:3.
+ *
+ * The blue stays literal rather than `--accent`: `--accent` darkens to
+ * brand-800 in light mode for WCAG contrast on text, and a logo is not text.
+ * Per DESIGN.md §2.1 the white/blue split between the letterforms is the
+ * mark's signature detail and must never be swapped.
  */
+function LogoMark() {
+  return (
+    <svg
+      viewBox="0 0 285.06 214.44"
+      className="h-9 w-auto text-[--text-primary]"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <polygon
+        fill="#00ADEF"
+        points="285.06 75.65 285.06 0 155.72 0 155.72 101.36 156.77 101.85 156.77 102.25 232.01 138.62 232.01 173.44 155.72 138.79 155.72 214.44 285.06 214.44 285.06 113.08 284 112.59 284 112.19 208.77 75.83 208.77 41.01 285.06 75.65"
+      />
+      <g fill="currentColor">
+        <polygon points="90.33 171.81 53.05 171.81 53.05 150.23 0 150.23 0 171.81 0 214.36 0 214.44 53.05 214.44 53.05 214.36 90.33 214.36 90.33 214.44 143.38 214.44 143.38 214.36 143.38 171.81 143.38 107.22 90.33 107.22 90.33 171.81" />
+        <polygon points="90.33 0 34.39 0 34.39 42.56 90.33 42.56 90.33 64.67 143.38 64.67 143.38 42.56 143.38 0 90.33 0" />
+      </g>
+    </svg>
+  );
+}
+
 export function Logo() {
   return (
     <Link
@@ -18,18 +53,7 @@ export function Logo() {
       className="flex items-center gap-2 rounded-md"
       aria-label="Jarvis Studios — home"
     >
-      <span className="block h-9 w-9 overflow-hidden rounded-md">
-        {/* eslint-disable-next-line @next/next/no-img-element -- next/image
-            has nothing to optimize on an SVG, and the docblock above explains
-            why this stays an out-of-bundle fetch. */}
-        <img
-          src="/logo.svg"
-          alt=""
-          width={36}
-          height={36}
-          className="h-full w-full object-cover"
-        />
-      </span>
+      <LogoMark />
       <span className="font-display text-base font-semibold tracking-tight text-[--text-primary]">
         Jarvis Studios
       </span>
