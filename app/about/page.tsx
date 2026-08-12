@@ -25,8 +25,14 @@ export default function AboutPage() {
 
       <section className="border-t border-[--border] px-6 py-16">
         <div className="mx-auto max-w-4xl space-y-12">
+          {/* Slide from the left rather than up: each row *is* a horizontal
+              construction — the 01/02/03 marker, then the text — so arriving
+              along that axis lands the number first and reads in the same
+              direction the eye already travels. Vertical reveals on a
+              numbered list make the markers bob independently of the rule
+              they're meant to sit against. */}
           {DIFFERENTIATORS.map((d, i) => (
-            <Reveal key={d.title} delay={i * 0.08}>
+            <Reveal key={d.title} delay={i * 0.08} from="left">
               <div className="flex flex-col gap-2 sm:flex-row sm:gap-8">
                 <span className="font-mono text-sm text-[--accent] sm:w-12 sm:shrink-0">
                   0{i + 1}

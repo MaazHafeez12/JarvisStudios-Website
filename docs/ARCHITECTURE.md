@@ -134,7 +134,7 @@ jarvis-studios-website/
 │   ├── ContactForm.tsx             # Client component: form state, client-side validation, calls /api/leads
 │   ├── Nav.tsx
 │   ├── Footer.tsx
-│   ├── ServiceCard.tsx
+│   ├── services/ServiceTour.tsx     # Client component: homepage scroll-linked service tour
 │   ├── CaseStudyCard.tsx
 │   └── ui/                         # Low-level, reusable primitives (Button, Input, TextArea, ErrorText)
 │

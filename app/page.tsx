@@ -3,7 +3,8 @@ import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { HeroVisual } from "@/components/hero/HeroVisual";
 import { Marquee } from "@/components/ui/Marquee";
-import { ServiceCard } from "@/components/ServiceCard";
+import { ServiceTour } from "@/components/services/ServiceTour";
+import { ServiceVignette } from "@/components/services/ServiceVignette";
 import { SERVICES } from "@/content/services";
 
 export default function HomePage() {
@@ -40,19 +41,25 @@ export default function HomePage() {
         </Reveal>
       </HeroVisual>
 
-      {/* Service summary */}
-      <section className="border-t border-[--border] px-6 py-20">
+      {/* Service summary — a scroll-linked pinned tour rather than a card
+          grid (docs/MOTION_REDESIGN.md §5.5). The vignettes are rendered
+          here, on the server, and passed to the client component as slots so
+          content/services.ts and ServiceVignette.tsx stay out of the client
+          bundle. */}
+      <section
+        id="what-we-do"
+        className="scroll-mt-24 border-t border-[--border] px-6 py-20"
+      >
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-2xl font-semibold">What we do</h2>
           </Reveal>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {SERVICES.map((service, i) => (
-              <Reveal key={service.id} delay={i * 0.08}>
-                <ServiceCard service={service} />
-              </Reveal>
+          <ServiceTour
+            services={SERVICES}
+            visuals={SERVICES.map((service) => (
+              <ServiceVignette key={service.id} service={service.id} />
             ))}
-          </div>
+          />
         </div>
       </section>
 
@@ -122,17 +129,19 @@ export default function HomePage() {
           low-commitment path, so it shouldn't come between the featured result
           and the ask. */}
       <section className="border-t border-[--border] px-6 py-12">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
-          <p className="text-sm text-[--text-secondary]">
-            Notes on process and engineering decisions.
-          </p>
-          <Link
-            href="/insights"
-            className="text-sm font-medium text-[--text-secondary] underline decoration-[--border] underline-offset-4 transition-colors duration-150 ease-confident hover:text-[--text-primary]"
-          >
-            Read our insights
-          </Link>
-        </div>
+        <Reveal>
+          <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
+            <p className="text-sm text-[--text-secondary]">
+              Notes on process and engineering decisions.
+            </p>
+            <Link
+              href="/insights"
+              className="text-sm font-medium text-[--text-secondary] underline decoration-[--border] underline-offset-4 transition-colors duration-150 ease-confident hover:text-[--text-primary]"
+            >
+              Read our insights
+            </Link>
+          </div>
+        </Reveal>
       </section>
     </main>
   );

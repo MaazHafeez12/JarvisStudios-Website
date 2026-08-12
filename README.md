@@ -89,7 +89,8 @@ Full structure with per-file rationale is in [`docs/ARCHITECTURE.md`](./docs/ARC
 
 ```
 app/                 # Next.js App Router — pages, app/api/leads route, opengraph-image, sitemap.ts, robots.ts
-components/          # Nav, Footer, ContactForm, ProcessSteps, ServiceBlock, ServiceCard
+components/          # Nav, Footer, ContactForm, ProcessSteps, EngagementFacts
+components/services/ # ServiceTour (homepage scroll tour), ServiceExplorer, ServiceVignette
 components/ui/       # Logo, ThemeToggle, Reveal (scroll-reveal), Marquee
 content/             # Typed, in-repo content (services, process steps, differentiators) — not a database
 lib/                 # Types, validation, Supabase server client, notifications, rate limiting, sanitize
