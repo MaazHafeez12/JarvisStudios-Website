@@ -1,6 +1,6 @@
 # Motion & Animation Redesign — Phase 2
 
-**Status:** §5 complete. Hero built (Option C, §3–§4); §5.1's service cards retired into §5.5's homepage service tour; §5 item 2 (sitewide reveal consistency + `Reveal` direction variants), item 3 (mobile menu open/close), and item 4 (route cross-fade) all built. Remaining work is verification, not construction: the reduced-motion pass and mid-tier device profiling in §7 are both still unmet.
+**Status:** Complete. Hero built (Option C, §3–§4); §5.1's service cards retired into §5.5's homepage service tour; §5 items 2–4 (sitewide reveal consistency + `Reveal` direction variants, mobile menu open/close, route cross-fade) all built. **Every open question in §7 is now closed**, including the two long-standing verification gaps — reduced motion and mid-tier device profiling — both discharged in §7 with method and figures. The one residual, stated there and not papered over: CPU throttling cannot test GPU fill rate, so WebGL cost on real mobile silicon is still unmeasured.
 **Input:** [[DESIGN]] §3 (original motion system), current implementation in `app/`, `components/`
 **Related:** [[ARCHITECTURE]], [[SECURITY_AUDIT]] (perf/CWV constraints), recent commits `8529cda` (Lighthouse fixes), `f8a918c` (a11y/reduced-motion)
 **Last updated:** 2026-08-05
@@ -77,6 +77,8 @@ Given `8529cda` (Lighthouse/CWV fixes) and `f8a918c` (a11y) landed recently, thi
 - **Bundle:** dynamic import means the cost only hits visitors who reach the hero in a capable state (see §4.3) — visitors served the static fallback pay zero Three.js bytes.
 - **Target:** hold current Lighthouse scores from `8529cda`'s fix pass; treat any regression there as a blocker, not a follow-up.
 
+> **Profiled, and it passes (see §7).** The `useFrame` requirement above is met: a locked ~60fps with zero long animation frames and zero long tasks at 4× and 6× CPU throttle, on both the lite and full tiers. §7 carries the baseline definition, the full table, and the GPU caveat this method cannot address.
+
 ### 4.3 Fallback tiers
 Four states, not one on/off switch:
 
@@ -136,5 +138,25 @@ Decisions worth not relitigating, and the reasons that are not obvious from the 
 - ~~**Hero concept (§3):**~~ **Resolved** — Option C, built.
 - ~~**Custom 3D geometry scope:**~~ **Moot** — Option A wasn't chosen, so no letterform modelling is needed. The 2D logo redraw flagged in [[DESIGN]] §10 is still outstanding on its own merits.
 - ~~**GSAP addition:**~~ **Closed — not needed, not added.** The pinned scroll sequence in §5.5 was the strongest remaining case for it, and Motion's `useScroll` plus an `IntersectionObserver` and plain CSS covered it without a second scroll engine. §5 item 2's alternating-block choreography is still unbuilt and could still raise the question, but it is a weaker case than the one just settled: reopen only with a specific effect Motion demonstrably cannot express.
+- ~~**Device testing baseline:**~~ **Closed — baseline defined and met.** The blocker was never the measuring, it was that no target existed to measure against. Defined now, in §7's own suggested terms:
+
+  > **Mid-tier baseline.** 375×812, **4× CPU throttle**, 4 logical cores, Slow-4G. Low-end floor: 6× CPU. Measured against the **production** build (`next start`) — profiling `next dev` measures HMR and unminified React, not the site. Method: headless Chrome over CDP, `Emulation.setCPUThrottlingRate` + `setHardwareConcurrencyOverride`, with a rAF frame-delta sampler and `PerformanceObserver` on `long-animation-frame` and `longtask` installed before page scripts run.
+
+  Results, §4.2's `useFrame` requirement first:
+
+  | Scenario | fps | p95 | worst | >50ms | LoAF |
+  |---|---|---|---|---|---|
+  | Hero idle — desktop, unthrottled (control) | 59.5 | 16.9 | 33.6 | 0 | 0 |
+  | Hero idle — **mid-tier baseline** (lite tier) | 60.0 | 16.8 | 16.9 | 0 | 0 |
+  | Hero idle — low-end floor, 6× CPU | 60.0 | 16.8 | 16.9 | 0 | 0 |
+  | Hero idle — **full tier**, desktop, 4× CPU | 59.8 | 16.8 | 33.2 | 0 | 0 |
+  | Tour scroll — mid-tier baseline | 55.6 | 33.3 | 66.6 | 4 | 4 (worst 65ms) |
+  | Tour scroll — full tier + 4× CPU (worst realistic) | 47.7 | 50.0 | 50.1 | 3 | 1 (worst 58ms) |
+
+  **§4.2's requirement is met.** The `useFrame` loop holds a locked 60fps with **zero** long animation frames and **zero** long tasks at 4× and even 6× throttle — the per-frame cost §4.2 named as "the realistic way this regresses INP" is not present. The structural work it credits (capped DPR, shared geometry/materials, no per-frame React state, loop parked off-screen) is doing its job.
+
+  The tour's scroll cost is the looser number and is still fine: worst frame 66ms and worst LoAF 65ms, an order of magnitude inside INP's 200ms "good" threshold, with no long tasks at all. The dropped frames are paint on a large sticky area under a 4× handicap, not script — consistent with the design, where the only per-scroll JS is one motion value written to a composited transform and an observer firing five times.
+
+  **What this does not cover, and no amount of CDP will:** throttling applies to the CPU, not the GPU. Fill rate and shader cost for the WebGL hero on real mobile silicon remain untested, as does thermal behaviour over time. If the hero ever gains post-processing or a higher shard count, that is the axis that will break first and this method will not see it coming.
 - ~~**Reduced-motion verification:**~~ **Closed.** Long assumed to need a manual OS-level toggle; it does not. `Emulation.setEmulatedMedia` over CDP sets `prefers-reduced-motion: reduce` directly, and headless Chrome driven from a throwaway Node script (built-in `WebSocket`, no project dependency) confirmed the §5.5 fallback end to end — stage `display: none`, rail unsnapped and `block`, panels `static` at `min-height: 0`, all six carrying their own vignette, no horizontal overflow, no zero-height panel. Use that method for any future reduced-motion claim rather than asserting the CSS rule exists and hoping.
 - **Device testing baseline:** still open, and now the main gap in §4.2's verification. Note the headless-Chrome method above does **not** touch it: a desktop GPU says nothing about frame cost on a mid-tier phone. The hero's structural perf work is done and verifiable by inspection (capped DPR, shared geometry/materials, no per-frame React state, opaque materials, render loop parked off-screen), and the bundle claim is confirmed — the Three.js chunk is absent from the prerendered homepage HTML. But the §4.2 requirement that the `useFrame` loop "must be profiled on a mid-tier device before ship" has **not** been met: it needs a concrete target (e.g. "Moto G-class Android, 4x CPU throttle in DevTools") before it's a bar anything can be measured against. Treat that profiling pass as outstanding.
