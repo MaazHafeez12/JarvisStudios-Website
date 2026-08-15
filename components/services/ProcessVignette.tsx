@@ -1,123 +1,141 @@
 import type { ProcessStepId } from "@/content/process";
+import {
+  ACCENT,
+  ACCENT_TEXT,
+  Frame,
+  Glyph,
+  Label,
+  SceneImage,
+  Surface,
+  TextRun,
+  hair,
+  hairSoft,
+} from "./vignette-kit";
 
 // Authored scenes for the four process steps — the visual half of the
 // /services timeline (docs/MOTION_REDESIGN.md §5.7).
 //
 // Same construction and the same rules as ServiceVignette.tsx, deliberately:
 // one frame, one stroke weight, one accent, so ten scenes down this page read
-// as one family rather than two.
+// as one family rather than two. Both files draw from vignette-kit.tsx.
 //
 // PRODUCT.md:58 records that no client screenshots, product screenshots or
 // photography of any kind exist, and PRODUCT.md:61 that imagery for this site
 // is to be *authored* as illustrative compositions, clearly generic rather
 // than presented as delivered work. These therefore show the kind of artifact
-// each stage produces, drawn as structure only. No invented client names, no
-// invented metrics, no axis values that could be misread as a claim — the
-// Launch monitoring line in particular is shape without scale, the same call
-// SaasVignette made.
+// each stage produces. No invented client names, no invented metrics, no axis
+// values that could be misread as a claim — the Launch monitoring line in
+// particular is shape without scale, the same call SaasVignette made.
 //
 // ANIMATION. Each scene assembles when its layer becomes active. Membership
 // of `.pv-1` / `.pv-2` / `.pv-3` sets the order (0 / 90 / 180ms) and the one
 // `.vg-accent` element lands last at 300ms — reusing ServiceVignette's accent
 // class rather than inventing a second vocabulary for the same idea. All of
-// that is CSS keyed on `[data-state="active"]`, in app/globals.css.
+// that is CSS keyed on `[data-state="active"]`, in app/globals.css. Keep new
+// elements inside one of those three groups or they arrive unsequenced.
 
-const ACCENT = "#00ADEF";
-
-/** Shared canvas. Same 3:2 and inset as ServiceVignette's Frame. */
-function Frame({ children }: { children: React.ReactNode }) {
-  return (
-    <svg
-      viewBox="0 0 480 320"
-      className="h-full w-full text-[--text-secondary]"
-      fill="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      {children}
-    </svg>
-  );
-}
-
-const hair = { stroke: "currentColor", strokeOpacity: 0.32, strokeWidth: 1 };
-const hairSoft = { stroke: "currentColor", strokeOpacity: 0.18, strokeWidth: 1 };
+/** Real screenshots when they exist. Empty on purpose — see ServiceVignette. */
+const SCENE_IMAGES: Partial<Record<ProcessStepId, string>> = {};
 
 /** Three inputs feeding a short list of findings. One finding is marked. */
 function DiscoveryVignette() {
-  const inputs = [0, 1, 2];
+  const inputs = [
+    { glyph: "user", label: "Stakeholders" },
+    { glyph: "chart", label: "Analytics" },
+    { glyph: "inbox", label: "Support inbox" },
+  ] as const;
+  const findings = [104, 130, 182, 208];
 
   return (
-    <Frame>
+    <>
       <g className="pv-1">
-        {inputs.map((i) => (
-          <g key={i}>
-            <rect x="32" y={54 + i * 78} width="128" height="58" rx="6" {...hairSoft} />
-            <rect
-              x="48"
-              y={72 + i * 78}
-              width={72 - i * 12}
-              height="7"
-              rx="2"
-              fill="currentColor"
-              fillOpacity="0.26"
-            />
-            <rect
-              x="48"
-              y={87 + i * 78}
-              width={92 - i * 8}
-              height="6"
-              rx="2"
-              fill="currentColor"
-              fillOpacity="0.13"
-            />
-          </g>
-        ))}
+        {inputs.map((input, i) => {
+          const y = 54 + i * 78;
+          return (
+            <g key={input.label}>
+              <Surface x={32} y={y} width={128} height={58} rx={6} />
+              <Glyph name={input.glyph} x={46} y={y + 12} size={14} opacity={0.42} />
+              <Label x={68} y={y + 23} size={9.5} weight={600}>
+                {input.label}
+              </Label>
+              <TextRun x={46} y={y + 34} width={96 - i * 8} />
+              <TextRun x={46} y={y + 45} width={68 + i * 10} height={5} opacity={0.12} />
+            </g>
+          );
+        })}
       </g>
 
       {/* The three inputs converging on one read of the problem. */}
       <g className="pv-2">
-        {inputs.map((i) => (
-          <path key={i} d={`M160 ${83 + i * 78} H200 V161 H240`} {...hair} />
+        {inputs.map((input, i) => (
+          <path key={input.label} d={`M160 ${83 + i * 78} H200 V161 H240`} {...hair} />
         ))}
       </g>
 
       <g className="pv-3">
+        <Label x={264} y={48} size={8.5} tone="muted" tracking={1}>
+          FINDINGS
+        </Label>
         <path d="M264 62 H448" {...hair} />
-        <rect x="264" y="80" width="120" height="8" rx="2" fill="currentColor" fillOpacity="0.3" />
+        <Label x={264} y={88} size={12} weight={600} tone="primary">
+          What&rsquo;s actually in the way
+        </Label>
 
-        <rect x="264" y="112" width="184" height="6" rx="2" fill="currentColor" fillOpacity="0.15" />
-        <rect x="264" y="130" width="152" height="6" rx="2" fill="currentColor" fillOpacity="0.15" />
+        {findings.map((y, i) => (
+          <g key={y}>
+            <Glyph name="check" x={264} y={y - 9} size={11} opacity={0.28} />
+            <TextRun x={282} y={y - 5} width={[166, 134, 148, 112][i]} />
+          </g>
+        ))}
 
         {/* The finding that decides the shape of the work. */}
         <g className="vg-accent">
-          <rect x="256" y="150" width="2" height="22" rx="1" fill={ACCENT} />
-          <rect x="264" y="158" width="168" height="6" rx="2" fill={ACCENT} fillOpacity="0.55" />
+          <rect x="256" y="142" width="192" height="28" rx="5" fill={ACCENT} fillOpacity="0.1" />
+          <rect x="256" y="142" width="3" height="28" rx="1.5" fill={ACCENT} />
+          <Glyph name="check" x={268} y={150} size={11} opacity={1} color={ACCENT_TEXT} />
+          <Label x={286} y={160} size={9} weight={600} tone="accent">
+            The one that changes scope
+          </Label>
         </g>
-
-        <rect x="264" y="186" width="140" height="6" rx="2" fill="currentColor" fillOpacity="0.15" />
-        <rect x="264" y="204" width="176" height="6" rx="2" fill="currentColor" fillOpacity="0.15" />
-        <rect x="264" y="222" width="112" height="6" rx="2" fill="currentColor" fillOpacity="0.15" />
       </g>
-    </Frame>
+    </>
   );
 }
 
 /** Two artboards and the flow between them. The reviewed one is outlined. */
 function DesignVignette() {
-  return (
-    <Frame>
-      <g className="pv-1">
-        <rect x="28" y="52" width="176" height="216" rx="8" {...hairSoft} />
-        <path d="M28 84 H204" {...hairSoft} />
-        <rect x="44" y="64" width="44" height="7" rx="2" fill="currentColor" fillOpacity="0.2" />
+  const artboard = (x: number, state: string, heading: string) => (
+    <>
+      <Surface x={x} y={52} width={176} height={216} rx={8} />
+      <path d={`M${x} 84 H${x + 176}`} {...hairSoft} />
+      <Label x={x + 16} y={73} size={9} tone="muted">
+        {state}
+      </Label>
 
-        <rect x="44" y="104" width="104" height="10" rx="2" fill="currentColor" fillOpacity="0.28" />
-        <rect x="44" y="124" width="76" height="10" rx="2" fill="currentColor" fillOpacity="0.28" />
-        <rect x="44" y="152" width="144" height="6" rx="2" fill="currentColor" fillOpacity="0.14" />
-        <rect x="44" y="166" width="120" height="6" rx="2" fill="currentColor" fillOpacity="0.14" />
-        <rect x="44" y="192" width="64" height="20" rx="4" {...hair} />
-        <rect x="44" y="228" width="144" height="24" rx="4" fill="currentColor" fillOpacity="0.06" />
-      </g>
+      <Label x={x + 16} y={116} size={13} weight={600} tone="primary">
+        {heading}
+      </Label>
+      <TextRun x={x + 16} y={128} width={144} />
+      <TextRun x={x + 16} y={142} width={112} />
+
+      <Surface x={x + 16} y={162} width={64} height={20} rx={4} level="inset" border="none" />
+      <Label x={x + 48} y={176} size={8} weight={600} anchor="middle" tone="muted">
+        Action
+      </Label>
+
+      <Surface x={x + 16} y={196} width={144} height={56} rx={5} level="inset" border="none" />
+      <circle cx={x + 44} cy={216} r="7" fill="currentColor" fillOpacity="0.18" />
+      <path
+        d={`M${x + 16} 252 L${x + 56} 218 L${x + 84} 238 L${x + 108} 222 L${x + 160} 252 Z`}
+        fill="currentColor"
+        fillOpacity="0.14"
+      />
+    </>
+  );
+
+  return (
+    <>
+      <g className="pv-1">{artboard(28, "Draft", "Homepage")}</g>
 
       {/* Review, then the next state. */}
       <g className="pv-2">
@@ -125,44 +143,63 @@ function DesignVignette() {
         <path d="M268 154 L276 160 L268 166" {...hair} />
       </g>
 
-      <g className="pv-3">
-        <rect x="276" y="52" width="176" height="216" rx="8" {...hairSoft} />
-        <path d="M276 84 H452" {...hairSoft} />
-        <rect x="292" y="64" width="44" height="7" rx="2" fill="currentColor" fillOpacity="0.2" />
-
-        <rect x="292" y="104" width="120" height="10" rx="2" fill="currentColor" fillOpacity="0.28" />
-        <rect x="292" y="124" width="88" height="10" rx="2" fill="currentColor" fillOpacity="0.28" />
-        <rect x="292" y="152" width="144" height="6" rx="2" fill="currentColor" fillOpacity="0.14" />
-        <rect x="292" y="166" width="104" height="6" rx="2" fill="currentColor" fillOpacity="0.14" />
-        <rect x="292" y="192" width="64" height="20" rx="4" {...hair} />
-        <rect x="292" y="228" width="144" height="24" rx="4" fill="currentColor" fillOpacity="0.06" />
-      </g>
+      <g className="pv-3">{artboard(276, "Signed off", "Homepage")}</g>
 
       {/* Signed off — the state the build is written against. */}
-      <rect
-        x="270"
-        y="46"
-        width="188"
-        height="228"
-        rx="10"
-        stroke={ACCENT}
-        strokeWidth="1.5"
-        className="vg-accent"
-      />
-    </Frame>
+      <g className="vg-accent">
+        <rect
+          x="270"
+          y="46"
+          width="188"
+          height="228"
+          rx="10"
+          stroke={ACCENT}
+          strokeWidth="1.5"
+        />
+        <rect x="362" y="60" width="82" height="18" rx="9" fill={ACCENT} fillOpacity="0.18" />
+        <Glyph name="check" x={370} y={64} size={10} opacity={1} color={ACCENT_TEXT} />
+        <Label x={386} y={73} size={8.5} weight={600} tone="accent">
+          Approved
+        </Label>
+      </g>
+    </>
   );
 }
 
 /** A commit spine beside the work it produced. One commit is in flight. */
 function BuildVignette() {
-  const commits = [72, 122, 172, 222, 272];
+  const commits = [
+    { y: 72, label: "Scaffold" },
+    { y: 122, label: "Feature" },
+    { y: 172, label: "In review" },
+    { y: 222, label: "Fixes" },
+    { y: 272, label: "Release" },
+  ];
+  // Code as shape, never as readable text — indent, then a "keyword" run and
+  // the rest of the line at a lower weight.
+  const code = [
+    [0, 26, 74],
+    [12, 34, 52],
+    [12, 30, 68],
+    [24, 22, 40],
+    [12, 28, 46],
+    [0, 36, 86],
+    [12, 24, 62],
+    [12, 30, 38],
+    [0, 32, 70],
+  ];
 
   return (
-    <Frame>
+    <>
       <g className="pv-1">
         <path d="M76 56 V284" {...hair} />
-        {commits.map((y) => (
-          <circle key={y} cx="76" cy={y} r="5" fill="currentColor" fillOpacity="0.22" />
+        {commits.map((commit) => (
+          <g key={commit.y}>
+            <circle cx="76" cy={commit.y} r="5" fill="currentColor" fillOpacity="0.22" />
+            <Label x={64} y={commit.y + 3} size={8} anchor="end" tone="muted">
+              {commit.label}
+            </Label>
+          </g>
         ))}
         {/* One branch off the spine and back — iteration, not a straight line. */}
         <path d="M76 122 H112 V222 H76" {...hairSoft} />
@@ -170,48 +207,47 @@ function BuildVignette() {
       </g>
 
       <g className="pv-2">
-        <rect x="164" y="56" width="288" height="228" rx="8" {...hairSoft} />
+        <Surface x={164} y={56} width={288} height={228} rx={8} />
         <path d="M164 88 H452" {...hairSoft} />
-        <rect x="180" y="68" width="52" height="7" rx="2" fill="currentColor" fillOpacity="0.2" />
+        <Label x={180} y={77} size={9} weight={600} tone="primary">
+          index.tsx
+        </Label>
+        <Label x={244} y={77} size={9} tone="muted">
+          styles.css
+        </Label>
       </g>
 
-      {/* Indented line lengths: code as shape, never as readable text. */}
       <g className="pv-3">
-        {[
-          [180, 108, 132],
-          [196, 126, 96],
-          [196, 144, 116],
-          [212, 162, 72],
-          [196, 180, 88],
-          [180, 198, 148],
-          [196, 216, 104],
-          [196, 234, 76],
-          [180, 252, 120],
-        ].map(([x, y, w]) => (
-          <rect
-            key={`${x}-${y}`}
-            x={x}
-            y={y}
-            width={w}
-            height="6"
-            rx="2"
-            fill="currentColor"
-            fillOpacity="0.14"
-          />
-        ))}
+        {code.map(([indent, keyword, rest], i) => {
+          const y = 112 + i * 18;
+          return (
+            <g key={y}>
+              <Label x={186} y={y + 5} size={7.5} anchor="end" tone="muted">
+                {i + 1}
+              </Label>
+              <TextRun x={198 + indent} y={y} width={keyword} opacity={0.26} />
+              <TextRun x={198 + indent + keyword + 8} y={y} width={rest} opacity={0.13} />
+            </g>
+          );
+        })}
       </g>
 
-      <circle cx="76" cy="172" r="7" fill={ACCENT} className="vg-accent" />
-    </Frame>
+      <g className="vg-accent">
+        <circle cx="76" cy="172" r="7" fill={ACCENT} />
+        <Label x={64} y={175} size={8} weight={600} anchor="end" tone="accent">
+          In review
+        </Label>
+      </g>
+    </>
   );
 }
 
 /** What shipped, and the fact that someone is still watching it. */
 function LaunchVignette() {
   return (
-    <Frame>
+    <>
       <g className="pv-1">
-        <rect x="88" y="40" width="304" height="164" rx="8" {...hair} />
+        <Surface x={88} y={40} width={304} height={164} rx={8} border="hair" />
         <path d="M88 70 H392" {...hair} />
         <circle cx="106" cy="55" r="3" fill="currentColor" fillOpacity="0.26" />
         <circle cx="118" cy="55" r="3" fill="currentColor" fillOpacity="0.26" />
@@ -219,29 +255,44 @@ function LaunchVignette() {
       </g>
 
       <g className="pv-2">
-        <rect x="112" y="94" width="140" height="10" rx="2" fill="currentColor" fillOpacity="0.3" />
-        <rect x="112" y="114" width="100" height="10" rx="2" fill="currentColor" fillOpacity="0.3" />
-        <rect x="112" y="140" width="168" height="6" rx="2" fill="currentColor" fillOpacity="0.14" />
-        <rect x="112" y="154" width="132" height="6" rx="2" fill="currentColor" fillOpacity="0.14" />
-        <rect x="296" y="94" width="72" height="66" rx="6" fill="currentColor" fillOpacity="0.07" />
+        <Label x={112} y={108} size={14} weight={600} tone="primary">
+          You&rsquo;re live.
+        </Label>
+        <TextRun x={112} y={122} width={168} />
+        <TextRun x={112} y={136} width={132} />
+        <Surface x={112} y={158} width={72} height={22} rx={4} level="inset" border="none" />
+        <Label x={148} y={173} size={8.5} weight={600} anchor="middle" tone="muted">
+          View site
+        </Label>
+        <Surface x={292} y={92} width={76} height={72} rx={5} level="inset" border="none" />
+        <circle cx="312" cy="112" r="7" fill="currentColor" fillOpacity="0.18" />
+        <path d="M292 164 L322 132 L344 150 L368 132 L368 164 Z" fill="currentColor" fillOpacity="0.14" />
       </g>
 
       {/* Still being watched after handoff. Shape only — no axis, no values,
           nothing that could be read as a result we are claiming. */}
       <g className="pv-3">
-        <path d="M88 264 H392" {...hairSoft} />
+        <Label x={88} y={234} size={9} weight={600}>
+          Uptime and errors
+        </Label>
         <path
-          d="M88 250 L140 240 L192 246 L244 230 L296 236 L344 222 L392 228"
+          d="M88 264 L140 254 L192 260 L244 244 L296 250 L344 236 L392 242"
           {...hair}
         />
-        <rect x="88" y="284" width="96" height="6" rx="2" fill="currentColor" fillOpacity="0.13" />
+        <path d="M88 276 H392" {...hairSoft} />
+        <Label x={88} y={294} size={8.5} tone="muted">
+          Watched after handoff
+        </Label>
       </g>
 
       <g className="vg-accent">
-        <rect x="316" y="46" width="60" height="18" rx="9" fill={ACCENT} fillOpacity="0.18" />
-        <circle cx="329" cy="55" r="4" fill={ACCENT} />
+        <rect x="306" y="46" width="70" height="18" rx="9" fill={ACCENT} fillOpacity="0.18" />
+        <circle cx="319" cy="55" r="4" fill={ACCENT} />
+        <Label x={330} y={58} size={8.5} weight={600} tone="accent">
+          Live
+        </Label>
       </g>
-    </Frame>
+    </>
   );
 }
 
@@ -253,6 +304,8 @@ const VIGNETTES: Record<ProcessStepId, () => React.JSX.Element> = {
 };
 
 export function ProcessVignette({ step }: { step: ProcessStepId }) {
+  const src = SCENE_IMAGES[step];
   const Vignette = VIGNETTES[step];
-  return <Vignette />;
+
+  return <Frame>{src ? <SceneImage src={src} /> : <Vignette />}</Frame>;
 }
