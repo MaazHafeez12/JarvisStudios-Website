@@ -7,6 +7,14 @@
       "runtimeArgs": ["run", "dev"],
       "port": 3000,
       "autoPort": true
+    },
+    {
+      "//": "Production preview. docs/MOTION_REDESIGN.md §7 requires motion and perf claims to be measured against `next start`, not dev — the dev server's uncompiled chunks and HMR runtime make frame timings meaningless. Run `npm run build` first.",
+      "name": "jarvis-studios-web-prod",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["next", "start", "-p", "3210"],
+      "port": 3210,
+      "autoPort": true
     }
   ]
 }
