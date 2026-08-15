@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { motion, useScroll } from "motion/react";
+import { useScrollProgress } from "@/lib/use-scroll-progress";
 import type { Service } from "@/content/services";
 
 // Homepage service tour (docs/MOTION_REDESIGN.md §5.5) — the six service
@@ -52,17 +52,22 @@ export function ServiceTour({
   visuals: React.ReactNode[];
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
-  // Continuous channel — drives the progress rail only. Passing the motion
-  // value straight to `style` lets Motion write the transform outside React:
-  // zero renders on scroll. Never route this through useMotionValueEvent +
-  // setState, and never animate the rail's `height` instead of `scaleY` —
-  // either one turns a composited effect into per-frame layout work.
-  const { scrollYProgress } = useScroll({
-    target: trackRef as React.RefObject<HTMLElement>,
-    offset: ["start start", "end end"],
-  });
+  // Continuous channel — `--p`, 0 to 1 across the track, written onto the
+  // stage (docs/MOTION_REDESIGN.md §5.8). It drives the progress rail and the
+  // active scene's drift, both as composited transforms in CSS with nothing
+  // rendering on scroll.
+  //
+  // This used to be Motion's useScroll feeding a motion value into the rail's
+  // `scaleY`. It is the shared hook now for two reasons: the site has one
+  // scroll-progress mechanism rather than two, and the same number is
+  // available to every element under the stage instead of to the one
+  // component Motion was told to style. Never animate the rail's `height`
+  // instead of `scaleY` — that turns a composited effect into per-frame
+  // layout work.
+  useScrollProgress(trackRef, stageRef);
 
   // Discrete channel — which vignette is showing. A 2px band at the pinned
   // stage's vertical centre; panels tile the track contiguously at `lg`, so
@@ -207,13 +212,27 @@ export function ServiceTour({
           vignettes stay aria-hidden at source too: they deliberately carry no
           real content (ServiceVignette.tsx:5-11), so describing them would
           mean writing alt text for a fabricated interface. */}
-      <div aria-hidden="true" className="tour-stage pointer-events-none">
+      <div
+        ref={stageRef}
+        aria-hidden="true"
+        className="tour-stage pointer-events-none"
+        style={{ "--n": services.length } as React.CSSProperties}
+      >
         <div className="tour-stage-card">
           {visuals.map((visual, i) => (
             <div
               key={services[i].id}
               className="tour-layer"
               data-state={i < active ? "past" : i > active ? "future" : "active"}
+              // Its slice of the track, for the continuous drift in CSS. The
+              // slice is approximate — the track's scroll range is
+              // (n x panel) - 100svh, not n x panel, so a layer's local
+              // progress runs slightly ahead of its panel at the ends. That
+              // drift is the reason the *discrete* channel below is an
+              // observer rather than arithmetic; for a few px of travel it is
+              // invisible, and paying for exactness here would mean baking
+              // panel and nav height into this file.
+              style={{ "--i": i } as React.CSSProperties}
             >
               {visual}
             </div>
@@ -223,10 +242,7 @@ export function ServiceTour({
         {/* Position indicator, not task progress — deliberately not
             role="progressbar", which would announce on every scroll tick. */}
         <span className="tour-rail">
-          <motion.span
-            className="tour-rail-fill"
-            style={{ scaleY: scrollYProgress }}
-          />
+          <span className="tour-rail-fill" />
         </span>
       </div>
     </div>

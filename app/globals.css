@@ -71,6 +71,540 @@ body {
   );
 }
 
+/* NOTE for anyone extending the pinned hero below. Closing this band as the
+   copy leaves looks like the obvious way to give the hero a second act — let
+   the field fill the space the headline vacated. It does nothing:
+   lib/hero-shards.ts distributes shards on an *annulus*, so the centre is
+   empty by construction and there is nothing behind the band to reveal. A
+   real second act needs new geometry (MOTION_REDESIGN.md §3 Option A, the
+   monogram resolve, is the obvious candidate) or new copy. That is why the
+   hero track below is short: it ends before it runs out of things to show. */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Scroll-scrub stages (docs/MOTION_REDESIGN.md §5.8).
+
+   The site's one scroll-scrub mechanism, shared by the hero, the thread film,
+   and both service tours. lib/use-scroll-progress.ts writes a single number
+   onto the pinned element — `--p`, the track's scroll progress from 0 to 1 —
+   and every derived value below is CSS arithmetic off that number. No JS
+   computes a transform, an opacity, or a colour.
+
+   THE REMAP CONVENTION. A beat is a sub-range of `--p`. To bring one in at
+   33% over a 5% fade:
+
+     --beat: clamp(0, calc((var(--p) - 0.33) / 0.05), 1);
+
+   To also take it out again by 58%, take the minimum of the ramp in and the
+   inverse of the ramp out — `min()` is the whole trick, and gives the
+   fade-in / hold / fade-out triangle:
+
+     --beat: min(
+       clamp(0, calc((var(--p) - 0.33) / 0.05), 1),
+       clamp(0, calc((0.58 - var(--p)) / 0.05), 1)
+     );
+
+   Then drive everything off that one value, so a beat's motion cannot
+   desynchronise from its own opacity:
+
+     opacity: var(--beat);
+     transform: translate3d(calc(42px * (1 - var(--beat))), 0, 0);
+
+   Sub-ranges are fractions of the track, not pixels, so changing a track's
+   `--len` retimes every beat in it proportionally instead of breaking them.
+
+   TWO TRIP HAZARDS, both silent:
+
+   1. `overflow: hidden` on any *ancestor* — body, #main-content, main — kills
+      `position: sticky` with no error and no warning, and the stage simply
+      scrolls away as if it were never pinned. Use `overflow-x: clip` if you
+      ever need to stop a sideways scroll. overflow on a *descendant* of the
+      pin is harmless, which is why .film-frame below can clip freely.
+   2. A stretched sticky grid item is exactly as tall as its container, so it
+      has zero room to travel and never appears to stick. Any stage that is a
+      grid child needs `align-self: start` (see .tour-stage).
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Registering `--p` as a number rather than leaving it an untyped string is
+   what makes the per-frame write cheap: the style system stores a parsed
+   number instead of re-tokenising a string on every frame, and calc() against
+   it can be folded. The initial value is also the no-JS, reduced-motion, and
+   pre-hydration state — every stage below is authored so that `--p: 0` is a
+   coherent resting frame, never a blank one. */
+@property --p {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+/* Baseline, and therefore also the reduced-motion, no-JS and Reader Mode
+   layout: the track collapses to its content and nothing pins. Every stage
+   that uses this must read completely in this state — see .film-* below,
+   where the beats become a plain stack under the poster. */
+.stage-track {
+  position: relative;
+}
+
+/* The film section runs full-bleed once it pins, so it carries no page
+   padding at the call site. In the stacked baseline that would put a
+   1440px-wide frame edge to edge with no gutters — so the track supplies the
+   content column that the section itself doesn't have, and the pinned path
+   below takes it straight back off. */
+.film-track {
+  max-width: 72rem;
+  margin-inline: auto;
+  padding: 5rem 1.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .film-track {
+    max-width: none;
+    margin-inline: 0;
+    padding: 0;
+  }
+
+  .stage-track {
+    /* svh, never dvh. dvh re-resolves as a mobile URL bar shows and hides,
+       which across an 800svh track means continuous reflow for the entire
+       scroll — and because --p is measured against offsetHeight, it would
+       also make progress itself jitter. svh resolves once to the smallest
+       viewport and never changes. vh first as a fallback for pre-svh
+       browsers: a slightly tall track is a far better failure than an
+       unparsed declaration. */
+    height: calc(var(--len, 400) * 1vh);
+    height: calc(var(--len, 400) * 1svh);
+  }
+
+  .stage-pin {
+    position: sticky;
+    /* Matches .tour-stage: clears the 69px nav by 24px and is inset by a
+       matching 24px at the bottom, so the pin is symmetric in the visible
+       area. Change --nav-h and every pinned surface on the site follows. */
+    top: calc(var(--nav-h) + 1.5rem);
+    height: calc(100vh - var(--nav-h) - 3rem);
+    height: calc(100svh - var(--nav-h) - 3rem);
+    /* A new stacking context per stage, so one stage's beats can never
+       interleave with another's. */
+    isolation: isolate;
+  }
+
+  /* Full-viewport variant for sections that run edge to edge under the nav
+     rather than sitting in the content column. */
+  .stage-pin--bleed {
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: clip;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Homepage hero (docs/MOTION_REDESIGN.md §4, §5.8).
+
+   Pinned: the copy rides out and the shard field disperses with it, then a
+   hairline draws across the emptied field as the seam into "What we do".
+
+   Baseline is the hero as it was before it pinned — a tall block with the
+   copy centred, nothing moving. That is what reduced motion, no JS and
+   Reader Mode get, and it is also the `--p: 0` frame, so the headline is
+   fully painted before a single scroll event fires.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.hero-pin {
+  min-height: 80vh;
+  padding-block: 6rem;
+}
+
+@media (min-width: 640px) {
+  .hero-pin {
+    padding-block: 8rem;
+  }
+}
+
+.hero-seam {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* A quarter of a screen of extra scroll, and no more. Two constraints meet
+     here. §2 records that the service tour already pushed the featured result
+     and the CTA about four screens down, so the hero must not add materially
+     to that. And the hero runs out of things to show: once the copy has
+     ridden out, all that is left is a field with a hole in its middle (see
+     the note on .hero-shard-mask above). Measured at 190 there was better
+     than a third of a screen of hollow at the end, which reads as a page
+     failing to load. The pin now releases while it still has something on it. */
+  .hero-track {
+    --len: 125;
+  }
+
+  .hero-pin {
+    min-height: 0;
+    padding-block: 0;
+  }
+
+  /* Out only, never in — see the LCP note in HeroVisual.tsx. At --p 0 this
+     resolves to opacity 1 and no transform, which is exactly the unscrubbed
+     hero. */
+  .hero-copy {
+    --out: clamp(0, calc(var(--p) / 0.62), 1);
+    opacity: calc(1 - var(--out));
+    transform: translate3d(0, calc(-72px * var(--out)), 0);
+    will-change: transform, opacity;
+  }
+
+  /* Drawn, not faded: scaleX from the left is the same gesture as
+     Hairline.tsx, so the hero closes with the rule the rest of the site
+     already uses to separate sections. */
+  .hero-seam {
+    display: block;
+    position: absolute;
+    left: 6vw;
+    right: 6vw;
+    bottom: 14vh;
+    height: 1px;
+    background: var(--border);
+    transform-origin: left;
+    /* Starts as the copy finishes leaving and completes at the release, so
+       the two halves of the close overlap rather than leaving a gap. */
+    transform: scaleX(clamp(0, calc((var(--p) - 0.45) / 0.55), 1));
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   The thread film — /services (docs/MOTION_REDESIGN.md §5.8).
+
+   A frame that starts as a card and grows into the viewport as the visitor
+   scrolls in, its corners melting from 34px to square as it fills, with four
+   beats of copy fading through beside it.
+
+   Baseline first, as always: the poster with the four beats stacked beneath
+   it, which is what reduced motion, no-JS, Reader Mode, and any constrained
+   device get. That is a complete section, not a degraded one — the film is
+   decorative and every claim the section makes is in the beat copy.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@property --enter {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+/* Per-beat sub-range, set inline by ThreadFilm.tsx. */
+@property --start {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --end {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+/* -1 for a beat on the left of the frame, 1 for the right. Multiplies the
+   slide-in offset, so one declaration serves both sides. */
+@property --side {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+/* Resolved beat visibility, 0 to 1. Every property of a beat is driven from
+   this one value so its motion cannot desynchronise from its own opacity. */
+@property --v {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
+/* Dark in both themes, deliberately — this is a cinema frame, not a surface.
+   Three things depend on it and all three break if it follows the theme: the
+   veil is a dark gradient, the beat copy is white so it stays legible over
+   arbitrary footage, and ThreadStill draws on currentColor. On the light
+   theme a themed frame gave grey hairlines on near-white with a grey vignette
+   over them, and white beat copy that vanished wherever it overhung the
+   frame. A film is dark; that is the simple version of all three. */
+.film-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  background: theme("colors.neutral.950");
+  /* ThreadStill draws entirely on currentColor, so this is the still's ink.
+     neutral.400 left the weave at roughly #3a3a3a on this ground — present in
+     a screenshot, invisible on a real display. */
+  color: theme("colors.neutral.200");
+}
+
+.film-still {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Stacked over the still, transparent until it has real frames. Without this
+   the element paints a black box over an authored drawing for as long as the
+   fetch takes — worse than showing no film at all. `data-ready` is set by
+   ScrubVideo on `loadeddata`; with no asset at the path it is never set, and
+   the still is simply what the section is. */
+.film-video {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+}
+
+.film-video[data-ready="true"] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .film-video {
+    transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* Only earns its place once the copy sits *over* the film. In the stacked
+   baseline the beats are below it on the page background. */
+.film-veil {
+  display: none;
+}
+
+.film-beats {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+.film-beat {
+  max-width: 34rem;
+}
+
+.film-intro {
+  margin-bottom: 2rem;
+}
+
+.film-progress {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Every child occupies the same grid cell, so the frame, the beats and the
+     intro stack without a single absolutely-positioned ancestor chain. */
+  .film-pin {
+    --enter: clamp(0, calc((var(--p) - 0.03) / 0.24), 1);
+    display: grid;
+    place-items: center;
+  }
+
+  .film-pin > * {
+    grid-area: 1 / 1;
+  }
+
+  /* Sits over the frame here rather than above it on the page, so it takes
+     the frame's colours, not the theme's. */
+  .film-intro {
+    z-index: 3;
+    margin-bottom: 0;
+    max-width: min(76vw, 34rem);
+    text-align: center;
+    color: theme("colors.neutral.0");
+    /* Leaves as the frame arrives. Reads the same --enter the frame does, so
+       the handoff is exact rather than two timings that drift apart. */
+    opacity: calc(1 - var(--enter));
+    transform: translate3d(0, calc(-28px * var(--enter)), 0);
+    pointer-events: none;
+  }
+
+  .film-intro p {
+    color: theme("colors.neutral.200");
+  }
+
+  .film-frame {
+    z-index: 1;
+    width: min(88vw, 1400px);
+    /* `translate` and `transform` are separate properties and compose in a
+       fixed order (translate, then rotate, then scale, then transform), so
+       the centring is not fighting the scale here. */
+    transform: scale(calc(0.72 + 0.28 * var(--enter)));
+    /* The corners melting away is the move. A frame that merely got bigger
+       would read as a zoom; losing its radius is what makes it stop being a
+       card and become the viewport. */
+    border-radius: calc(34px * (1 - var(--enter)));
+    border-color: color-mix(
+      in srgb,
+      var(--border) calc(100% * (1 - var(--enter))),
+      transparent
+    );
+    will-change: transform, border-radius;
+  }
+
+  .film-veil {
+    display: block;
+    z-index: 2;
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* Edges and lower third. The footage is authored but not authored
+       per-beat, so beat legibility cannot depend on what happens to be on
+       screen at that moment. */
+    background:
+      linear-gradient(
+        90deg,
+        rgb(0 0 0 / 0.34),
+        transparent 28%,
+        transparent 72%,
+        rgb(0 0 0 / 0.34)
+      ),
+      linear-gradient(transparent 55%, rgb(0 0 0 / 0.42));
+    opacity: var(--enter);
+  }
+
+  /* Exactly the frame's width, plus an inset. The beats are white so they
+     stay legible over footage, which means any part of one that overhangs the
+     frame is white copy on the page background — invisible on the light
+     theme. Matching the frame is what guarantees that cannot happen. */
+  .film-beats {
+    z-index: 4;
+    display: block;
+    position: relative;
+    width: min(88vw, 1400px);
+    height: min(49.5vw, 787px);
+    max-height: 100%;
+    margin-top: 0;
+    padding: 0 clamp(1.5rem, 3.5vw, 4rem);
+    pointer-events: none;
+  }
+
+  .film-beat {
+    position: absolute;
+    top: 50%;
+    width: min(34vw, 27rem);
+    max-width: none;
+    /* The fade-in / hold / fade-out triangle. min() of the two ramps is the
+       whole mechanism — see the remap convention in the .stage-* block. */
+    --fade: 0.05;
+    --v: min(
+      clamp(0, calc((var(--p) - var(--start)) / var(--fade)), 1),
+      clamp(0, calc((var(--end) - var(--p)) / var(--fade)), 1)
+    );
+    opacity: var(--v);
+    transform: translate3d(
+      calc(var(--side) * 42px * (1 - var(--v))),
+      calc(-50% + 14px * (1 - var(--v))),
+      0
+    );
+    will-change: transform, opacity;
+  }
+
+  .film-beat[data-side="left"] {
+    left: clamp(1.5rem, 3.5vw, 4rem);
+  }
+
+  .film-beat[data-side="right"] {
+    right: clamp(1.5rem, 3.5vw, 4rem);
+    text-align: right;
+  }
+
+  /* Copy over film needs the light value the veil is protecting, in both
+     themes — the frame is dark on every path. */
+  .film-beat h3 {
+    color: theme("colors.neutral.0");
+  }
+
+  .film-beat p {
+    color: theme("colors.neutral.200");
+  }
+
+  .film-progress {
+    display: block;
+    z-index: 5;
+    position: absolute;
+    top: clamp(1.5rem, 4vw, 3rem);
+    left: clamp(1rem, 3vw, 3rem);
+    right: clamp(1rem, 3vw, 3rem);
+    height: 1px;
+    background: var(--border);
+    opacity: var(--enter);
+  }
+
+  .film-progress-fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--accent);
+    transform-origin: left;
+    transform: scaleX(var(--p));
+  }
+
+  /* Blur on the beats is the one genuinely new item in the site's motion
+     vocabulary (docs/MOTION_REDESIGN.md §2, third amendment), so it is kept
+     small and confined to where the hardware can afford it: a full-width
+     filter on text is a per-frame raster cost, and below `lg` the frame is
+     nearly the whole viewport anyway, so the beats have nowhere to travel
+     from and the blur would be doing the work alone. */
+  @media (min-width: 1024px) {
+    .film-beat {
+      filter: blur(calc(4px * (1 - var(--v))));
+    }
+  }
+
+  @media (max-width: 1023.98px) {
+    /* A 16/9 frame at 88vw is 186px tall on a 375px phone — a strip across
+       the middle of an 812px screen, which reads as a banner rather than as
+       something the section is happening inside. The frame turns portrait
+       instead, so it fills the screen the way it fills a desktop viewport,
+       and the beats sit *within* it over the veil's lower gradient. */
+    /* Sized to the viewport rather than by ratio: a 3/4 box at 92vw is 460px
+       on a 375x812 phone, which leaves a third of the screen as page
+       background above and below and reads as a card again rather than as
+       something the section is happening inside. */
+    .film-frame {
+      width: 92vw;
+      height: 78svh;
+      aspect-ratio: auto;
+    }
+
+    /* Track the frame exactly, so `bottom` below is a fraction of the frame
+       rather than of the viewport — otherwise the beat lands past the frame's
+       lower edge, which is where white copy stops having a dark ground. */
+    .film-beats {
+      width: 92vw;
+      height: 78svh;
+    }
+
+    .film-beat {
+      top: auto;
+      /* Inside the frame's lower third, over the veil's bottom gradient. */
+      bottom: 8%;
+      width: auto;
+      /* One column at this width: there is no room for a left/right split, so
+         both sides read left-aligned and only the slide direction differs. */
+      text-align: left;
+      transform: translate3d(
+        calc(var(--side) * 24px * (1 - var(--v))),
+        calc(14px * (1 - var(--v))),
+        0
+      );
+    }
+
+    .film-beat[data-side="left"] {
+      right: clamp(1.5rem, 3.5vw, 4rem);
+    }
+
+    .film-beat[data-side="right"] {
+      left: clamp(1.5rem, 3.5vw, 4rem);
+      text-align: left;
+    }
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    Homepage service tour (docs/MOTION_REDESIGN.md §5.5).
 
@@ -261,13 +795,48 @@ body {
   background: var(--border);
 }
 
+/* Driven straight off `--p` rather than by Motion writing a motion value into
+   `style` (docs/MOTION_REDESIGN.md §5.8). One progress source for the whole
+   site, and the rail costs no client JS of its own. `scaleY`, never `height`:
+   the second is per-frame layout work for an identical result. */
 .tour-rail-fill {
   display: block;
   width: 100%;
   height: 100%;
   background: var(--accent);
   transform-origin: top;
-  transform: scaleY(0);
+  transform: scaleY(var(--p));
+}
+
+/* ── The continuous half of the handoff ──────────────────────────────────
+   The wipe between scenes is discrete and always was: one scene replaces
+   another on a 420ms clip-path. What was missing is that *between* wipes
+   nothing moved at all, so the section read as a slideshow advancing rather
+   than as one continuous move — a step, then a hold, then a step.
+
+   Each layer gets its own slice of the track as `--local`, and the active one
+   drifts a few pixels and gains half a percent of scale across it. Small on
+   purpose: this is meant to be felt rather than seen, and anything larger
+   starts competing with the wipe for attention. Transform only, so it stays
+   on the compositor. */
+.tour-layer {
+  --local: clamp(
+    0,
+    calc((var(--p) - var(--i) / var(--n)) * var(--n)),
+    1
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Every layer, not just the active one. Scoping it to [data-state="active"]
+     looks tighter and introduces a snap: at a handoff the outgoing layer
+     loses the rule while its --local is still ~1, so it jumps 9px back to
+     rest inside the sliver the wipe has not yet clipped away. Applied to all
+     three states the value is continuous in --p and nothing jumps. */
+  .tour-layer {
+    transform: translate3d(0, calc(-9px * var(--local)), 0)
+      scale(calc(1 + 0.006 * var(--local)));
+  }
 }
 
 /* Defensive: the stage is display:none on this path already, but a wipe must
@@ -429,16 +998,16 @@ body {
   background: var(--border);
 }
 
-/* Written by Motion as a composited scaleX, so it never touches layout and
-   never re-renders React. Animating `width` here instead would put layout
-   work on every scroll frame. */
+/* Driven off `--p` on the stage, like .tour-rail-fill — a composited scaleX
+   that never touches layout and never re-renders React. Animating `width`
+   here instead would put layout work on every scroll frame. */
 .ptour-rail-fill {
   display: block;
   width: 100%;
   height: 100%;
   background: var(--accent);
   transform-origin: left;
-  transform: scaleX(0);
+  transform: scaleX(var(--p));
 }
 
 .ptour-node {

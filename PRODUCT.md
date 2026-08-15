@@ -56,6 +56,7 @@ Deliberately thin, and future work must not fabricate around it:
 
 - **No real case studies.** The Work page is an intentional placeholder; the PRD's two planned case studies don't exist yet and client consent/format is unresolved.
 - **No client screenshots, product screenshots, or photography of any kind.** `public/` contains only fonts and the logo mark.
+  - **Amended:** `/services` now carries a scroll-scrubbed film section, and its resting frame is an authored SVG (`components/motion/ThreadStill.tsx`) in the same family as the ten vignette scenes. The footage slot behind it (`components/motion/ScrubVideo.tsx`) is wired but ships with an empty source ladder — no asset exists yet. When one is produced it is to be **abstract and authored**, like the still: it depicts nothing, claims nothing, and is not delivered work. This is not a relaxation of Principle 1 below. What that principle forbids is imagery presented *as evidence* — a screenshot standing in for a case study, a photograph implying a client. An abstract film is decoration, and the line to hold is that it stays abstract.
 - **No team bios.** Left as an honest placeholder rather than invented.
 - **No testimonials, client logos, metrics, awards, or press.**
 - **Confirmed by the user:** there is no real visual material for the six service lines. Imagery for them is to be authored as illustrative interface compositions, clearly generic rather than presented as delivered client work.

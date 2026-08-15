@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useScroll } from "motion/react";
 import * as THREE from "three";
 import { createShards, SHARD_COUNT, type Shard } from "@/lib/hero-shards";
 import type { HeroTier } from "@/lib/hero-capability";
@@ -176,11 +175,29 @@ function useIsLightTheme(): boolean {
   return isLight;
 }
 
+/**
+ * How far the field is allowed to disperse across the whole hero track.
+ *
+ * Capped well below 1 on purpose. The hero's only content is the copy and
+ * this field, and the copy has ridden out by the halfway mark — so a field
+ * that disperses fully leaves the last stretch of the pin as a blank page
+ * with a hairline on it, which reads as something failing to load rather than
+ * as a moment. Measured at 0.85 through the track it was exactly that: an
+ * empty viewport.
+ *
+ * At this value the field recedes to roughly two-thirds scale and drifts
+ * outward without leaving. The hero thins out; it never empties.
+ */
+const MAX_DISPERSE = 0.62;
+
 export default function HeroScene({
   containerRef,
+  progressRef,
   tier,
 }: {
   containerRef: React.RefObject<HTMLElement | null>;
+  /** Hero track progress 0→1, written by lib/use-scroll-progress.ts. */
+  progressRef: React.RefObject<number>;
   tier: Exclude<HeroTier, "static">;
 }) {
   const shards = useMemo(
@@ -190,12 +207,13 @@ export default function HeroScene({
   const isLight = useIsLightTheme();
   const pointer = useRef({ x: 0, y: 0 });
 
-  // Motion's useScroll rather than reading getBoundingClientRect per frame,
-  // which would force a layout on every single frame (§4.1).
-  const { scrollYProgress } = useScroll({
-    target: containerRef as React.RefObject<HTMLElement>,
-    offset: ["start start", "end start"],
-  });
+  // Progress arrives as a ref written by the site's shared scroll hook
+  // (docs/MOTION_REDESIGN.md §5.8) rather than from a useScroll of this
+  // component's own. Two reasons: the hero is now a pinned track whose
+  // progress the CSS also needs, so there is one source instead of two
+  // measuring the same element; and reading a ref in useFrame is cheaper than
+  // a motion value's getter. Neither reads layout per frame, which is the
+  // property that actually mattered (§4.1).
 
   // Nothing should render while the hero is off-screen — an idle render loop
   // behind the fold is pure battery and main-thread cost.
@@ -262,7 +280,7 @@ export default function HeroScene({
         shards={shards}
         tier={tier}
         pointer={pointer}
-        readScroll={() => scrollYProgress.get()}
+        readScroll={() => Math.min(1, progressRef.current) * MAX_DISPERSE}
       />
     </Canvas>
   );

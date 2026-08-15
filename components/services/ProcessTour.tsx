@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll } from "motion/react";
+import { useScrollProgress } from "@/lib/use-scroll-progress";
 import type { ProcessStep } from "@/content/process";
 
 // The /services process sequence as a scroll-scrubbed pinned timeline
@@ -52,17 +52,15 @@ export function ProcessTour({
   visuals: React.ReactNode[];
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
 
-  // Continuous channel — the timeline fill. Passing the motion value straight
-  // to `style` lets Motion write the transform outside React: zero renders on
-  // scroll. Never route it through useMotionValueEvent + setState, and never
-  // animate `width` instead of `scaleX` — either turns a composited effect
-  // into per-frame layout work.
-  const { scrollYProgress } = useScroll({
-    target: trackRef as React.RefObject<HTMLElement>,
-    offset: ["start start", "end end"],
-  });
+  // Continuous channel — `--p`, 0 to 1 across the track, written onto the
+  // stage by the shared hook (docs/MOTION_REDESIGN.md §5.8). Drives the
+  // timeline fill and the active scene's drift, both composited transforms in
+  // CSS. Never animate the fill's `width` instead of `scaleX` — that turns a
+  // composited effect into per-frame layout work.
+  useScrollProgress(trackRef, stageRef);
 
   // Discrete channel — which scene is showing. A 2px band at the pinned
   // stage's vertical centre; panels tile the track contiguously at `lg`, so
@@ -191,13 +189,23 @@ export function ProcessTour({
           scenes stay aria-hidden at source too: they carry no real content by
           construction, so describing them would mean writing alt text for an
           interface that does not exist. */}
-      <div aria-hidden="true" className="ptour-stage pointer-events-none">
+      <div
+        ref={stageRef}
+        aria-hidden="true"
+        className="ptour-stage pointer-events-none"
+        style={{ "--n": steps.length } as React.CSSProperties}
+      >
         <div className="tour-stage-card">
           {visuals.map((visual, i) => (
             <div
               key={steps[i].id}
               className="tour-layer ptour-layer"
               data-state={i < active ? "past" : i > active ? "future" : "active"}
+              // Its slice of the track, for the continuous drift in CSS. See
+              // the matching note in ServiceTour on why the slice is
+              // approximate and why that is fine for a few px of travel but
+              // not for the discrete channel below.
+              style={{ "--i": i } as React.CSSProperties}
             >
               {visual}
             </div>
@@ -210,10 +218,7 @@ export function ProcessTour({
             which would announce on every scroll tick. */}
         <div className="ptour-rail">
           <span className="ptour-rail-track">
-            <motion.span
-              className="ptour-rail-fill"
-              style={{ scaleX: scrollYProgress }}
-            />
+            <span className="ptour-rail-fill" />
           </span>
           {steps.map((step, i) => (
             <span

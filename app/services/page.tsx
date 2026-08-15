@@ -8,8 +8,10 @@ import { ProcessTour } from "@/components/services/ProcessTour";
 import { ProcessVignette } from "@/components/services/ProcessVignette";
 import { ServiceExplorer } from "@/components/services/ServiceExplorer";
 import { EngagementFacts } from "@/components/EngagementFacts";
+import { ThreadFilm } from "@/components/motion/ThreadFilm";
 import { SERVICES } from "@/content/services";
 import { PROCESS_STEPS } from "@/content/process";
+import { THREAD_BEATS } from "@/content/thread";
 
 /*
   DIRECTION CONTRACT — /services  (impeccable, surface scope, seed d61330c2)
@@ -100,6 +102,17 @@ export default function ServicesPage() {
             ))}
           />
         </div>
+      </section>
+
+      {/* The scroll-scrubbed film (docs/MOTION_REDESIGN.md §5.8). Sits between
+          the process and the commercial terms deliberately: it is the one
+          section on the page that argues for how the work feels rather than
+          what it costs, and it needs the reader to have seen the mechanics
+          first. Full-bleed — no px-6, no max-w — because the frame's whole
+          move is growing past the content column into the viewport. */}
+      <section className="relative">
+        <Hairline className="absolute inset-x-0 top-0 z-10" />
+        <ThreadFilm beats={THREAD_BEATS} />
       </section>
 
       {/* Commercial terms sit after the service lines and immediately before
