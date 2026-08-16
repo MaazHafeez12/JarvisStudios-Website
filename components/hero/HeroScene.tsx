@@ -86,10 +86,8 @@ function ShardField({ shards, tier, pointer, readScroll }: SceneProps) {
 
   useFrame((state, delta) => {
     const elapsed = state.clock.elapsedTime;
-    // Squared so the field holds its formation through the early scroll and
-    // then falls away quickly, rather than smearing across the whole hero.
-    const scroll = readScroll();
-    const disperse = scroll * scroll;
+    // 0 until the copy has left, then 0→1 across the rest of the track.
+    const converge = readScroll();
 
     if (tier === "full") {
       // Frame-rate independent approach; clamped so a long frame can't
@@ -117,25 +115,34 @@ function ShardField({ shards, tier, pointer, readScroll }: SceneProps) {
       // that difference is what reads as depth.
       const parallax = tier === "full" ? 0.28 + shard.depth * 0.72 : 0;
 
-      // Entrance and scroll-dispersal both push along the same outward
-      // vector, so dispersing is visibly the entrance played in reverse.
-      const outward = 1 + incoming * SPAWN_SPREAD + disperse * 0.95;
+      const outward = 1 + incoming * SPAWN_SPREAD;
+
+      // The bands close on the middle and the formation narrows, so the field
+      // gathers into the space the copy left rather than flattening into a
+      // line. Y and X are pulled by different amounts on purpose — equal
+      // amounts read as a uniform zoom-out, not as a formation resolving.
+      const pullY = 1 - converge * CONVERGE_Y;
+      const pullX = 1 - converge * CONVERGE_X;
 
       mesh.position.set(
-        shard.position[0] * outward + driftX + smoothed.current.x * parallax,
-        shard.position[1] * outward + driftY + smoothed.current.y * parallax * 0.6,
+        shard.position[0] * outward * pullX + driftX + smoothed.current.x * parallax,
+        shard.position[1] * outward * pullY + driftY + smoothed.current.y * parallax * 0.6,
         shard.position[2] - incoming * 5.5,
       );
 
       mesh.rotation.set(
         shard.rotation[0] + elapsed * shard.spin[0] + incoming * 1.4,
-        shard.rotation[1] + elapsed * shard.spin[1] + incoming * 1.8,
+        // Rotation picks up as the field closes, so the gather has energy
+        // rather than reading as a static formation being slid together.
+        shard.rotation[1] + elapsed * shard.spin[1] * (1 + converge * 2.4) + incoming * 1.8,
         shard.rotation[2] + elapsed * shard.spin[2],
       );
 
-      // Scaling down on dispersal (rather than fading) keeps every material
-      // opaque — no transparency sorting, no extra draw cost.
-      const k = entrance * (1 - disperse * 0.88);
+      // Shrinking as they converge (rather than fading) keeps every material
+      // opaque — no transparency sorting, no extra draw cost. Held well above
+      // zero: the point of this act is that the hero still has something on
+      // it at the end of the track.
+      const k = entrance * (1 - converge * 0.34);
       mesh.scale.set(shard.scale[0] * k, shard.scale[1] * k, shard.scale[2] * k);
     }
   });
@@ -176,19 +183,32 @@ function useIsLightTheme(): boolean {
 }
 
 /**
- * How far the field is allowed to disperse across the whole hero track.
+ * The hero's second act: the bands close.
  *
- * Capped well below 1 on purpose. The hero's only content is the copy and
- * this field, and the copy has ridden out by the halfway mark — so a field
- * that disperses fully leaves the last stretch of the pin as a blank page
- * with a hairline on it, which reads as something failing to load rather than
- * as a moment. Measured at 0.85 through the track it was exactly that: an
- * empty viewport.
+ * lib/hero-shards.ts holds the field in two arched bands, above and below the
+ * copy, kept clear of it by `Y_INSET`. That inset exists to protect the
+ * headline — and once the headline has ridden out there is nothing left to
+ * protect. So rather than dispersing into an empty screen, the bands converge
+ * on the space the copy vacated and the field compacts into a single
+ * formation.
  *
- * At this value the field recedes to roughly two-thirds scale and drifts
- * outward without leaving. The hero thins out; it never empties.
+ * This is what lets the hero hold a long track at all. Its only other content
+ * is the copy, which is gone by the time this starts; a hero that merely
+ * disperses has to be short or it ends on a blank page.
+ *
+ * Starts once the copy is essentially gone. Convergence before that would put
+ * shards through the headline, which is the thing `Y_INSET` and
+ * `.hero-shard-mask` both exist to prevent (docs/MOTION_REDESIGN.md §6).
  */
-const MAX_DISPERSE = 0.62;
+const CONVERGE_FROM = 0.44;
+/** How far the bands close. 1 would collapse them onto a single line. */
+const CONVERGE_Y = 0.86;
+/** The formation narrows as it closes, so it gathers rather than just flattening. */
+const CONVERGE_X = 0.36;
+
+function clamp01(v: number): number {
+  return v < 0 ? 0 : v > 1 ? 1 : v;
+}
 
 export default function HeroScene({
   containerRef,
@@ -280,7 +300,9 @@ export default function HeroScene({
         shards={shards}
         tier={tier}
         pointer={pointer}
-        readScroll={() => Math.min(1, progressRef.current) * MAX_DISPERSE}
+        readScroll={() =>
+          clamp01((progressRef.current - CONVERGE_FROM) / (1 - CONVERGE_FROM))
+        }
       />
     </Canvas>
   );

@@ -55,30 +55,40 @@ body {
    (docs/MOTION_REDESIGN.md §6). Applies to the canvas and the static SVG
    fallback alike, so both read identically. */
 .hero-shard-mask {
+  /* Width of the protected band, closed by --gap. 0 is the full band, which
+     is the resting state and the only state while the headline is legible. */
+  --gap: 0;
   -webkit-mask-image: linear-gradient(
     to bottom,
     #000 0%,
-    transparent 26%,
-    transparent 76%,
+    transparent calc(26% + 23% * var(--gap)),
+    transparent calc(76% - 23% * var(--gap)),
     #000 100%
   );
   mask-image: linear-gradient(
     to bottom,
     #000 0%,
-    transparent 26%,
-    transparent 76%,
+    transparent calc(26% + 23% * var(--gap)),
+    transparent calc(76% - 23% * var(--gap)),
     #000 100%
   );
 }
 
-/* NOTE for anyone extending the pinned hero below. Closing this band as the
-   copy leaves looks like the obvious way to give the hero a second act — let
-   the field fill the space the headline vacated. It does nothing:
-   lib/hero-shards.ts distributes shards on an *annulus*, so the centre is
-   empty by construction and there is nothing behind the band to reveal. A
-   real second act needs new geometry (MOTION_REDESIGN.md §3 Option A, the
-   monogram resolve, is the obvious candidate) or new copy. That is why the
-   hero track below is short: it ends before it runs out of things to show. */
+/* The mask has to open as the field converges, or the second act is invisible.
+   This band and `Y_INSET` in lib/hero-shards.ts are the same guarantee twice —
+   keep shards off the headline — and both are released together once the
+   headline has gone.
+
+   ORDERING IS LOAD-BEARING. This starts at 0.44, the same point HeroScene's
+   CONVERGE_FROM does, and by then the copy is fully transparent. Opening it
+   any earlier undoes the contrast work in `f8a918c`
+   (docs/MOTION_REDESIGN.md §6): shards would render through live text. At
+   --p 0 it resolves to the untouched band above. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-pin .hero-shard-mask {
+    --gap: clamp(0, calc((var(--p) - 0.44) / 0.4), 1);
+  }
+}
 
 /* ─────────────────────────────────────────────────────────────────────────
    Scroll-scrub stages (docs/MOTION_REDESIGN.md §5.8).
@@ -225,16 +235,22 @@ body {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* A quarter of a screen of extra scroll, and no more. Two constraints meet
-     here. §2 records that the service tour already pushed the featured result
-     and the CTA about four screens down, so the hero must not add materially
-     to that. And the hero runs out of things to show: once the copy has
-     ridden out, all that is left is a field with a hole in its middle (see
-     the note on .hero-shard-mask above). Measured at 190 there was better
-     than a third of a screen of hollow at the end, which reads as a page
-     failing to load. The pin now releases while it still has something on it. */
+  /* Two and a half screens. This was 125 while the hero's whole second half
+     was empty — once the copy had ridden out there was nothing behind it, so
+     the pin had to release before it ran out of things to show.
+
+     The field converging (HeroScene's CONVERGE_FROM, and --gap above) is what
+     buys the length: the back half now has the formation gathering into the
+     space the headline left, so there is something on screen for the whole
+     track. The rule the earlier attempt established still governs — a stage
+     is exactly as long as it has content for, measured rather than guessed.
+
+     Not longer than this, though. §2 records that the service tour already
+     pushed the featured result and the CTA about four screens down; the
+     reference site can afford seven screens of hero because a film always has
+     a next frame, and one converging formation does not. */
   .hero-track {
-    --len: 125;
+    --len: 250;
   }
 
   .hero-pin {
@@ -246,7 +262,9 @@ body {
      resolves to opacity 1 and no transform, which is exactly the unscrubbed
      hero. */
   .hero-copy {
-    --out: clamp(0, calc(var(--p) / 0.62), 1);
+    /* Fully gone by 0.4, which is where the field's convergence takes over.
+       The two must not overlap: shards close through the middle. */
+    --out: clamp(0, calc(var(--p) / 0.4), 1);
     opacity: calc(1 - var(--out));
     transform: translate3d(0, calc(-72px * var(--out)), 0);
     will-change: transform, opacity;
@@ -264,9 +282,8 @@ body {
     height: 1px;
     background: var(--border);
     transform-origin: left;
-    /* Starts as the copy finishes leaving and completes at the release, so
-       the two halves of the close overlap rather than leaving a gap. */
-    transform: scaleX(clamp(0, calc((var(--p) - 0.45) / 0.55), 1));
+    /* Draws across the whole second act, finishing as the pin releases. */
+    transform: scaleX(clamp(0, calc((var(--p) - 0.5) / 0.5), 1));
   }
 }
 
