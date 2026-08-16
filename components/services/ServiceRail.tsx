@@ -80,41 +80,25 @@ export function ServiceStrip({
   );
 }
 
-/**
- * Wraps the service list and reports scroll travel through it as a rail in
- * the gutter.
+/*
+ * ServiceListRail was removed here when the service list became a grid
+ * (docs/MOTION_REDESIGN.md §5.9). It wrapped the vertical list and drew a
+ * scroll-linked rail down the gutter beside it; "how far through the six am
+ * I" is a question a stack raises and a grid does not, when all six are on
+ * screen at once. Removing it also took the `max-w-4xl` container it owned,
+ * which a three-column grid could not have used.
  *
- * The tracked element is rendered *here*, by the same component that runs
- * useScroll, and that is not a stylistic choice. An earlier version put the
- * ref on the list in ServiceExplorer and passed it down to a rail nested
- * inside it; React attaches a parent's ref only after its entire subtree has
- * committed, so the nested rail's layout effect saw `target.current === null`
- * and the fill sat at scaleY(0) forever. A component can rely on refs to
- * elements it renders itself — not on refs owned by an ancestor it sits
- * inside.
+ * The hard-won lesson it carried is kept, because it applies to anything on
+ * this site that measures an element it did not render:
+ *
+ *   useScroll({ target }) CANNOT TRACK A REF OWNED BY AN ANCESTOR. An earlier
+ *   version put the ref on the list in ServiceExplorer and passed it down to
+ *   a rail nested inside it. React attaches a parent's ref only after its
+ *   entire subtree has committed, so the nested rail's layout effect read
+ *   `target.current === null` and the fill sat at scaleY(0) forever —
+ *   silently, with no warning, and no visual except a rail that never moved.
+ *   A component may rely on refs to elements it renders itself.
+ *
+ * ServiceStrip above obeys that rule the easy way: it uses the `container`
+ * form on a div it renders.
  */
-export function ServiceListRail({ children }: { children: React.ReactNode }) {
-  const listRef = useRef<HTMLDivElement>(null);
-
-  // Starts filling once the list reaches mid-viewport and completes as its
-  // end clears the fold, so the rail is full when the last service line is
-  // read rather than when it is merely on screen.
-  const { scrollYProgress } = useScroll({
-    target: listRef,
-    offset: ["start 0.6", "end 0.9"],
-  });
-
-  return (
-    <div ref={listRef} className="relative mx-auto mt-12 max-w-4xl px-6">
-      <div className="svc-rail" aria-hidden="true">
-        {/* Written as a composited scaleY. Animating height here instead
-            would put layout work on every scroll frame. */}
-        <motion.div
-          style={{ scaleY: scrollYProgress }}
-          className="svc-rail-fill"
-        />
-      </div>
-      {children}
-    </div>
-  );
-}

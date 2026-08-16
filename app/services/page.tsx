@@ -14,28 +14,49 @@ import { PROCESS_STEPS } from "@/content/process";
 import { THREAD_BEATS } from "@/content/thread";
 
 /*
-  DIRECTION CONTRACT — /services  (impeccable, surface scope, seed d61330c2)
+  DIRECTION CONTRACT — /services  (revised; supersedes seed d61330c2)
 
-  THESIS: A services page that diagnoses before it sells. It refuses the
-  category default this page shipped as — six alternating image/text blocks
-  read top to bottom — because that arrangement only serves a visitor who
-  already knows the name of what they need.
+  WHY THE PREVIOUS CONTRACT WAS REOPENED. It read: "A services page that
+  diagnoses before it sells", refusing six alternating image/text blocks
+  because that arrangement only serves a visitor who already knows the name
+  of what they need. The diagnosis half was right and is kept. What it got
+  wrong was what the diagnostic hands you *to*: a vertical list of six.
+  PRODUCT.md:11 names three jobs this page serves at once — fast wayfinding
+  to one service, side-by-side comparison across services, and locating a
+  problem before it has a name. The diagnostic does the third, /services#<id>
+  does the first, and a vertical list is structurally incapable of the second,
+  because a reader can only ever hold one service in view. That gap, not a
+  preference about looks, is why the form changed.
+
+  THESIS: A services page that diagnoses before it sells, and lays the answer
+  out so it can be compared. It still refuses six alternating image/text
+  blocks — that remains the category default, and it serves comparison no
+  better than the list did.
 
   OWN-WORLD: The established Jarvis system, unchanged: charcoal ground,
   #00ADEF as the only accent, Clash Display headings on Inter, hairline
   rules as the primary divider. Recognizable with all content removed by its
   rules and its single blue element per composition.
 
-  STORY: The visitor names their own situation in their own words, watches
-  six service lines reorganize around it, reads the two or three that apply,
-  and leaves through a contact link that already knows which one they picked.
+  STORY: The visitor sees all six service lines at once and can weigh them
+  against each other; names their own situation in their own words; watches
+  the two or three that apply move to the front and open out; and leaves
+  through a contact link that already knows which one they picked.
 
   FIRST VIEWPORT: A short title, then the diagnostic itself at full width —
   four situations as real choices, not decoration. The offer starts before
   the fold; the page does not open on a slogan.
 
-  FORM: Diagnostic entry into a filtered service surface. Candidate 4 of the
-  ordered grounded list; assigned by seed d61330c2.
+  FORM: Diagnostic entry into a comparison grid. Answering promotes rather
+  than filters.
+
+  INVARIANT, and it outlived the contract it was written under: NOTHING IS
+  EVER HIDDEN. Every service carries its name, summary, all three
+  capabilities, its proof where one exists, its CTA and its vignette, in every
+  state. A visitor whose situation was mis-guessed must never be told the
+  studio doesn't do the thing it does. This is stricter than the arrangement
+  it replaces, which collapsed non-matching services and needed a "Read
+  anyway" control to undo itself.
 
   FINISH: unreviewed and undocumented is unfinished; this build ends with
   the finish review, the verdict, and DESIGN.md.
