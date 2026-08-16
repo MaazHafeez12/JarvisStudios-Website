@@ -1,55 +1,56 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { SERVICES, type Service } from "@/content/services";
 import { SITUATIONS } from "@/content/situations";
-import { Hairline } from "@/components/ui/Hairline";
 import { EASE } from "@/lib/motion";
-import { ServiceListRail, ServiceStrip } from "./ServiceRail";
+import { ServiceStrip } from "./ServiceRail";
 import { VignetteCard } from "./VignetteCard";
 
-// The services surface as a decision tool rather than a brochure.
+// The services surface as a comparison tool rather than a queue.
 //
-// Everything is expanded by default: the full offer is visible without
-// touching a control, so a visitor who never interacts loses nothing, and
-// /services#<id> deep links still land on a fully rendered service.
-// Choosing a situation *narrows* rather than reveals — services that don't
-// apply collapse to a compact row instead of disappearing, because a
-// visitor whose situation was mis-guessed must never be told the studio
-// doesn't do the thing it does.
+// WHY THIS IS A GRID (docs/MOTION_REDESIGN.md §5.9). PRODUCT.md:11 names
+// three jobs this page has to do at once: fast wayfinding to one service,
+// **side-by-side comparison across services**, and helping someone locate a
+// problem before it has a name. The diagnostic below does the third and
+// /services#<id> does the first. Comparison was the one that went unserved,
+// and a vertical list is precisely the shape that cannot serve it — a reader
+// can only ever hold one service in view. Six cards in one composition is
+// what comparison means. The old arrangement's DIRECTION CONTRACT was
+// reopened for that reason, not for a nicer look.
 //
-// MOTION: two layers, and they must stay separable (docs/MOTION_REDESIGN.md
-// §5.6).
+// NOTHING IS HIDDEN, AND THAT RULE OUTLIVED THE CONTRACT. Every card carries
+// its name, summary, all three capabilities, its proof where one exists, its
+// CTA and its vignette — at rest and in every filtered state. A visitor whose
+// situation was mis-guessed must never be told the studio doesn't do the
+// thing it does. This is stricter than the arrangement it replaces, which
+// collapsed non-matching services to a compact row and needed a "Read anyway"
+// escape hatch to undo itself; there is nothing to escape from now, so both
+// the collapsed state and that control are gone.
 //
-//   ANSWER — the set re-forming around the chosen situation. A single
-//   staggered settle of the whole list, driven by the LIST/ITEM variants
-//   below and restarted by re-keying. This is the page's authored moment and
-//   it predates everything else here.
+// Answering *promotes* rather than filters: matching services move to the
+// front and span the full width with a larger vignette, and everything else
+// stays a complete card below. One DOM order, one list — the promotion is a
+// `grid-column: 1 / -1` in CSS keyed off `data-promoted`, never a second
+// branch rendered here.
 //
-//   ARRIVAL — each service line settling as it is scrolled to. Written as
-//   inline `initial`/`whileInView` objects, deliberately NOT with
-//   components/ui/Reveal: Reveal animates by variant *label* and declares no
-//   `animate` prop, so nested inside this variant tree it would inherit the
-//   parent's "visible" propagation and fire on the answer instead of on
-//   scroll. Object-form children cannot be driven by a parent label, which is
-//   the property being relied on.
+// MOTION: two layers, and they must stay separable (§5.6 decision 1).
 //
-// Neither layer is a hover flourish, and neither one moves layout.
+//   ANSWER — the set re-forming around the chosen situation. Now owned by the
+//   View Transitions API (see `choose` below), which replaced a re-keyed
+//   Motion stagger: with the browser animating the reorder, a stagger over
+//   the top of it double-animates the same moment.
 //
-// This deliberately does NOT use Motion's `layout`/FLIP to glide entries to
-// new positions, which is the obvious way to build it. Two failures made
-// that unshippable here: full `layout` animates size by scaling and left a
-// stuck scaleY(3.3) on collapsed entries with 0.3 counter-scale on their
-// text, and `layout="position"` then applied FLIP offsets up to 1400px that
-// never animated back to zero, leaving every section visually displaced.
-// Both were verified frozen seconds after the interaction. A transform that
-// can strand content off-position is not worth a nicer reorder.
-//
-// What remains animates opacity and 12px of travel from an already-correct
-// position, so the worst possible failure is that it doesn't move.
+//   ARRIVAL — each card settling as it is scrolled to. Still inline
+//   `initial`/`whileInView` objects rather than components/ui/Reveal. The
+//   original reason (object-form children cannot be driven by a parent
+//   variant label) no longer applies now that the parent variant tree is
+//   gone, but Reveal is still wrong here for the plainer reason that it
+//   declares no `animate` prop.
 
 /**
  * Service names go into the CTA verbatim. Lowercasing them turned "SaaS"
@@ -62,28 +63,20 @@ function ctaLabel(name: string): string {
   return `Start ${article} ${name} project`;
 }
 
-const LIST = {
-  visible: { transition: { staggerChildren: 0.055 } },
-};
-
-const ITEM = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0 },
-};
-
 // The arrival layer. Shared object identity so Motion never re-diffs it, and
-// `-12%` so a line settles once it is genuinely being read rather than the
+// `-12%` so a card settles once it is genuinely being read rather than the
 // moment its first pixel clears the fold.
 const ARRIVE_FROM = { opacity: 0, y: 14 };
 const ARRIVE_TO = { opacity: 1, y: 0 };
 const ARRIVE_VIEWPORT = { once: true, margin: "-12%" };
 
+/** Not in lib.dom yet; the call below is feature-detected either way. */
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (callback: () => void) => { finished: Promise<void> };
+};
+
 export function ServiceExplorer() {
   const [situationId, setSituationId] = useState<string | null>(null);
-  const [openId, setOpenId] = useState<Service["id"] | null>(null);
-  // Until the visitor answers, the list has nothing to re-form around, so
-  // it renders in its final state rather than animating in from nothing.
-  const [answered, setAnswered] = useState(false);
 
   const situation = SITUATIONS.find((s) => s.id === situationId) ?? null;
 
@@ -94,13 +87,34 @@ export function ServiceExplorer() {
     return { ordered: [...matches, ...rest], matchCount: matches.length };
   }, [situation]);
 
-  const isExpanded = (service: Service) =>
-    !situation || situation.services.includes(service.id) || openId === service.id;
+  const isPromoted = (service: Service) =>
+    Boolean(situation && situation.services.includes(service.id));
 
   function choose(id: string) {
-    setSituationId((current) => (current === id ? null : id));
-    setOpenId(null);
-    setAnswered(true);
+    const apply = () => setSituationId((current) => (current === id ? null : id));
+
+    // THIS IS NOT A THIRD FLIP ATTEMPT, and the distinction is the whole
+    // reason it is shippable. The two failures recorded in this file's
+    // history were Motion's layout system computing transforms in JS and
+    // leaving them stranded — a scaleY(3.3) that never unwound, offsets up to
+    // 1400px that never animated back. Here the browser captures both states
+    // and composites between them itself; there is no JS-held transform that
+    // *can* strand. Where the API is missing the state change simply applies,
+    // which is exactly the instant reorder this page shipped with.
+    //
+    // flushSync is required, not defensive: startViewTransition captures the
+    // "after" state when its callback returns, and React's default batching
+    // would not have committed by then, so the transition would capture the
+    // old DOM twice and animate nothing.
+    const doc = document as ViewTransitionDocument;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!doc.startViewTransition || reduce) {
+      apply();
+      return;
+    }
+
+    doc.startViewTransition(() => flushSync(apply));
   }
 
   return (
@@ -110,8 +124,8 @@ export function ServiceExplorer() {
           Where are you right now?
         </h2>
         <p className="mt-4 max-w-xl text-[--text-secondary]">
-          Pick whichever is closest and the work narrows to what applies.
-          Nothing disappears — you can read all six either way.
+          Pick whichever is closest and the work that applies moves to the
+          front. Nothing is hidden — all six stay readable either way.
         </p>
 
         <div
@@ -156,7 +170,7 @@ export function ServiceExplorer() {
         {/* Announced, not just shown: the reflow is silent to a screen reader. */}
         <p aria-live="polite" className="mt-6 text-sm text-[--text-secondary]">
           {situation
-            ? `Showing ${matchCount} of ${SERVICES.length} service lines for “${situation.label}”. The rest are collapsed below.`
+            ? `${matchCount} of ${SERVICES.length} service lines match “${situation.label}” and are shown first. All six stay readable.`
             : `All ${SERVICES.length} service lines.`}
         </p>
 
@@ -166,127 +180,93 @@ export function ServiceExplorer() {
         />
       </div>
 
-      <ServiceListRail>
-        <motion.div
-          // Re-keying restarts the stagger, so answering visibly re-forms the
-          // set. Before the first answer there is nothing to re-form.
-          key={situationId ?? "all"}
-          initial={answered ? "hidden" : false}
-          animate="visible"
-          variants={LIST}
-        >
-          {ordered.map((service, index) => {
-            const expanded = isExpanded(service);
+      <ul role="list" className="svc-grid mx-auto mt-12 max-w-6xl px-6">
+        {ordered.map((service) => {
+          const promoted = isPromoted(service);
 
-            return (
-              <motion.section
-                key={service.id}
-                id={service.id}
-                variants={ITEM}
-                transition={{ duration: 0.45, ease: EASE }}
-                className="scroll-mt-24"
-                aria-labelledby={`${service.id}-name`}
+          return (
+            <li
+              key={service.id}
+              id={service.id}
+              className="svc-item scroll-mt-24"
+              data-promoted={promoted ? "true" : "false"}
+              // Each card is its own transition subject, so the browser
+              // animates six independent moves rather than cross-fading one
+              // container. Names must be unique per document.
+              style={
+                { viewTransitionName: `svc-${service.id}` } as React.CSSProperties
+              }
+              aria-labelledby={`${service.id}-name`}
+            >
+              <motion.div
+                initial={ARRIVE_FROM}
+                whileInView={ARRIVE_TO}
+                viewport={ARRIVE_VIEWPORT}
+                transition={{ duration: 0.55, ease: EASE }}
+                className="svc-item-body"
               >
-                {/* The divider draws itself as the line is reached. It is a
-                    Hairline rather than a border because the rule arriving is
-                    what tells the reader a new service line has started. */}
-                {index > 0 ? <Hairline /> : null}
-
-                <motion.div
-                  initial={ARRIVE_FROM}
-                  whileInView={ARRIVE_TO}
-                  viewport={ARRIVE_VIEWPORT}
-                  transition={{ duration: 0.55, ease: EASE }}
-                  className="py-10"
+                <h3
+                  id={`${service.id}-name`}
+                  className="svc-item-name font-display font-semibold"
                 >
-                  <div className="flex items-baseline justify-between gap-6">
-                    <h3
-                      id={`${service.id}-name`}
-                      className={`font-display font-semibold ${
-                        expanded ? "text-2xl sm:text-3xl" : "text-xl"
-                      }`}
+                  {service.name}
+                </h3>
+
+                <p className="mt-3 text-[--text-secondary]">{service.summary}</p>
+
+                {/* Capabilities as hairline-separated statements. No
+                    checkmarks: a tick beside a claim the studio wrote itself
+                    asserts a verification nobody performed. Present on every
+                    card in every state — this list is the only thing the six
+                    services can actually be compared on. */}
+                <ul className="mt-6 border-t border-[--border]">
+                  {service.capabilities.map((capability) => (
+                    <li
+                      key={capability}
+                      className="border-b border-[--border] py-3 text-sm"
                     >
-                      {service.name}
-                    </h3>
-                    {!expanded ? (
-                      <button
-                        type="button"
-                        onClick={() => setOpenId(service.id)}
-                        className="shrink-0 text-sm text-[--text-secondary] underline decoration-[--border] underline-offset-4 transition-colors duration-200 ease-confident hover:text-[--accent] hover:decoration-[--accent]"
-                      >
-                        Read anyway
-                      </button>
-                    ) : null}
+                      {capability}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Proof sits between what we do and the ask, and only on the
+                    service lines that have it. No kicker above it and no panel
+                    around it: the capability list ends in a hairline that
+                    already separates them, and a result this specific doesn't
+                    need a label telling the reader it's a result. */}
+                {service.proof ? (
+                  <div className="mt-6 max-w-sm">
+                    <p className="text-sm font-medium leading-relaxed">
+                      {service.proof.result}
+                    </p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-[--text-secondary]">
+                      {service.proof.detail}
+                    </p>
                   </div>
+                ) : null}
 
-                  <p className="mt-3 max-w-xl text-[--text-secondary]">
-                    {service.summary}
-                  </p>
+                <Link
+                  href={`/contact?service=${service.id}`}
+                  // No `mt-6`: the spacing is `.svc-item-cta`'s padding-top so
+                  // it cannot fight that rule's `margin-top: auto`.
+                  className="svc-item-cta group inline-flex items-center gap-2 self-start text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
+                >
+                  {ctaLabel(service.name)}
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform duration-200 ease-confident motion-safe:group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </motion.div>
 
-                  {expanded ? (
-                    // The detail settles a beat after its own heading, so a
-                    // service line reads as one thing arriving in order
-                    // rather than two blocks landing together.
-                    <motion.div
-                      initial={ARRIVE_FROM}
-                      whileInView={ARRIVE_TO}
-                      viewport={ARRIVE_VIEWPORT}
-                      transition={{ duration: 0.55, ease: EASE, delay: 0.08 }}
-                      className="grid gap-10 pt-8 md:grid-cols-[1fr_1.1fr] md:items-start"
-                    >
-                      <div>
-                        {/* Capabilities as hairline-separated statements. No
-                            checkmarks: a tick beside a claim the studio wrote
-                            itself asserts a verification nobody performed. */}
-                        <ul className="border-t border-[--border]">
-                          {service.capabilities.map((capability) => (
-                            <li
-                              key={capability}
-                              className="border-b border-[--border] py-3 text-sm"
-                            >
-                              {capability}
-                            </li>
-                          ))}
-                        </ul>
-
-                        {/* Proof sits between what we do and the ask, and only
-                            on the service lines that have it. No kicker above
-                            it and no panel around it: the capability list ends
-                            in a hairline that already separates them, and a
-                            result this specific doesn't need a label telling
-                            the reader it's a result. */}
-                        {service.proof ? (
-                          <div className="mt-6 max-w-sm">
-                            <p className="text-sm font-medium leading-relaxed">
-                              {service.proof.result}
-                            </p>
-                            <p className="mt-1.5 text-sm leading-relaxed text-[--text-secondary]">
-                              {service.proof.detail}
-                            </p>
-                          </div>
-                        ) : null}
-
-                        <Link
-                          href={`/contact?service=${service.id}`}
-                          className="group mt-6 inline-flex items-center gap-2 text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
-                        >
-                          {ctaLabel(service.name)}
-                          <ArrowRight
-                            className="h-4 w-4 transition-transform duration-200 ease-confident motion-safe:group-hover:translate-x-1"
-                            aria-hidden="true"
-                          />
-                        </Link>
-                      </div>
-
-                      <VignetteCard service={service.id} />
-                    </motion.div>
-                  ) : null}
-                </motion.div>
-              </motion.section>
-            );
-          })}
-        </motion.div>
-      </ServiceListRail>
+              <div className="svc-item-visual">
+                <VignetteCard service={service.id} />
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

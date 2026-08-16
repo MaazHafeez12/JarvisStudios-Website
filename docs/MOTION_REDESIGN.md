@@ -141,6 +141,8 @@ Decisions worth not relitigating, and the reasons that are not obvious from the 
 
 **What did not change, and must not.** The information architecture: diagnostic first, everything expanded by default, nothing hidden, `/services#<id>` deep links intact. No pinned stage on this page, no parallax on text, no scroll-jacking, no `layout`/FLIP on the service list. §5.5 decision 1's reasoning about *layout* is untouched — what it declined was six alternating blocks and a second pinned tour, not motion as such.
 
+**Amended by §5.9.** The service list became a grid, so the vertical list decision 6 describes as "untouched beneath" the chip strip, and the gutter rail beside it, no longer exist. Everything else in this paragraph stands, and two items now hold *more* strictly than when written: nothing is hidden in any state (the collapsed row and its "Read anyway" escape hatch are gone), and there is still no `layout`/FLIP on the list — §5.9 sets out why the View Transitions API is not a third attempt at one.
+
 Decisions worth not relitigating:
 
 1. **The answer and the arrival are two separable layers, and the second must not be built with `Reveal`.** `Reveal` animates by variant *label* and declares no `animate` prop, so nested inside `ServiceExplorer`'s `LIST`/`ITEM` variant tree it inherits the parent's `visible` propagation and fires on the answer instead of on scroll. The arrival layer is therefore written as inline `initial`/`whileInView` objects, which a parent label cannot drive. This is the one place on the site where using the shared primitive would be the bug.
@@ -202,6 +204,26 @@ Decisions worth not relitigating:
 **The consequence for anyone using §7 as a gate:** a single run cannot separate a real regression from a warm laptop. The tell is the two cheap sections — when they hold at exactly 60.0 and the heavy ones drop together, that is the machine, not the code. Compare **interleaved arms inside one session**, not absolute numbers against a figure recorded on another day. The 55.6fps recorded earlier in §7 should be read with the same caution.
 
 What survives that caveat: the two tours now hold 60fps with zero frames over 32ms, against 55.6fps / 66ms / 4 LoAF before this pass — the expected direction, since per-frame work went from Motion writing motion values to one `setProperty` of a registered number. And the hero's convergence is perf-neutral: A/B'd at `--len` 125 vs 250, the *longer* track measured 58.5fps mean against 56.7 for the shorter, i.e. no cost outside the noise.
+
+### 5.9 Services comparison grid — built
+
+The six service lines are a grid, not a stack. Direction given by the user; the DIRECTION CONTRACT in `app/services/page.tsx` was reopened for it and rewritten.
+
+**The reason is a job, not a look.** `PRODUCT.md:11` names three things this page serves at once: fast wayfinding to one service, **side-by-side comparison across services**, and locating a problem before it has a name. The diagnostic does the third, `/services#<id>` does the first, and comparison went unserved — a vertical list is structurally incapable of it, because a reader can only ever hold one service in view. Six cards in one composition is what comparison *is*.
+
+**What changed.** `ServiceExplorer` renders one `.svc-grid` of six `.svc-item`s (1 / 2 / 3 columns). Answering the diagnostic **promotes** matches — `grid-column: 1 / -1` keyed off `data-promoted`, turning a card into a full-width row with the vignette beside the copy instead of above it. `ServiceListRail` is deleted; its `useScroll`-ancestor lesson is preserved as a comment in `ServiceRail.tsx` because it applies site-wide. `ServiceStrip` survives unchanged — at one column a phone still has a long scroll.
+
+Decisions worth not relitigating:
+
+1. **Nothing is hidden, in any state, and this is stricter than what it replaces.** Every card carries name, summary, all three capabilities, its proof where one exists, its CTA and its vignette — at rest and under every filter. The old arrangement collapsed non-matching services to a compact row and needed a "Read anyway" control to undo itself; there is nothing to escape from now, so both are gone. Verified in the *served* HTML and in all four filtered states: 6 cards, 18 capabilities, 6 CTAs, 6 vignettes, every time.
+2. **The View Transitions API is not a third FLIP attempt.** Both recorded failures were Motion's layout system computing transforms in JS and stranding them — a `scaleY(3.3)` that never unwound, offsets to 1400px that never animated back. Here the browser captures both states and composites; there is no JS-held transform that *can* strand, and where the API is absent the state change simply applies, which is the instant reorder this page already shipped. `flushSync` is required, not defensive: `startViewTransition` captures the "after" state when its callback returns, and React's default batching would not have committed by then. **Verified against the exact old failure mode** — after every transition, and after toggling every situation back off, zero `.svc-item` carries a computed transform and no `::view-transition` animation persists.
+3. **Reduced motion is guarded twice.** `ServiceExplorer` checks `matchMedia` before calling `startViewTransition`, and CSS zeroes `::view-transition-*` animations. Either alone is a single point of failure and the failure mode is motion a visitor asked not to see. Verified: the promotion still applies, with **zero running animations**.
+4. **`align-content: start` on the card was the bug, not the CTA rule.** Pushing the CTA down with `margin-top: auto` did nothing until the body actually filled the card — measured at 20px and 81px of CTA misalignment across the two rows. `grid-template-rows: auto 1fr` fixed it to 0px on both. A row of CTAs at six different heights is what stops a grid reading as a comparison and makes it read as six loose cards.
+5. **No scroll driver was added here** — see the note below.
+
+**Not built, and stated because it was planned.** Per-card scroll scrub. The grid changed the premise: cards are ~615px and pass through the viewport quickly, index-based sub-ranges (the `--i`/`--n` trick the tours use) don't map to position once a grid reflows across breakpoints, and six independent scroll drivers is real cost for a few px of drift. The existing `whileInView` arrival and the armed vignette wipe already make the grid answer to scroll, and both are position-based, which is the right tool for a grid.
+
+**Measured.** Client chunks 1,740,494 → 1,740,255 bytes — *down* 239, since deleting `ServiceListRail` and the `LIST`/`ITEM` variant tree more than pays for the transition code. Scroll profile across the page's other sections unchanged.
 
 ## 6. Accessibility (non-negotiable, carries from [[DESIGN]] §3.1 and prior a11y work)
 

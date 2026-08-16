@@ -1184,35 +1184,140 @@ body {
   }
 }
 
-/* ── Desktop: scroll-linked progress rail in the gutter beside the service
-      list. Same construction as .tour-rail — a full-height bar written as a
-      composited scaleY, never an animated height. ── */
-.svc-rail {
-  display: none;
+/* ── The comparison grid (docs/MOTION_REDESIGN.md §5.9) ──────────────────
+
+   Six services in one composition rather than a stack, because side-by-side
+   comparison is a job PRODUCT.md:11 names and a vertical list structurally
+   cannot do. Answering the diagnostic *promotes* matches to full-width rows;
+   nothing collapses and nothing is hidden, in any state.
+
+   ONE DOM, ONE LIST. The promotion is `grid-column: 1 / -1` keyed off
+   `data-promoted`, not a second branch rendered in JS. Card and promoted are
+   the same markup with a different grid — which is also what lets the View
+   Transitions API animate between them, since the elements persist.
+
+   The desktop gutter rail that used to live here is gone with the list it
+   measured: "progress through six items" is a question a stack raises and a
+   grid does not, when all six are on screen at once. `.svc-strip` below
+   survives because at one column a phone still has a long scroll.
+   ────────────────────────────────────────────────────────────────────── */
+
+.svc-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+  list-style: none;
+  padding-inline: 1.5rem;
 }
 
-@media (min-width: 1024px) {
-  .svc-rail {
-    display: block;
-    position: absolute;
-    /* Sits in the space between the centred max-w-4xl column and the
-       viewport edge. At exactly 1024px that gutter is 64px, so 32px clears
-       it with room; below that the rail is hidden and the strip takes over. */
-    left: -2rem;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: var(--border);
+@media (min-width: 640px) {
+  .svc-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-.svc-rail-fill {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: var(--accent);
-  transform-origin: top;
-  transform: scaleY(0);
+@media (min-width: 1024px) {
+  .svc-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+}
+
+.svc-item {
+  display: grid;
+  /* The visual takes its natural height and the body takes the rest. Not
+     `align-content: start`: that shrink-wraps the card's contents to the top,
+     so the body never fills the card and `.svc-item-cta`'s `margin-top: auto`
+     has no slack to push into — measured at 20px and 81px of CTA misalignment
+     across the two rows before this line existed. */
+  grid-template-rows: auto 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface-raised);
+}
+
+/* A column, so the CTA can be pushed to the bottom. Six services whose
+   capability lists wrap to different depths otherwise end at six different
+   heights, and a row of CTAs at six different heights is the thing that stops
+   a grid reading as a comparison and makes it read as six loose cards. */
+.svc-item-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.svc-item-cta {
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+.svc-item-name {
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
+/* The picture reads above the words in a card and beside them in a row. DOM
+   order stays heading-first either way, so this is a visual reorder only and
+   the reading order a screen reader gets is unchanged. */
+.svc-item-visual {
+  order: -1;
+}
+
+/* ── Promoted: a matching service spans the full width and turns into a row.
+      Larger name, vignette beside the copy rather than above it. ── */
+@media (min-width: 640px) {
+  .svc-item[data-promoted="true"] {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1.1fr;
+    /* Back to a single implicit row — the two-row rule above is the card
+       layout, and a promoted row places its two children side by side. */
+    grid-template-rows: auto;
+    align-items: start;
+    gap: 2.5rem;
+    padding: 2rem;
+  }
+
+  /* A promoted row is as tall as its content; there is no sibling to line up
+     with, so the CTA should follow its list rather than sink to the bottom. */
+  .svc-item[data-promoted="true"] .svc-item-cta {
+    margin-top: 0;
+  }
+
+  .svc-item[data-promoted="true"] .svc-item-name {
+    font-size: 1.875rem;
+  }
+
+  .svc-item[data-promoted="true"] .svc-item-visual {
+    order: 0;
+  }
+}
+
+/* ── The answer, animated by the browser (§5.9).
+
+      view-transition-name is set per card in ServiceExplorer.tsx, so each
+      service is its own transition subject and the browser animates six
+      independent moves instead of cross-fading one container.
+
+      Deliberately short. The reorder is a *readout* of a choice the visitor
+      just made, not a set-piece — long enough to be followed, not long enough
+      to be waited on. ── */
+::view-transition-group(*) {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* MotionConfig does not reach the View Transitions API any more than it
+   reaches the rest of this file (§5 item 1, again). ServiceExplorer also
+   checks matchMedia before calling startViewTransition, so this is the second
+   of two guards; both exist because either alone is a single point of
+   failure and the failure mode is motion a visitor asked not to see. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
 }
 
 /* ── Phones: the swipe strip. Native scroll-snap, deliberately not a JS drag
@@ -1228,12 +1333,11 @@ body {
   display: none;
 }
 
-/* Both progress readouts are driven by useScroll and so are not Motion
-   *animations* — MotionConfig has nothing to strip. They have to be removed
-   here or a reduced-motion visitor gets a bar sweeping across the page.
-   Their tracks stay, and read as the plain hairlines they already are. */
+/* The strip's progress readout is driven by useScroll and so is not a Motion
+   *animation* — MotionConfig has nothing to strip. It has to be removed here
+   or a reduced-motion visitor gets a bar sweeping across the page. Its track
+   stays, and reads as the plain hairline it already is. */
 @media (prefers-reduced-motion: reduce) {
-  .svc-rail,
   .svc-strip-fill {
     display: none;
   }
