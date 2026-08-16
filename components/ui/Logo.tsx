@@ -30,7 +30,18 @@ function LogoMark() {
   return (
     <svg
       viewBox="0 0 285.06 214.44"
-      className="h-9 w-auto text-[--text-primary]"
+      // h-7, not h-9. At 36px the mark stood more than twice the height of
+      // the 16px wordmark beside it and read as a badge with a caption rather
+      // than as a lockup; 28px sits closer to cap-height-plus-a-bit, which is
+      // the usual relationship.
+      //
+      // Safe for --nav-h *only* because the mark is not what sets it: the
+      // header's height comes from py-4 (32) plus its tallest control (36),
+      // which on desktop is the CTA's py-2/text-sm and on mobile the h-9 menu
+      // button. Both still measure 36, so the nav stays 69px and every pinned
+      // surface stays aligned (globals.css:95). Shrink those and this stops
+      // being true — check the measurement, don't assume it.
+      className="h-7 w-auto text-[--text-primary]"
       aria-hidden="true"
       focusable="false"
     >
