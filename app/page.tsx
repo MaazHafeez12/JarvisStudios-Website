@@ -22,12 +22,14 @@ export default function HomePage() {
         </Reveal>
         <Reveal delay={0.1} lcpSafe>
           <h1 className="mt-4 font-display text-4xl font-semibold leading-tight sm:text-6xl">
-            Software that ships. Growth that compounds.
+            Never miss another job because the phone didn&apos;t get answered.
           </h1>
         </Reveal>
         <Reveal delay={0.2}>
           <p className="mx-auto mt-6 max-w-xl text-[--text-secondary]">
-            Web, app, SaaS, CRM, AI automation, and marketing &amp; design.
+            We build the automation and systems that keep trades businesses
+            running when you&apos;re not in the office: missed-call text-back,
+            lead capture, booking, CRM.
           </p>
         </Reveal>
         <Reveal delay={0.3}>
