@@ -50,9 +50,13 @@ export default function AboutPage() {
       <section className="border-t border-[--border] px-6 py-16">
         <div className="mx-auto max-w-4xl">
           <Reveal>
-            <h2 className="font-display text-2xl font-semibold">Team</h2>
+            <h2 className="font-display text-2xl font-semibold">
+              Built lean, on purpose.
+            </h2>
             <p className="mt-3 max-w-xl text-[--text-secondary]">
-              Team bios are coming soon.
+              A focused team of specialists per project, not a bloated bench.
+              That means more attention on your build and faster decisions,
+              not more layers between you and the person doing the work.
             </p>
           </Reveal>
         </div>
