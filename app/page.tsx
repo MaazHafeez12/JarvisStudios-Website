@@ -84,12 +84,12 @@ export default function HomePage() {
                   Real client, real numbers
                 </p>
                 <h2 className="mt-2 max-w-xl text-balance font-display text-2xl font-semibold sm:text-3xl">
-                  SNF Construction Group&rsquo;s social reach is growing 10%,
-                  every month.
+                  We understand how trades businesses actually run.
                 </h2>
                 <p className="mt-3 max-w-md text-sm leading-relaxed text-[--text-secondary]">
-                  Content and social management, run and measured monthly
-                  since we took over.
+                  Content and social management for SNF Construction Group,
+                  run and measured monthly since we took over: social reach
+                  growing 10%, every month.
                 </p>
               </div>
               <Link
