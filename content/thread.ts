@@ -24,8 +24,8 @@ export interface ThreadBeat {
 export const THREAD_BEATS: ThreadBeat[] = [
   {
     id: "thread",
-    title: "The thread",
-    body: "Every project has one detail that explains all the others. Usually it is not the one in the brief.",
+    title: "The real problem is rarely the one in the brief",
+    body: "You'll ask for a website. What's actually costing you money is usually somewhere else: missed calls, no follow-up, a quote that takes three days to send.",
     // Tuned against the measured handoff, not by eye. Each beat change leaves
     // a short stretch with nothing legible — about 110px of scroll, which
     // reads as a deliberate cut. At 0.24 this first one was 226px, twice the
@@ -37,24 +37,24 @@ export const THREAD_BEATS: ThreadBeat[] = [
   },
   {
     id: "pull",
-    title: "The pull",
-    body: "We follow it past the obvious answer, because the obvious answer is the one you already tried.",
+    title: "We find it before we build anything",
+    body: "Discovery isn't a formality. It's how we make sure the $1,000 project actually fixes the thing that's bleeding you money.",
     start: 0.42,
     end: 0.60,
     side: "right",
   },
   {
     id: "weave",
-    title: "The weave",
-    body: "Design gives it a shape. Engineering makes it hold. Neither happens after the other is finished.",
+    title: "Then we build the smallest thing that fixes it",
+    body: "Not a six-month platform. The fastest system that closes the gap.",
     start: 0.60,
     end: 0.78,
     side: "left",
   },
   {
     id: "signature",
-    title: "The signature",
-    body: "What ships should be unmistakably yours — not a template with your logo dropped into it.",
+    title: "And we hand it off working, not just shipped",
+    body: "Launch means it's live and it's already doing the job, not \"here's your code, good luck.\"",
     // Past 1 on purpose: an `end` inside the track leaves the last stretch of
     // scroll showing an empty frame with nothing to read, which is the one
     // place a pinned section feels broken rather than finished. Ending beyond
