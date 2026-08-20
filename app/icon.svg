@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Favicon — Next.js App Router file convention. Being named `icon.svg` inside
+  `app/` is the whole registration: Next serves it and injects the <link>, so
+  there is nothing to wire up in layout.tsx.
+
+  Why this is not just `public/logo.svg` renamed. Two reasons, both fatal:
+
+  1. THE MARK IS ON-DARK ONLY. `public/logo.svg` ships the "J" in white
+     (see its header). Tab bars follow the OS theme, so a white-on-transparent
+     mark is invisible for every visitor on a light one. The dark tile below is
+     the fix — the mark keeps its own background instead of borrowing the
+     browser's, so it reads identically in both themes. #141414 is neutral-950
+     from tailwind.config.ts, not an approximation.
+
+  2. THE MARK IS NOT SQUARE. It is 285.06 x 214.44 (~4:3). A favicon is square
+     everywhere it appears, so an unpadded mark gets letterboxed or squashed
+     by the browser. It is fitted here deliberately: scaled to 400 of 512 wide
+     (~78%) and centred, which is as large as it goes while keeping the tile
+     from looking cropped.
+
+  Colours are unchanged from the brand asset on purpose. docs/DESIGN.md §2.1
+  says never swap which letterform is neutral and which is blue — that split is
+  the mark's signature, and a favicon is the last place to start improvising.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Jarvis Studios">
+  <rect width="512" height="512" rx="72" fill="#141414"/>
+  <g transform="translate(56 105.55) scale(1.403213)">
+    <polygon fill="#00ADEF" points="285.06 75.65 285.06 0 155.72 0 155.72 101.36 156.77 101.85 156.77 102.25 232.01 138.62 232.01 173.44 155.72 138.79 155.72 214.44 285.06 214.44 285.06 113.08 284 112.59 284 112.19 208.77 75.83 208.77 41.01 285.06 75.65"/>
+    <g fill="#ffffff">
+      <polygon points="90.33 171.81 53.05 171.81 53.05 150.23 0 150.23 0 171.81 0 214.36 0 214.44 53.05 214.44 53.05 214.36 90.33 214.36 90.33 214.44 143.38 214.44 143.38 214.36 143.38 171.81 143.38 107.22 90.33 107.22 90.33 171.81"/>
+      <polygon points="90.33 0 34.39 0 34.39 42.56 90.33 42.56 90.33 64.67 143.38 64.67 143.38 42.56 143.38 0 90.33 0"/>
+    </g>
+  </g>
+</svg>

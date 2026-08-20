@@ -10,6 +10,12 @@
   grows. Dark mode is the default per DESIGN.md §4.
 */
 :root {
+  /* Tells the browser to render its own UI dark too — scrollbars, the
+     `<select>` dropdown on /contact, autofill backgrounds, focus rings. Without
+     it those stay light-mode against a dark page. It also lets the browser
+     paint the canvas dark before any CSS arrives, which is what removes the
+     white flash on first load. Overridden in the light block below. */
+  color-scheme: dark;
   --surface: theme("colors.neutral.950");
   --surface-raised: theme("colors.neutral.900");
   --text-primary: theme("colors.neutral.0");
@@ -25,6 +31,7 @@
 }
 
 :root[data-theme="light"] {
+  color-scheme: light;
   --surface: theme("colors.neutral.0");
   --surface-raised: theme("colors.neutral.100");
   --text-primary: theme("colors.neutral.800");

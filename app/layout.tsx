@@ -30,12 +30,24 @@ const clashDisplay = localFont({
   display: "swap",
 });
 
+// Dark is the default, and only an explicit choice moves off it. This used to
+// consult `prefers-color-scheme: light`, which made the OS the deciding vote
+// and handed a light-mode visitor the light theme on first paint — contrary to
+// globals.css, whose `:root` holds the dark tokens, and to docs/DESIGN.md §4.
+// The CSS and the design doc already agreed; this script was the one dissenter.
+//
+// Normalized against the literal 'light' rather than `stored || 'dark'` so the
+// attribute is always exactly one of the two valid values. A junk localStorage
+// entry would otherwise be written through to `data-theme`, matching no CSS
+// block and leaving ThemeToggle reading a theme that does not exist.
 const themeInitScript = `
   (function () {
     try {
       var stored = localStorage.getItem('theme');
-      var theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-      document.documentElement.setAttribute('data-theme', theme);
+      document.documentElement.setAttribute(
+        'data-theme',
+        stored === 'light' ? 'light' : 'dark'
+      );
     } catch (e) {}
   })();
 `;
