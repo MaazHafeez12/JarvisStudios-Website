@@ -24,27 +24,29 @@ export interface Situation {
 
 export const SITUATIONS: Situation[] = [
   {
-    id: "new",
-    label: "We're starting something from scratch",
-    detail: "No product yet, or an idea that needs to become one.",
-    services: ["web", "app", "saas"],
+    id: "missed-calls",
+    label: "We're missing calls and losing jobs to it",
+    detail:
+      "No one answers after hours, and by the time you call back, they already booked someone else.",
+    services: ["ai", "crm"],
   },
   {
-    id: "fix",
-    label: "What we have isn't working",
-    detail: "It exists, but it's slow, dated, or nobody finished it.",
-    services: ["web", "app", "saas", "design"],
+    id: "manual-followup",
+    label: "Our booking and follow-up is still manual",
+    detail:
+      "Texting back and forth, writing quotes by hand, hoping nothing falls through the cracks.",
+    services: ["ai", "crm"],
   },
   {
     id: "grow",
     label: "We need more of the right customers",
-    detail: "The product is fine. Getting people to it isn't.",
+    detail: "The work is good. Getting found by people ready to book isn't happening enough.",
     services: ["web", "design"],
   },
   {
-    id: "automate",
-    label: "Too much of this is still manual",
-    detail: "Work that runs on spreadsheets, copy-paste, and memory.",
-    services: ["ai", "crm"],
+    id: "outdated",
+    label: "Our website or systems feel outdated",
+    detail: "It exists, but it's slow, doesn't build trust, or nobody's touched it in years.",
+    services: ["web", "app", "saas", "design"],
   },
 ];

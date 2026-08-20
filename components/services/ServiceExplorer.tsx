@@ -123,10 +123,6 @@ export function ServiceExplorer() {
         <h2 className="max-w-2xl text-balance font-display text-2xl font-semibold sm:text-3xl">
           Where are you right now?
         </h2>
-        <p className="mt-4 max-w-xl text-[--text-secondary]">
-          Pick whichever is closest and the work that applies moves to the
-          front. Nothing is hidden — all six stay readable either way.
-        </p>
 
         <div
           className="mt-8 grid gap-3 sm:grid-cols-2"

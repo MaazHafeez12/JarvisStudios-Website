@@ -83,7 +83,7 @@ export default function ServicesPage() {
               because this is the page's LCP candidate — it moves, it never
               fades. */}
           <h1 className="max-w-3xl text-balance font-display text-4xl font-semibold sm:text-5xl">
-            <RevealWords text="Six ways we build. Usually you need two of them." lcpSafe />
+            <RevealWords text="Most trades businesses only need one or two of these fixed. We'll tell you which." lcpSafe />
           </h1>
           {/* Outcome only, no "pick one" instruction — ServiceExplorer's
               own prompt sits ~200px below and owns that language. Two
@@ -91,7 +91,8 @@ export default function ServicesPage() {
               same question twice. */}
           <Reveal delay={0.45}>
             <p className="mt-5 max-w-xl text-balance text-[--text-secondary]">
-              We&rsquo;ll tell you what it takes to get it live.
+              Pick whichever sounds like you and we&rsquo;ll tell you exactly
+              what it takes to get it live.
             </p>
           </Reveal>
         </div>
