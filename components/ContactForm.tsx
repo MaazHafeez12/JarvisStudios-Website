@@ -118,6 +118,7 @@ export function ContactForm() {
         <input
           id="name"
           type="text"
+          placeholder="Your name"
           value={form.name}
           onChange={(e) => update("name", e.target.value)}
           aria-invalid={!!fieldErrors.name}
@@ -130,6 +131,7 @@ export function ContactForm() {
         <input
           id="email"
           type="email"
+          placeholder="you@company.com"
           value={form.email}
           onChange={(e) => update("email", e.target.value)}
           aria-invalid={!!fieldErrors.email}
@@ -142,6 +144,7 @@ export function ContactForm() {
         <input
           id="company"
           type="text"
+          placeholder="Your business name"
           value={form.company}
           onChange={(e) => update("company", e.target.value)}
           className={inputClass(!!fieldErrors.company)}
@@ -172,6 +175,7 @@ export function ContactForm() {
         <textarea
           id="message"
           rows={5}
+          placeholder="What's slow, missed, or manual right now? A sentence or two is enough, we'll ask the rest."
           value={form.message}
           onChange={(e) => update("message", e.target.value)}
           aria-invalid={!!fieldErrors.message}
@@ -206,7 +210,7 @@ export function ContactForm() {
         disabled={isSubmitting}
         className="rounded-md bg-brand-500 px-6 py-3 text-sm font-medium text-neutral-950 transition-colors duration-150 ease-confident hover:bg-brand-300 disabled:opacity-60"
       >
-        {isSubmitting ? "Sending…" : "Send message"}
+        {isSubmitting ? "Sending…" : "Get my free scope"}
       </button>
     </form>
   );
