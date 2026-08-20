@@ -35,6 +35,26 @@ export interface Service {
 
 export const SERVICES: Service[] = [
   {
+    id: "ai",
+    name: "AI Automation",
+    summary: "Automation and AI built into the workflows your team already runs.",
+    capabilities: [
+      "Internal workflow and back-office automation",
+      "LLM features in your product — search, drafting, classification",
+      "Document and data pipelines with human review built in",
+    ],
+  },
+  {
+    id: "crm",
+    name: "CRM",
+    summary: "CRM systems tailored to how your team actually sells and supports.",
+    capabilities: [
+      "Custom pipelines, fields, and workflows",
+      "Integrations with your existing sales/support tools",
+      "Data migration from spreadsheets or legacy systems",
+    ],
+  },
+  {
     id: "web",
     name: "Web Development",
     summary: "Marketing sites and web apps built for speed, clarity, and conversion.",
@@ -62,26 +82,6 @@ export const SERVICES: Service[] = [
       "Auth, billing, and subscription management",
       "Multi-tenant architecture and role-based access",
       "API design and third-party integrations",
-    ],
-  },
-  {
-    id: "crm",
-    name: "CRM",
-    summary: "CRM systems tailored to how your team actually sells and supports.",
-    capabilities: [
-      "Custom pipelines, fields, and workflows",
-      "Integrations with your existing sales/support tools",
-      "Data migration from spreadsheets or legacy systems",
-    ],
-  },
-  {
-    id: "ai",
-    name: "AI Automation",
-    summary: "Automation and AI built into the workflows your team already runs.",
-    capabilities: [
-      "Internal workflow and back-office automation",
-      "LLM features in your product — search, drafting, classification",
-      "Document and data pipelines with human review built in",
     ],
   },
   {
