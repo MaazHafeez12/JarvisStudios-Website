@@ -10,18 +10,17 @@ export interface Differentiator {
 
 export const DIFFERENTIATORS: Differentiator[] = [
   {
-    title: "One team, the whole build",
-    description:
-      "Web, app, SaaS, CRM, and design under one roof — no hand-off gaps between an agency and a separate dev shop.",
+    title: "You'll know exactly what you're getting before you pay anything",
+    description: "Real scope, real price, in 48 hours. No vague retainers.",
   },
   {
-    title: "Real software, not just a pitch deck",
+    title: "We build it, we launch it, we make sure it works",
     description:
-      "We build what ships. Every engagement produces working software you can actually put in front of users.",
+      "Discovery, build, launch, and support after. Not a handoff into silence.",
   },
   {
-    title: "A process you can see",
+    title: "You can reach a real person, not a ticket queue",
     description:
-      "Discovery, design, build, launch — you always know what stage your project is at and what's next.",
+      "Direct line to who's actually building your project.",
   },
 ];

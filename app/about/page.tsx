@@ -13,12 +13,12 @@ export default function AboutPage() {
       <section className="mx-auto max-w-3xl px-6 py-20 text-center">
         <Reveal lcpSafe>
           <h1 className="font-display text-4xl font-semibold sm:text-5xl">
-            Software built by people who ship.
+            We build for businesses that can&apos;t afford downtime.
           </h1>
           <p className="mt-4 text-[--text-secondary]">
-            Jarvis Studios is a software agency offering web development,
-            app development, SaaS, CRM, and marketing/design — one team
-            covering the full build, from idea to launch.
+            Trades and local service businesses run on the phone ringing and
+            the job getting done. We build the software that keeps that
+            running, and we stand behind every build we ship.
           </p>
         </Reveal>
       </section>
