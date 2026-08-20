@@ -1,12 +1,12 @@
 # Jarvis Studios Website
 
-![status](https://img.shields.io/badge/status-MVP%20live%20on%20preview-brightgreen)
+![status](https://img.shields.io/badge/status-live%20in%20production-brightgreen)
 ![stack](https://img.shields.io/badge/stack-Next.js%20%2B%20Supabase-00ADEF)
 ![license](https://img.shields.io/badge/license-proprietary-black)
 
 Marketing website rebuild for **Jarvis Studios**, a software agency offering web development, app development, SaaS builds, CRM implementation, and marketing/design services. The site's job is to communicate the studio's service lines, showcase real client work, and convert prospective clients into inbound inquiries.
 
-> **Project status: MVP built and deployed to a Vercel preview URL**, per the staged rollout in `docs/PRD.md` §9. DNS cutover to the production domain (`jarvisstudios.net`) is intentionally on hold — see [`TODO.md`](./TODO.md) (untracked, local) for what's still open.
+> **Project status: live in production at [jarvisstudios.net](https://jarvisstudios.net)** as of 2026-08-20. The staged rollout in `docs/PRD.md` §9 is complete — the domain was moved from the previous site's Vercel project to this one (both were already on Vercel behind Cloudflare DNS, so no registrar or nameserver change was involved). The apex is canonical; `www` redirects to it. **The old Vercel project is retained, without the domain, as the rollback path** — do not delete it until this site has been stable through a full monitoring window. See [`TODO.md`](./TODO.md) (untracked, local) for what's still open.
 
 ## Documentation
 
@@ -72,7 +72,11 @@ Per [`docs/TRD.md`](./docs/TRD.md) §9, all secrets are server-only — none are
 
 `.env.example` documents this list with placeholder values. Never commit `.env.local` or any file containing real values (it's gitignored).
 
-> **Note:** the deployed Vercel project currently uses the same (production) credentials for all environments — Preview/Development environment isolation per the security audit is deliberately deferred (tracked locally, not currently a live risk since only `master` gets pushed).
+> **Environment scoping (updated 2026-08-20).** `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, and `SLACK_WEBHOOK_URL` are scoped to **Production only**. Until this change, Preview shared them — meaning any form submission on any preview URL wrote to the production `leads` table and fired real email and Slack. That was documented here as "not a live risk" on the grounds that only `master` was pushed; the grounds expired when PRs entered the workflow (2026-08-06), and the stakes rose again when the domain went live (2026-08-20) and the table began holding real customer inquiries.
+>
+> **Consequence to expect:** `/api/leads` returns 500 on preview deployments — `getSupabaseServerClient()` throws and the route handler catches it. This is the intended failure mode, not a bug. Full isolation per `docs/SECURITY_AUDIT.md` finding #2 (a second Supabase project and separate Resend/Slack credentials scoped to Preview) is still unbuilt; see `TODO.md`.
+>
+> Note this project exposes **Preview and Production only** — there is no Development environment in the dashboard. Local development reads `.env.local` and is unaffected by Vercel scoping.
 
 ## Scripts
 
