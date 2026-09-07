@@ -2,24 +2,45 @@
 // process and engineering decisions. Typed content, not a database, same
 // pattern as content/services.ts and content/process.ts.
 //
-// These are opinion and process pieces, not case studies: they explain how
-// and why the studio works the way it does, grounded in facts already
-// established elsewhere in this codebase (content/process.ts,
-// content/services.ts, content/engagement.ts) rather than client outcomes,
-// metrics, or names — none of which exist yet (see PRODUCT.md "Evidence on
-// Hand"). Nothing here is invented to sound like proof; it's the studio's
-// own reasoning, which it can state plainly without evidence of delivery.
+// Most entries here are opinion and process pieces (kind: "note"): they
+// explain how and why the studio works the way it does, grounded in facts
+// already established elsewhere in this codebase (content/process.ts,
+// content/services.ts, content/engagement.ts) rather than invented client
+// outcomes. A case study (kind: "case-study") is held to a stricter bar —
+// every figure and claim in it must already be published under the client's
+// name elsewhere on the site (content/services.ts ServiceProof, the homepage
+// featured-work section). It restates and explains that result; it does not
+// introduce new numbers, dates, channels, or tactics that aren't already
+// on hand. Nothing here is invented to sound like proof.
 
 export interface InsightPost {
   slug: string;
   title: string;
   excerpt: string;
+  /** Distinguishes a process note from a client case study. Defaults to a
+   *  note; only the listing/detail label treatment reads this. */
+  kind?: "note" | "case-study";
   /** ISO date. The date each piece was actually written, not a backdated one. */
   publishedAt: string;
   body: string[];
 }
 
 export const INSIGHTS: InsightPost[] = [
+  {
+    slug: "snf-construction-group-social-reach",
+    title: "SNF Construction Group: reach that compounds, not spikes",
+    kind: "case-study",
+    excerpt:
+      "One published number — 10% month-over-month social growth — and what it takes to make a number like that mean something.",
+    publishedAt: "2026-09-07",
+    body: [
+      "We run content and social management for SNF Construction Group on a monthly retainer, and their social reach has grown roughly 10% month over month since we took it over. That figure is published on our services page and our homepage, and this piece exists to explain what's behind it — not to add a second, more impressive number that nobody measured.",
+      "The word doing the work in that sentence is \"month over month.\" A single good month is a spike: one post lands, reach jumps, and the next month it settles back to where it was. Ten percent compounding is a different shape. It means the baseline itself moves up every month, so the same 10% is a larger absolute gain each time. It also means the growth has to come from something repeatable — a posting rhythm, a content approach that keeps working — rather than a one-off that can't be run again.",
+      "This is retainer work, not a fixed scope, and that's a deliberate match rather than a default. Our engagement terms say fixed scope suits a project with a known finish line and a retainer suits ongoing work with no fixed endpoint. Social growth has no finish line: the moment you stop publishing, reach decays. A fixed-scope \"social launch\" would hand back a channel that starts shrinking the day it's delivered. So the engagement is structured the way the work actually behaves.",
+      "Measured monthly is the other half of it. We report the number every month, against the previous month, from the point we took over — which is what makes it a trend instead of a screenshot. A one-time \"reach up 40%\" with no window attached tells you almost nothing: up from when, over how long, and does it hold. A month-over-month figure you can see repeat is a claim that survives being looked at closely.",
+      "What we're not putting in this case study is as intentional as what we are. No vanity baseline chosen to make the percentage look bigger, no invented list of tactics, no client quote we wrote ourselves. The result is one honest number with its measurement window attached, and the reasoning is the studio's own. That's the standard for anything we publish under a client's name — and it's the same standard we'd want applied to a number a studio showed us.",
+    ],
+  },
   {
     slug: "four-steps",
     title: "The four steps behind every project we run",

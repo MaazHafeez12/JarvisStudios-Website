@@ -19,12 +19,13 @@ function getPost(slug: string) {
   return INSIGHTS.find((post) => post.slug === slug);
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}): Metadata {
-  const post = getPost(params.slug);
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPost(slug);
   if (!post) return {};
   return {
     title: `${post.title} — Jarvis Studios`,
@@ -32,12 +33,13 @@ export function generateMetadata({
   };
 }
 
-export default function InsightPostPage({
+export default async function InsightPostPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const post = getPost(params.slug);
+  const { slug } = await params;
+  const post = getPost(slug);
   if (!post) notFound();
 
   return (
@@ -52,6 +54,12 @@ export default function InsightPostPage({
         </Link>
 
         <p className="mt-8 text-sm text-[--text-secondary]">
+          {post.kind === "case-study" && (
+            <span className="text-[--text-primary]">
+              Case study
+              <span aria-hidden="true"> · </span>
+            </span>
+          )}
           {formatDate(post.publishedAt)}
         </p>
         <h1 className="mt-2 font-display text-3xl font-semibold sm:text-4xl">
