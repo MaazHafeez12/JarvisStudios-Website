@@ -42,6 +42,12 @@ export default function InsightsPage() {
             <Reveal key={post.slug} delay={i * 0.06}>
               <Link href={`/insights/${post.slug}`} className="group block py-8">
                 <p className="text-sm text-[--text-secondary]">
+                  {post.kind === "case-study" && (
+                    <span className="text-[--text-primary]">
+                      Case study
+                      <span aria-hidden="true"> · </span>
+                    </span>
+                  )}
                   {formatDate(post.publishedAt)}
                 </p>
                 <h2 className="mt-2 font-display text-2xl font-semibold transition-colors duration-200 ease-confident group-hover:text-[--accent]">
