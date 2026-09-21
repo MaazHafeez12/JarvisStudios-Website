@@ -3,10 +3,42 @@ import { Resend } from "resend";
 import { escapeHtml } from "@/lib/sanitize";
 import type { Lead } from "@/lib/types/lead";
 
-// TODO: replace with a verified sending domain (e.g. leads@jarvisstudios.com)
-// once one exists for this project — Resend's shared test address works
-// without any domain verification but shouldn't be used in production.
-const FROM_ADDRESS = "Jarvis Studios <onboarding@resend.dev>";
+// Sender address. Configured via RESEND_FROM_EMAIL so the verified domain is
+// an environment decision rather than a code change, and so Preview and
+// Production can differ.
+//
+// WHY THIS MATTERS MORE THAN IT LOOKS. `onboarding@resend.dev` is Resend's
+// shared test address: it needs no domain verification, which is exactly why
+// it is the wrong thing to ship. Mail sent from it carries no SPF or DKIM
+// alignment for jarvisstudios.net, so receiving servers have nothing tying
+// the message to this business — and lead notifications are the single
+// output of the only dynamic feature on the site. An enquiry that saves to
+// the database but whose notification lands in spam is a lead lost as surely
+// as one that was never submitted.
+//
+// To set it up: add jarvisstudios.net as a domain in Resend, publish the
+// DKIM and SPF records it gives you at your DNS provider (Cloudflare, per
+// README), wait for verification, then set RESEND_FROM_EMAIL to an address
+// on that domain. A DMARC record (`p=none` to start, so you get reports
+// without rejecting anything) is worth adding at the same time.
+//
+// Falls back to the test address rather than throwing, deliberately: a
+// missing env var must not stop lead notifications reaching a live inbox.
+// The warning is what makes the degraded state visible in the logs.
+const FALLBACK_FROM_ADDRESS = "Jarvis Studios <onboarding@resend.dev>";
+
+function getFromAddress(): string {
+  const configured = process.env.RESEND_FROM_EMAIL;
+  if (configured) return configured;
+
+  console.warn(
+    "[notifications/email] RESEND_FROM_EMAIL is not set — falling back to " +
+      "Resend's shared test address. Notification mail has no SPF/DKIM " +
+      "alignment for this domain and may be filtered as spam. See the " +
+      "setup note in lib/notifications/email.ts."
+  );
+  return FALLBACK_FROM_ADDRESS;
+}
 
 export async function sendLeadNotificationEmail(lead: Lead): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
@@ -35,8 +67,13 @@ export async function sendLeadNotificationEmail(lead: Lead): Promise<void> {
   `;
 
   await resend.emails.send({
-    from: FROM_ADDRESS,
+    from: getFromAddress(),
     to,
+    // Replying to a notification should reach the person who sent it, not
+    // bounce off the sending domain. The address is already validated and
+    // the subject/body are escaped; this header is the only place the raw
+    // value is used as an address rather than as text.
+    replyTo: lead.email,
     subject: `New ${lead.type} inquiry from ${lead.name}`,
     html,
   });
