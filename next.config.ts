@@ -19,6 +19,23 @@ const securityHeaders = [
       "font-src 'self' data:",
       "connect-src 'self'",
       "frame-ancestors 'none'",
+      // The three directives below do NOT fall back to default-src, which is
+      // why a policy can look locked down and still leave them open.
+      //
+      // base-uri: a <base href> injected into the document silently re-points
+      // every relative URL on the page — including the script the page is
+      // about to load. default-src does not cover it; 'none' forbids <base>
+      // outright, and this site has no <base> tag to lose.
+      //
+      // form-action: restricts where a form may POST. The contact form
+      // submits over fetch, so this is not the path it normally takes — it
+      // closes the case where an injected <form> is aimed at another origin.
+      //
+      // object-src: <object>/<embed>/<applet>, a legacy script-execution
+      // vector. Nothing on the site uses them.
+      "base-uri 'none'",
+      "form-action 'self'",
+      "object-src 'none'",
     ].join("; "),
   },
   {
