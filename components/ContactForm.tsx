@@ -216,8 +216,17 @@ export function ContactForm() {
   );
 }
 
+// `outline-none` is deliberately absent. It used to be here, leaving the
+// 1px `focus:border-[--accent]` as the only focus signal — a one-pixel
+// colour change that fails WCAG 2.4.13's 2px minimum and is genuinely hard
+// to locate when tabbing. The global `:focus-visible` rule in globals.css now
+// draws the real indicator; the border change stays as a secondary cue.
+//
+// Note that a Tailwind utility would win over that rule on specificity, so
+// re-adding `outline-none` here silently removes the site's focus ring from
+// every form field. Don't.
 function inputClass(hasError: boolean): string {
-  return `w-full rounded-md border bg-[--surface-raised] px-4 py-2.5 text-[--text-primary] outline-none transition-colors duration-150 ease-confident focus:border-[--accent] ${
+  return `w-full rounded-md border bg-[--surface-raised] px-4 py-2.5 text-[--text-primary] transition-colors duration-150 ease-confident focus:border-[--accent] ${
     hasError ? "border-error-500" : "border-[--border]"
   }`;
 }
