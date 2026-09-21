@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { validateLead, type FieldErrors } from "@/lib/validation/lead";
 import { PROJECT_TYPES, type LeadInput, type ProjectType } from "@/lib/types/lead";
 
@@ -73,22 +74,41 @@ export function ContactForm() {
       const data = await res.json();
 
       if (res.status === 200 && data.success) {
+        // The site's one conversion. Page views were already tracked; until
+        // this event existed there was no way to answer "how many visitors
+        // actually enquire", which for a lead-generation site is the only
+        // number that matters.
+        //
+        // NOTHING THE VISITOR TYPED IS SENT. The payload is `projectType`
+        // and nothing else — one of six fixed enum values, chosen from a
+        // dropdown rather than written. Name, email, company and message
+        // stay out of the analytics pipeline entirely; they are personal
+        // data whose stated purpose (content/legal.ts) is replying to the
+        // enquiry, and routing them through a second processor would make
+        // the privacy policy untrue.
+        track("lead_submitted", { projectType: form.projectType ?? "unspecified" });
         setState({ status: "success" });
         setForm({ ...EMPTY_FORM });
       } else if (res.status === 400 && data.error === "VALIDATION_ERROR") {
         setState({ status: "field-errors", fields: data.fields ?? {} });
       } else if (res.status === 429) {
+        track("lead_submit_failed", { reason: "rate_limited" });
         setState({
           status: "error",
           message: "You've submitted a few requests recently — please try again in a bit.",
         });
       } else {
+        // The one that matters operationally: a spike here means the form is
+        // broken and leads are being lost, which otherwise only surfaces when
+        // someone notices the inbox has gone quiet.
+        track("lead_submit_failed", { reason: "server_error" });
         setState({
           status: "error",
           message: "Something went wrong on our end. Please try again shortly.",
         });
       }
     } catch {
+      track("lead_submit_failed", { reason: "network" });
       setState({
         status: "error",
         message: "Couldn't reach the server. Check your connection and try again.",
