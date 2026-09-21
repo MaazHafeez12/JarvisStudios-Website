@@ -8,7 +8,11 @@ import { formatDate } from "@/lib/format-date";
 
 export const metadata: Metadata = pageMetadata({
   title: "Insights",
-  description: "Notes on process and engineering decisions from Jarvis Studios.",
+  // Names the one published result rather than only the genre of writing.
+  // "Measured month over month" is the SNF case study's own framing, not a
+  // stronger claim than the post makes.
+  description:
+    "How we scope, build and price the work — plus what a retainer actually produced for a construction client, measured month over month.",
   path: "/insights",
 });
 

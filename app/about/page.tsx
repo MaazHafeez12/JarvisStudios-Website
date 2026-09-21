@@ -5,7 +5,13 @@ import { DIFFERENTIATORS } from "@/content/differentiators";
 
 export const metadata: Metadata = pageMetadata({
   title: "About",
-  description: "Mission, team, and differentiation for Jarvis Studios.",
+  // Was "Mission, team, and differentiation for Jarvis Studios." — a
+  // description of the page's sections rather than a reason to open it.
+  // Every claim here is already published: the lean-team argument is this
+  // page's own "Built lean, on purpose", and the other two are
+  // content/differentiators.ts verbatim in substance.
+  description:
+    "A lean studio for trades and local service businesses. You talk to whoever is building your project — and we're still there after launch.",
   path: "/about",
 });
 
