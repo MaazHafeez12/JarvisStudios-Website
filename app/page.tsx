@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
@@ -5,11 +6,25 @@ import { HeroVisual } from "@/components/hero/HeroVisual";
 import { Marquee } from "@/components/ui/Marquee";
 import { ServiceTour } from "@/components/services/ServiceTour";
 import { ServiceVignette } from "@/components/services/ServiceVignette";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { organizationGraph } from "@/lib/structured-data";
+import { pageMetadata } from "@/lib/seo";
 import { SERVICES } from "@/content/services";
+
+// No `title` — the homepage is the one page whose title is the bare site
+// name rather than "Something — Jarvis Studios".
+export const metadata: Metadata = pageMetadata({
+  description:
+    "We build the automation and systems that keep trades businesses running: missed-call text-back, lead capture, booking, and CRM. Scoped project and a real price in 48 hours.",
+  path: "",
+});
 
 export default function HomePage() {
   return (
     <main>
+      {/* Organization + WebSite, emitted once site-wide. Other pages
+          reference these nodes by @id rather than repeating them. */}
+      <JsonLd data={organizationGraph()} />
       {/* Hero — staggered entrance per docs/DESIGN.md §3.2, over the
           assembling shard field from docs/MOTION_REDESIGN.md §3 (Option C).
           The copy stays server-rendered inside the client shell so the H1

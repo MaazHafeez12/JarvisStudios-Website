@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { track } from "@vercel/analytics";
 import { validateLead, type FieldErrors } from "@/lib/validation/lead";
 import { PROJECT_TYPES, type LeadInput, type ProjectType } from "@/lib/types/lead";
 
@@ -72,22 +74,41 @@ export function ContactForm() {
       const data = await res.json();
 
       if (res.status === 200 && data.success) {
+        // The site's one conversion. Page views were already tracked; until
+        // this event existed there was no way to answer "how many visitors
+        // actually enquire", which for a lead-generation site is the only
+        // number that matters.
+        //
+        // NOTHING THE VISITOR TYPED IS SENT. The payload is `projectType`
+        // and nothing else — one of six fixed enum values, chosen from a
+        // dropdown rather than written. Name, email, company and message
+        // stay out of the analytics pipeline entirely; they are personal
+        // data whose stated purpose (content/legal.ts) is replying to the
+        // enquiry, and routing them through a second processor would make
+        // the privacy policy untrue.
+        track("lead_submitted", { projectType: form.projectType ?? "unspecified" });
         setState({ status: "success" });
         setForm({ ...EMPTY_FORM });
       } else if (res.status === 400 && data.error === "VALIDATION_ERROR") {
         setState({ status: "field-errors", fields: data.fields ?? {} });
       } else if (res.status === 429) {
+        track("lead_submit_failed", { reason: "rate_limited" });
         setState({
           status: "error",
           message: "You've submitted a few requests recently — please try again in a bit.",
         });
       } else {
+        // The one that matters operationally: a spike here means the form is
+        // broken and leads are being lost, which otherwise only surfaces when
+        // someone notices the inbox has gone quiet.
+        track("lead_submit_failed", { reason: "server_error" });
         setState({
           status: "error",
           message: "Something went wrong on our end. Please try again shortly.",
         });
       }
     } catch {
+      track("lead_submit_failed", { reason: "network" });
       setState({
         status: "error",
         message: "Couldn't reach the server. Check your connection and try again.",
@@ -212,12 +233,39 @@ export function ContactForm() {
       >
         {isSubmitting ? "Sending…" : "Get my free scope"}
       </button>
+
+      {/* Collection notice. This sits at the point of collection rather than
+          only in the footer because that is what GDPR Art. 13 actually asks
+          for — the information has to reach someone as they hand data over,
+          not be discoverable elsewhere on the site. Deliberately states the
+          retention window inline: "see our privacy policy" alone tells a
+          visitor nothing at the moment they are deciding whether to type. */}
+      <p className="text-xs leading-relaxed text-[--text-secondary]">
+        We use this only to reply to your enquiry, keep it for 24 months, and
+        never sell or share it.{" "}
+        <Link
+          href="/privacy"
+          className="underline decoration-[--border] underline-offset-4 transition-colors duration-150 ease-confident hover:text-[--text-primary] hover:decoration-[--accent]"
+        >
+          Privacy policy
+        </Link>
+        .
+      </p>
     </form>
   );
 }
 
+// `outline-none` is deliberately absent. It used to be here, leaving the
+// 1px `focus:border-[--accent]` as the only focus signal — a one-pixel
+// colour change that fails WCAG 2.4.13's 2px minimum and is genuinely hard
+// to locate when tabbing. The global `:focus-visible` rule in globals.css now
+// draws the real indicator; the border change stays as a secondary cue.
+//
+// Note that a Tailwind utility would win over that rule on specificity, so
+// re-adding `outline-none` here silently removes the site's focus ring from
+// every form field. Don't.
 function inputClass(hasError: boolean): string {
-  return `w-full rounded-md border bg-[--surface-raised] px-4 py-2.5 text-[--text-primary] outline-none transition-colors duration-150 ease-confident focus:border-[--accent] ${
+  return `w-full rounded-md border bg-[--surface-raised] px-4 py-2.5 text-[--text-primary] transition-colors duration-150 ease-confident focus:border-[--accent] ${
     hasError ? "border-error-500" : "border-[--border]"
   }`;
 }

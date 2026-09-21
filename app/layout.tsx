@@ -1,16 +1,37 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { MotionConfig } from "motion/react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+// The third typeface of the brand system (PRODUCT.md "Brand Commitments":
+// Clash Display for headings, Inter for body/UI, JetBrains Mono for accents).
+//
+// tailwind.config.ts has mapped `font-mono` to `var(--font-jetbrains-mono)`
+// since the theme was written, but nothing ever defined that variable — so
+// every `font-mono` element on the site (the hero eyebrow, the 01/02/03
+// markers on /about, the footer column headings, the 404 code, the legal
+// pages' updated date) silently fell through to the generic system monospace.
+// The token existed, the font never loaded.
+//
+// Via next/font/google rather than a <link>, like Inter: next/font downloads
+// and self-hosts the files at build time, so this serves from our own origin
+// and satisfies the `font-src 'self'` CSP in next.config.ts without loosening
+// it (PRODUCT.md "Technical constraints": no external hosts).
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
   display: "swap",
 });
 
@@ -52,9 +73,14 @@ const themeInitScript = `
   })();
 `;
 
+// Root defaults only. Every route exports its own metadata via
+// `pageMetadata()` in lib/seo.ts, which is what supplies the per-page
+// canonical — the one tag Next never infers. What stays here is the
+// `metadataBase` every relative URL resolves against, and a title/description
+// fallback for any route that somehow doesn't set its own.
 export const metadata: Metadata = {
-  metadataBase: new URL("https://jarvisstudios.net"),
-  title: "Jarvis Studios",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_NAME,
   description:
     "Jarvis Studios — web development, app development, SaaS, CRM, and marketing/design for growing businesses.",
 };
@@ -71,7 +97,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${clashDisplay.variable}`}
+      className={`${inter.variable} ${clashDisplay.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>

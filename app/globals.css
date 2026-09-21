@@ -52,6 +52,35 @@ body {
   color: var(--text-primary);
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Focus indicators (WCAG 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured,
+   2.4.13 Focus Appearance).
+
+   Until this existed the site had no focus styling at all: buttons and links
+   fell back to whatever the UA draws, and the contact form actively removed
+   it — `outline-none` plus a 1px border-colour change, which is a 1px shift
+   a keyboard user has to hunt for and does not meet the 2px minimum.
+
+   THE OFFSET IS THE LOAD-BEARING PART, not decoration. 2.4.13 wants the
+   indicator to contrast 3:1 with what sits next to it, and the site's primary
+   CTA is `bg-brand-500` — the same colour as `--accent` in the dark theme. An
+   inset or flush ring on that button would be brand-on-brand and effectively
+   invisible. Offsetting it puts a band of page background between button and
+   ring, so the ring's neighbour is always `--surface`, never the component's
+   own fill. `--accent` clears 3:1 on both themes' surfaces by construction
+   (see the contrast notes on the token definitions above).
+
+   `:where()` keeps specificity at zero, so any element that genuinely needs a
+   different treatment can still override this with a plain utility class
+   rather than an `!important`.
+   ───────────────────────────────────────────────────────────────────────── */
+@layer base {
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
 /* Hero shard field (docs/MOTION_REDESIGN.md §3 Option C). Backstop for the
    banded shard layout in lib/hero-shards.ts: fades the whole visual layer
    out across the middle of the hero, where the copy sits. Positioning alone

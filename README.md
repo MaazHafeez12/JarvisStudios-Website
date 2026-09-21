@@ -66,6 +66,7 @@ Per [`docs/TRD.md`](./docs/TRD.md) §9, all secrets are server-only — none are
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only Supabase access (bypasses RLS — never expose to client) |
 | `RESEND_API_KEY` | Sending lead-notification emails |
 | `NOTIFICATION_EMAIL_TO` | Destination address for lead notifications |
+| `RESEND_FROM_EMAIL` | Sender address for lead notifications — must be on a Resend-verified domain (see below) |
 | `SLACK_WEBHOOK_URL` | Posting lead notifications to Slack |
 | `UPSTASH_REDIS_REST_URL` | Rate limiting store for `/api/leads` |
 | `UPSTASH_REDIS_REST_TOKEN` | Rate limiting store for `/api/leads` |
@@ -78,6 +79,30 @@ Per [`docs/TRD.md`](./docs/TRD.md) §9, all secrets are server-only — none are
 >
 > Note this project exposes **Preview and Production only** — there is no Development environment in the dashboard. Local development reads `.env.local` and is unaffected by Vercel scoping.
 
+### Email deliverability (SPF / DKIM / DMARC)
+
+Lead notifications are the only output of the only dynamic feature on this site, so where they come *from* matters. Until `RESEND_FROM_EMAIL` is set, the code falls back to `onboarding@resend.dev` — Resend's shared test address — and logs a warning on every send. That address needs no domain verification, which is exactly why it's wrong to ship: mail from it has no SPF or DKIM alignment for `jarvisstudios.net`, so receiving servers have nothing tying the message to this business, and notifications can be filtered as spam.
+
+**DNS is already done** (verified by lookup 2026-09-21 — re-check before trusting this):
+
+| Record | Value |
+|---|---|
+| `resend._domainkey` TXT | DKIM public key, published |
+| `send` TXT | `v=spf1 include:amazonses.com ~all` |
+| `send` MX | `feedback-smtp.ap-northeast-1.amazonses.com` (pri 10) |
+
+The apex `v=spf1 include:_spf.mx.cloudflare.net ~all` is Cloudflare Email Routing for *receiving* and does not conflict — Resend's SPF lives on the `send` subdomain, and SPF alignment is relaxed by default, so it still aligns to the organizational domain.
+
+What is still open:
+
+1. **Confirm the domain reads "Verified" in the Resend dashboard.** The records existing is necessary, not sufficient.
+2. **Add a DMARC record.** There is none, which means no policy and no visibility into who is sending as this domain:
+   `_dmarc` TXT → `v=DMARC1; p=none; rua=mailto:dmarc@jarvisstudios.net`
+   The `rua` address must be **on this domain**. RFC 7489 §7.1 requires an external destination to authorise reports via its own DNS record, and Gmail does not publish one — so `rua=mailto:...@gmail.com` gets silently dropped by strict reporters. Route `dmarc@jarvisstudios.net` to the real inbox with a Cloudflare Email Routing rule instead.
+3. **Set `RESEND_FROM_EMAIL` in Vercel (Production scope)** to an address on the domain — e.g. `Jarvis Studios <leads@jarvisstudios.net>` — then **redeploy**, since env var changes do not apply to existing deployments.
+
+Only step 3 is read by the code. Once DMARC has collected clean reports for a few weeks, tighten `p=none` → `p=quarantine` → `p=reject`; both DKIM and SPF align here, so the path to enforcement is unobstructed.
+
 ## Scripts
 
 | Script | Purpose |
@@ -86,6 +111,8 @@ Per [`docs/TRD.md`](./docs/TRD.md) §9, all secrets are server-only — none are
 | `npm run build` | Production build (statically generates marketing pages) |
 | `npm run start` | Serve the production build locally |
 | `npm run lint` | Lint the codebase |
+| `npm test` | Run the unit tests once (CI mode) |
+| `npm run test:watch` | Run the unit tests in watch mode |
 
 ## Folder Structure
 
@@ -109,4 +136,15 @@ See [`docs/SECURITY_AUDIT.md`](./docs/SECURITY_AUDIT.md) for the full design-lev
 
 ## CI
 
-`.github/workflows/dependency-audit.yml` runs `npm audit --audit-level=high` on push/PR and weekly; `.github/dependabot.yml` opens weekly update PRs for npm and GitHub Actions dependencies. There is no build/lint/test CI gate yet — pushes go straight to `master`, which Vercel auto-deploys.
+Two workflows, kept separate so a red X says which kind of thing broke without anyone opening the logs:
+
+| Workflow | Runs | What it answers |
+|---|---|---|
+| [`ci.yml`](./.github/workflows/ci.yml) | push to `master`, every PR | Does this change lint, pass tests, type-check, and build? |
+| [`dependency-audit.yml`](./.github/workflows/dependency-audit.yml) | push to `master`, every PR, weekly | Are our dependencies safe? (`npm audit --audit-level=high`) |
+
+`.github/dependabot.yml` opens weekly update PRs for npm and GitHub Actions dependencies.
+
+`next build` runs the TypeScript check as part of the build, so `ci.yml` covers compilation and types in one step. It needs no secrets — every marketing page is statically generated from in-repo content, and `/api/leads` is dynamic, so nothing that reads an env var executes at build time.
+
+> **Note:** pushes to `master` still deploy to Vercel automatically. CI reports on the push but does not gate it — to make it a real gate, enable branch protection on `master` requiring the **Build and lint** check, and work through PRs.

@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Suspense } from "react";
 import { Reveal } from "@/components/ui/Reveal";
 import { ContactForm } from "@/components/ContactForm";
 
-export const metadata: Metadata = {
-  title: "Contact — Jarvis Studios",
+export const metadata: Metadata = pageMetadata({
+  title: "Contact",
   description: "Start a project with Jarvis Studios.",
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (
@@ -40,11 +42,16 @@ export default function ContactPage() {
   );
 }
 
-// Four labelled fields, then message, then submit — the real form exactly.
-// The standalone block that used to lead this stood in for the
-// client/investor selector; with that gone, and the project-type field no
-// longer conditional, the two now match rather than the skeleton running one
-// field short.
+// Four labelled fields, then message, then submit, then the collection
+// notice — the real form exactly. The standalone block that used to lead this
+// stood in for the client/investor selector; with that gone, and the
+// project-type field no longer conditional, the two now match rather than the
+// skeleton running one field short.
+//
+// KEEP THIS IN STEP WITH ContactForm. Every block below stands in for a real
+// one, and the whole point of the skeleton is that the swap costs no layout
+// shift — a skeleton one element short is a skeleton that has stopped doing
+// its job. The two-line tail is the privacy notice under the button.
 function ContactFormSkeleton() {
   return (
     <div aria-hidden="true" className="flex flex-col gap-5">
@@ -59,6 +66,10 @@ function ContactFormSkeleton() {
         <div className="h-32 animate-pulse rounded-md bg-[--surface-raised] motion-reduce:animate-none" />
       </div>
       <div className="h-12 animate-pulse rounded-md bg-[--surface-raised] motion-reduce:animate-none" />
+      <div className="space-y-1.5">
+        <div className="h-3 animate-pulse rounded bg-[--surface-raised] motion-reduce:animate-none" />
+        <div className="h-3 w-2/3 animate-pulse rounded bg-[--surface-raised] motion-reduce:animate-none" />
+      </div>
     </div>
   );
 }

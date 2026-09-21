@@ -1,0 +1,52 @@
+name: CI
+
+# Build and lint gate. Separate from dependency-audit.yml deliberately: that
+# workflow answers "are our dependencies safe", this one answers "does this
+# change compile and pass lint", and a red X should say which of the two
+# failed without anyone opening the logs.
+#
+# Until this existed, CI ran `npm audit` and nothing else — a PR that broke
+# the type-check or the build passed, and Vercel auto-deploys master. That is
+# the gap this closes.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+# A second push to the same branch makes the first run's answer irrelevant.
+# Cancel it rather than paying for both and reading the stale one.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build, lint and test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+
+      # Before the build, so a lint failure reports as a lint failure rather
+      # than being masked by a longer build that fails for the same reason.
+      - name: Lint
+        run: npm run lint
+
+      # Unit tests over the pure security-relevant functions in lib/ —
+      # validation, escaping, and the rate limiter's client identifier.
+      # Fast (sub-second) and dependency-free, so they run before the build.
+      - name: Test
+        run: npm test
+
+      # `next build` runs the TypeScript check as part of the build, so this
+      # one step covers both compilation and types. No secrets are needed:
+      # every marketing page is statically generated from in-repo content,
+      # and /api/leads is dynamic, so nothing that reads an env var executes
+      # at build time.
+      - name: Build
+        run: npm run build

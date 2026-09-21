@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { validateLead } from "@/lib/validation/lead";
+import { getClientIp } from "@/lib/client-ip";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getSupabaseServerClient } from "@/lib/supabase/server-client";
 import { sendLeadNotificationEmail } from "@/lib/notifications/email";
@@ -16,12 +17,6 @@ import type { Lead, LeadInput } from "@/lib/types/lead";
 //   4. Supabase insert — the ONE step that must succeed for a 200
 //   5. Email + Slack notifications — best-effort, concurrent, never block
 //      or fail the response; the lead is already saved by this point.
-
-function getClientIp(request: NextRequest): string {
-  const forwardedFor = request.headers.get("x-forwarded-for");
-  if (forwardedFor) return forwardedFor.split(",")[0].trim();
-  return request.headers.get("x-real-ip") ?? "unknown";
-}
 
 export async function POST(request: NextRequest) {
   const contentType = request.headers.get("content-type") ?? "";
@@ -47,7 +42,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const ip = getClientIp(request);
+    const ip = getClientIp(request.headers);
     const { success: withinLimit } = await checkRateLimit(ip);
     if (!withinLimit) {
       return NextResponse.json(
