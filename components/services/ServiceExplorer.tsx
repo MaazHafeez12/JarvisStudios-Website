@@ -242,18 +242,33 @@ export function ServiceExplorer() {
                   </div>
                 ) : null}
 
-                <Link
-                  href={`/contact?service=${service.id}`}
-                  // No `mt-6`: the spacing is `.svc-item-cta`'s padding-top so
-                  // it cannot fight that rule's `margin-top: auto`.
-                  className="svc-item-cta group inline-flex items-center gap-2 self-start text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
-                >
-                  {ctaLabel(service.name)}
-                  <ArrowRight
-                    className="h-4 w-4 transition-transform duration-200 ease-confident motion-safe:group-hover:translate-x-1"
-                    aria-hidden="true"
-                  />
-                </Link>
+                {/* Two exits, for the two states a comparing visitor is in:
+                    decided, or wanting depth. `.svc-item-cta` moves from the
+                    link to this wrapper so its `margin-top: auto` still has
+                    something to push — no `mt-6` here, for the same reason.
+
+                    The second link is also the internal route into
+                    /services/<id>. Anchor text carries the service name
+                    rather than reading "Learn more", which tells a crawler
+                    nothing about what sits on the other side. */}
+                <div className="svc-item-cta flex flex-wrap items-center gap-x-6 gap-y-2 self-start">
+                  <Link
+                    href={`/contact?service=${service.id}`}
+                    className="group inline-flex items-center gap-2 text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
+                  >
+                    {ctaLabel(service.name)}
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform duration-200 ease-confident motion-safe:group-hover:translate-x-1"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                  <Link
+                    href={`/services/${service.id}`}
+                    className="text-sm text-[--text-secondary] underline decoration-[--border] underline-offset-4 transition-colors duration-200 ease-confident hover:text-[--text-primary] hover:decoration-[--accent]"
+                  >
+                    More on {service.name}
+                  </Link>
+                </div>
               </motion.div>
 
               <div className="svc-item-visual">

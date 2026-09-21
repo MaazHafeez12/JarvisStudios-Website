@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { INSIGHTS } from "@/content/insights";
+import { SERVICES } from "@/content/services";
 import { SITE_URL as BASE_URL } from "@/lib/seo";
 
 // /work is deliberately absent while there is no real work to show. Listing
@@ -21,10 +22,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }));
 
+  // Derived from SERVICES, like the insight routes below are derived from
+  // INSIGHTS — adding a seventh service line should not require remembering
+  // to add it here as well.
+  const serviceRoutes = SERVICES.map((service) => ({
+    url: `${BASE_URL}/services/${service.id}`,
+    lastModified: new Date(),
+  }));
+
   const insightRoutes = INSIGHTS.map((post) => ({
     url: `${BASE_URL}/insights/${post.slug}`,
     lastModified: new Date(post.publishedAt),
   }));
 
-  return [...staticRoutes, ...insightRoutes];
+  return [...staticRoutes, ...serviceRoutes, ...insightRoutes];
 }
