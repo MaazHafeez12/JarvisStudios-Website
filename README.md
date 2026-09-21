@@ -86,6 +86,8 @@ Per [`docs/TRD.md`](./docs/TRD.md) §9, all secrets are server-only — none are
 | `npm run build` | Production build (statically generates marketing pages) |
 | `npm run start` | Serve the production build locally |
 | `npm run lint` | Lint the codebase |
+| `npm test` | Run the unit tests once (CI mode) |
+| `npm run test:watch` | Run the unit tests in watch mode |
 
 ## Folder Structure
 
@@ -109,4 +111,15 @@ See [`docs/SECURITY_AUDIT.md`](./docs/SECURITY_AUDIT.md) for the full design-lev
 
 ## CI
 
-`.github/workflows/dependency-audit.yml` runs `npm audit --audit-level=high` on push/PR and weekly; `.github/dependabot.yml` opens weekly update PRs for npm and GitHub Actions dependencies. There is no build/lint/test CI gate yet — pushes go straight to `master`, which Vercel auto-deploys.
+Two workflows, kept separate so a red X says which kind of thing broke without anyone opening the logs:
+
+| Workflow | Runs | What it answers |
+|---|---|---|
+| [`ci.yml`](./.github/workflows/ci.yml) | push to `master`, every PR | Does this change lint, pass tests, type-check, and build? |
+| [`dependency-audit.yml`](./.github/workflows/dependency-audit.yml) | push to `master`, every PR, weekly | Are our dependencies safe? (`npm audit --audit-level=high`) |
+
+`.github/dependabot.yml` opens weekly update PRs for npm and GitHub Actions dependencies.
+
+`next build` runs the TypeScript check as part of the build, so `ci.yml` covers compilation and types in one step. It needs no secrets — every marketing page is statically generated from in-repo content, and `/api/leads` is dynamic, so nothing that reads an env var executes at build time.
+
+> **Note:** pushes to `master` still deploy to Vercel automatically. CI reports on the push but does not gate it — to make it a real gate, enable branch protection on `master` requiring the **Build, lint and test** check, and work through PRs.
