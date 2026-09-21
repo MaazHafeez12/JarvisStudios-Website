@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
@@ -66,10 +67,11 @@ import { THREAD_BEATS } from "@/content/thread";
 // silently went stale the moment a sixth service line was added.
 const SERVICE_NAMES = SERVICES.map((s) => s.name);
 
-export const metadata: Metadata = {
-  title: "Services — Jarvis Studios",
+export const metadata: Metadata = pageMetadata({
+  title: "Services",
   description: `${SERVICE_NAMES.join(", ")} services from Jarvis Studios.`,
-};
+  path: "/services",
+});
 
 export default function ServicesPage() {
   return (

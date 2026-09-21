@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Reveal } from "@/components/ui/Reveal";
 import { DIFFERENTIATORS } from "@/content/differentiators";
 
-export const metadata: Metadata = {
-  title: "About — Jarvis Studios",
+export const metadata: Metadata = pageMetadata({
+  title: "About",
   description: "Mission, team, and differentiation for Jarvis Studios.",
-};
+  path: "/about",
+});
 
 export default function AboutPage() {
   return (

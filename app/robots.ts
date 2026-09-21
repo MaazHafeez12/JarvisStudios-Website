@@ -1,7 +1,5 @@
 import type { MetadataRoute } from "next";
-
-// Live once the DNS cutover (docs/PRD.md §9) happens.
-const BASE_URL = "https://jarvisstudios.net";
+import { SITE_URL as BASE_URL } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { MotionConfig } from "motion/react";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { SITE_URL, SITE_NAME } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({
@@ -72,9 +73,14 @@ const themeInitScript = `
   })();
 `;
 
+// Root defaults only. Every route exports its own metadata via
+// `pageMetadata()` in lib/seo.ts, which is what supplies the per-page
+// canonical — the one tag Next never infers. What stays here is the
+// `metadataBase` every relative URL resolves against, and a title/description
+// fallback for any route that somehow doesn't set its own.
 export const metadata: Metadata = {
-  metadataBase: new URL("https://jarvisstudios.net"),
-  title: "Jarvis Studios",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_NAME,
   description:
     "Jarvis Studios — web development, app development, SaaS, CRM, and marketing/design for growing businesses.",
 };

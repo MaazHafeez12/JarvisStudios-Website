@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Suspense } from "react";
 import { Reveal } from "@/components/ui/Reveal";
 import { ContactForm } from "@/components/ContactForm";
 
-export const metadata: Metadata = {
-  title: "Contact — Jarvis Studios",
+export const metadata: Metadata = pageMetadata({
+  title: "Contact",
   description: "Start a project with Jarvis Studios.",
-};
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

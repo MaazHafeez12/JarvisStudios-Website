@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
 import { INSIGHTS } from "@/content/insights";
 import { formatDate } from "@/lib/format-date";
 
-export const metadata: Metadata = {
-  title: "Insights — Jarvis Studios",
+export const metadata: Metadata = pageMetadata({
+  title: "Insights",
   description: "Notes on process and engineering decisions from Jarvis Studios.",
-};
+  path: "/insights",
+});
 
 export default function InsightsPage() {
   return (

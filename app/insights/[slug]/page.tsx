@@ -3,8 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { INSIGHTS } from "@/content/insights";
 import { formatDate } from "@/lib/format-date";
+import { pageMetadata } from "@/lib/seo";
+import { articleGraph } from "@/lib/structured-data";
 
 // Fully static: every article is known at build time, and an unlisted slug
 // 404s rather than attempting an on-demand render. Matches the rest of this
@@ -27,10 +30,16 @@ export async function generateMetadata({
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) return {};
-  return {
-    title: `${post.title} — Jarvis Studios`,
+  return pageMetadata({
+    title: post.title,
     description: post.excerpt,
-  };
+    path: `/insights/${post.slug}`,
+    // The only `article` route on the site — this is what adds og:type and
+    // article:published_time, so a shared link reads as a dated piece of
+    // writing rather than as another page of the marketing site.
+    type: "article",
+    publishedTime: post.publishedAt,
+  });
 }
 
 export default async function InsightPostPage({
@@ -44,6 +53,9 @@ export default async function InsightPostPage({
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-20">
+      {/* BlogPosting + BreadcrumbList. The breadcrumb is what gets this shown
+          as "jarvisstudios.net › Insights › Title" rather than a bare URL. */}
+      <JsonLd data={articleGraph(post)} />
       <Reveal lcpSafe>
         <Link
           href="/insights"
