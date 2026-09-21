@@ -6,7 +6,12 @@ import { ContactForm } from "@/components/ContactForm";
 
 export const metadata: Metadata = pageMetadata({
   title: "Contact",
-  description: "Start a project with Jarvis Studios.",
+  // Leads with the visitor's problem and the two facts that lower the
+  // cost of enquiring — free discovery, and a number before they commit
+  // (content/engagement.ts). "Start a project with Jarvis Studios" asked
+  // for the commitment without answering what it costs to ask.
+  description:
+    "Tell us what's breaking. Discovery is free, and you get a real scope and a real price within 48 hours — before you commit to anything.",
   path: "/contact",
 });
 

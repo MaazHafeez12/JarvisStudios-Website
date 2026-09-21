@@ -69,7 +69,12 @@ const SERVICE_NAMES = SERVICES.map((s) => s.name);
 
 export const metadata: Metadata = pageMetadata({
   title: "Services",
-  description: `${SERVICE_NAMES.join(", ")} services from Jarvis Studios.`,
+  // The name list stays derived — a seventh service line must not be able
+  // to go missing here. What changed is the tail: "services from Jarvis
+  // Studios" spent the back half of the description restating the site
+  // name, which the title already carries, instead of giving a reason to
+  // click. 151 characters, inside the ~155 Google truncates at.
+  description: `${SERVICE_NAMES.join(", ")} — and what each one is for. Free discovery, scope and price in 48 hours.`,
   path: "/services",
 });
 
