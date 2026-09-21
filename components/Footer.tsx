@@ -1,15 +1,20 @@
 import Link from "next/link";
 import { Logo } from "./ui/Logo";
 import { CONTACT_EMAIL } from "@/content/legal";
+import { SERVICES } from "@/content/services";
 
-const SERVICE_LINKS = [
-  { href: "/services#web", label: "Web Development" },
-  { href: "/services#app", label: "App Development" },
-  { href: "/services#saas", label: "SaaS" },
-  { href: "/services#crm", label: "CRM" },
-  { href: "/services#ai", label: "AI Automation" },
-  { href: "/services#design", label: "Marketing & Design" },
-];
+// Derived from SERVICES rather than hand-written, and pointing at the service
+// pages rather than at fragments of /services.
+//
+// These used to be `/services#web` and so on. A fragment is not a separate URL
+// to a crawler, so six sitewide footer links all resolved to one page — the
+// site's most-repeated internal links were pooling their entire signal on a
+// single URL that was trying to be about six different things. They now point
+// at the six pages that are each about one.
+const SERVICE_LINKS = SERVICES.map((service) => ({
+  href: `/services/${service.id}`,
+  label: service.name,
+}));
 
 const COMPANY_LINKS = [
   { href: "/about", label: "About" },
