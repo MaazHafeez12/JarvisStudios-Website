@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -11,6 +11,26 @@ import "./globals.css";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+// The third typeface of the brand system (PRODUCT.md "Brand Commitments":
+// Clash Display for headings, Inter for body/UI, JetBrains Mono for accents).
+//
+// tailwind.config.ts has mapped `font-mono` to `var(--font-jetbrains-mono)`
+// since the theme was written, but nothing ever defined that variable — so
+// every `font-mono` element on the site (the hero eyebrow, the 01/02/03
+// markers on /about, the footer column headings, the 404 code, the legal
+// pages' updated date) silently fell through to the generic system monospace.
+// The token existed, the font never loaded.
+//
+// Via next/font/google rather than a <link>, like Inter: next/font downloads
+// and self-hosts the files at build time, so this serves from our own origin
+// and satisfies the `font-src 'self'` CSP in next.config.ts without loosening
+// it (PRODUCT.md "Technical constraints": no external hosts).
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
   display: "swap",
 });
 
@@ -71,7 +91,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${clashDisplay.variable}`}
+      className={`${inter.variable} ${clashDisplay.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>
