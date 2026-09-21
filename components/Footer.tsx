@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./ui/Logo";
+import { CONTACT_EMAIL } from "@/content/legal";
 
 const SERVICE_LINKS = [
   { href: "/services#web", label: "Web Development" },
@@ -14,6 +15,15 @@ const COMPANY_LINKS = [
   { href: "/about", label: "About" },
   { href: "/insights", label: "Insights" },
   { href: "/contact", label: "Contact" },
+];
+
+// Kept out of COMPANY_LINKS and rendered in the bottom bar instead. Legal
+// pages are the convention there, and promoting them into the main column
+// would give them the same visual weight as the pages the site is actually
+// trying to get people to read.
+const LEGAL_LINKS = [
+  { href: "/privacy", label: "Privacy" },
+  { href: "/terms", label: "Terms" },
 ];
 
 export function Footer() {
@@ -68,12 +78,23 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-4 border-t border-[--border] pt-6 text-sm text-[--text-secondary] sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Jarvis Studios. All rights reserved.</p>
-          <a
-            href="mailto:jarvisstudios12@gmail.com"
-            className="transition-colors duration-150 ease-confident hover:text-[--text-primary]"
-          >
-            jarvisstudios12@gmail.com
-          </a>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+            {LEGAL_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="transition-colors duration-150 ease-confident hover:text-[--text-primary]"
+              >
+                {link.label}
+              </Link>
+            ))}
+            <a
+              href={`mailto:${CONTACT_EMAIL}`}
+              className="transition-colors duration-150 ease-confident hover:text-[--text-primary]"
+            >
+              {CONTACT_EMAIL}
+            </a>
+          </div>
         </div>
       </div>
     </footer>

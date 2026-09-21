@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { validateLead, type FieldErrors } from "@/lib/validation/lead";
 import { PROJECT_TYPES, type LeadInput, type ProjectType } from "@/lib/types/lead";
@@ -212,6 +213,24 @@ export function ContactForm() {
       >
         {isSubmitting ? "Sending…" : "Get my free scope"}
       </button>
+
+      {/* Collection notice. This sits at the point of collection rather than
+          only in the footer because that is what GDPR Art. 13 actually asks
+          for — the information has to reach someone as they hand data over,
+          not be discoverable elsewhere on the site. Deliberately states the
+          retention window inline: "see our privacy policy" alone tells a
+          visitor nothing at the moment they are deciding whether to type. */}
+      <p className="text-xs leading-relaxed text-[--text-secondary]">
+        We use this only to reply to your enquiry, keep it for 24 months, and
+        never sell or share it.{" "}
+        <Link
+          href="/privacy"
+          className="underline decoration-[--border] underline-offset-4 transition-colors duration-150 ease-confident hover:text-[--text-primary] hover:decoration-[--accent]"
+        >
+          Privacy policy
+        </Link>
+        .
+      </p>
     </form>
   );
 }
