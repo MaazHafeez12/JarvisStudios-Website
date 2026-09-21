@@ -28,7 +28,7 @@ export default function InsightsPage() {
           <p className="mt-4 text-[--text-secondary]">
             Notes on process and engineering decisions. For results, see{" "}
             <Link
-              href="/services#design"
+              href="/services/design"
               className="text-[--text-primary] underline decoration-[--border] underline-offset-4 transition-colors duration-200 ease-confident hover:text-[--accent] hover:decoration-[--accent]"
             >
               what we&rsquo;ve done for SNF Construction Group
