@@ -63,7 +63,15 @@ const ORGANIZATION = {
         "@type": "Service",
         name: service.name,
         description: service.summary,
-        url: absoluteUrl(`/services#${service.id}`),
+        // The service's own page, not `/services#<id>`. The anchor still
+        // resolves, so this was not broken — it was stale. `c5fc621` moved
+        // every internal link onto the per-service pages precisely because a
+        // fragment is not a separate URL to a crawler, and `serviceGraph()`
+        // below already names those pages as each service's `url`. Leaving
+        // the fragment here had the homepage graph asserting the offer lives
+        // on the hub while the service page asserted it lives on itself —
+        // the same signal split the six pages were built to end.
+        url: absoluteUrl(`/services/${service.id}`),
       },
     })),
   },

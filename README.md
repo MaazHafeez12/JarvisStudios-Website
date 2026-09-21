@@ -113,6 +113,7 @@ Only step 3 is read by the code. Once DMARC has collected clean reports for a fe
 | `npm run lint` | Lint the codebase |
 | `npm test` | Run the unit tests once (CI mode) |
 | `npm run test:watch` | Run the unit tests in watch mode |
+| `npm run indexnow` | Submit the live sitemap's URLs to IndexNow (Bing); `-- --dry-run` prints them instead |
 
 ## Folder Structure
 
@@ -136,12 +137,13 @@ See [`docs/SECURITY_AUDIT.md`](./docs/SECURITY_AUDIT.md) for the full design-lev
 
 ## CI
 
-Two workflows, kept separate so a red X says which kind of thing broke without anyone opening the logs:
+Three workflows, kept separate so a red X says which kind of thing broke without anyone opening the logs:
 
 | Workflow | Runs | What it answers |
 |---|---|---|
 | [`ci.yml`](./.github/workflows/ci.yml) | push to `master`, every PR | Does this change lint, pass tests, type-check, and build? |
 | [`dependency-audit.yml`](./.github/workflows/dependency-audit.yml) | push to `master`, every PR, weekly | Are our dependencies safe? (`npm audit --audit-level=high`) |
+| [`indexnow.yml`](./.github/workflows/indexnow.yml) | production deploy succeeded, or manually | Has Bing been told the URLs changed? (Google ignores IndexNow and uses the sitemap.) |
 
 `.github/dependabot.yml` opens weekly update PRs for npm and GitHub Actions dependencies.
 

@@ -1,0 +1,46 @@
+name: IndexNow
+
+# Pings IndexNow after a production deploy goes live, so Bing recrawls in
+# hours instead of on its own schedule. Google does not participate and is
+# unaffected — it discovers changes through the sitemap in Search Console.
+#
+# ── WHY `deployment_status` AND NOT `push` ──────────────────────────────
+# Vercel deploys master independently of this workflow, so a job triggered by
+# the push would race the deploy and submit URLs whose new content is not
+# served yet — telling a crawler to come now, for the old page. Vercel's
+# GitHub integration writes a deployment status when a deploy finishes, which
+# is the only signal here that means "the new build is actually live".
+#
+# The cost of that choice: if the Vercel GitHub integration is ever
+# disconnected, or labels its production environment something other than
+# `Production`, this workflow stops firing and says nothing — a silent no-op,
+# not a red X. `workflow_dispatch` is the manual fallback (Actions tab → Run
+# workflow), and `npm run indexnow` does the same thing from a laptop.
+
+on:
+  deployment_status:
+  workflow_dispatch:
+
+jobs:
+  submit:
+    name: Submit sitemap URLs
+    runs-on: ubuntu-latest
+    # `deployment_status` fires on every state — pending, failure, success —
+    # and for previews as well as production. Submitting a preview would be
+    # submitting URLs that aren't ours; submitting a pending one would be the
+    # race this trigger exists to avoid.
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.deployment_status.state == 'success' &&
+       github.event.deployment_status.environment == 'Production')
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      # No `npm ci`: the script imports nothing outside Node's standard
+      # library, and installing the full dependency tree to run it would cost
+      # more than the job.
+      - name: Submit
+        run: npm run indexnow

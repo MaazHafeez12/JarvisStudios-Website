@@ -181,10 +181,16 @@ export function ServiceTour({
             </ul>
 
             {/* The panel is no longer a click target the way ServiceCard was,
-                so the route to /services#<id> needs to be an explicit link.
-                Dropping it would be a silent conversion regression. */}
+                so the route out needs to be an explicit link. Dropping it
+                would be a silent conversion regression.
+
+                It points at the service's own page, not `/services#<id>`.
+                This is the homepage — the highest-authority page on the site
+                — linking six times into one URL that is about six things,
+                which is the exact pooling `c5fc621` set out to end when it
+                repointed the footer. The tour was missed in that pass. */}
             <Link
-              href={`/services#${service.id}`}
+              href={`/services/${service.id}`}
               className="group mt-6 inline-flex items-center gap-2 text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
             >
               Explore {service.name}
