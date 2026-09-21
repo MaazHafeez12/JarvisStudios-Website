@@ -13,10 +13,23 @@
 // introduce new numbers, dates, channels, or tactics that aren't already
 // on hand. Nothing here is invented to sound like proof.
 
+import type { ProjectType } from "@/lib/types/lead";
+
 export interface InsightPost {
   slug: string;
   title: string;
   excerpt: string;
+  /**
+   * Service lines this piece genuinely covers, used to build the related
+   * reading on /services/<id>.
+   *
+   * Optional, and most posts leave it unset on purpose. `four-steps` and
+   * `why-we-quote-scope-not-a-price-list` are about the studio's process and
+   * commercial terms and apply to all six equally — tagging them with all six
+   * would put the same two links on every service page, which is padding
+   * rather than relevance. A post is tagged when it is about that service.
+   */
+  services?: ProjectType[];
   /** Distinguishes a process note from a client case study. Defaults to a
    *  note; only the listing/detail label treatment reads this. */
   kind?: "note" | "case-study";
@@ -30,6 +43,7 @@ export const INSIGHTS: InsightPost[] = [
     slug: "snf-construction-group-social-reach",
     title: "SNF Construction Group: reach that compounds, not spikes",
     kind: "case-study",
+    services: ["design"],
     excerpt:
       "One published number — 10% month-over-month social growth — and what it takes to make a number like that mean something.",
     publishedAt: "2026-09-07",
@@ -58,6 +72,7 @@ export const INSIGHTS: InsightPost[] = [
   {
     slug: "ai-automation-with-a-human-in-it",
     title: "What we actually mean by \"AI automation\"",
+    services: ["ai"],
     excerpt:
       "Not a chatbot bolted onto your product. Automation with a person still in the loop where it matters.",
     publishedAt: "2026-08-05",

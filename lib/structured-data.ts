@@ -1,6 +1,7 @@
 import { SITE_URL, SITE_NAME, absoluteUrl } from "@/lib/seo";
 import { CONTACT_EMAIL } from "@/content/legal";
-import { SERVICES } from "@/content/services";
+import { SERVICES, type Service } from "@/content/services";
+import type { ServiceDetail } from "@/content/service-detail";
 import type { InsightPost } from "@/content/insights";
 
 // schema.org structured data. Crawlers read the page fine — every route here
@@ -87,6 +88,72 @@ export function organizationGraph() {
   return {
     "@context": "https://schema.org",
     "@graph": [ORGANIZATION, WEBSITE],
+  };
+}
+
+/**
+ * A service page: what the service is, who provides it, and the questions it
+ * answers, plus the breadcrumb trail back to the hub.
+ *
+ * The FAQPage node is doing double duty. For search it is eligible for rich
+ * results; more reliably, it is the shape an answer engine can lift a response
+ * from and attribute. A model asked "do I need an app or a website" has
+ * something to quote here and a URL to credit it to, which a page of prose
+ * about the studio's methodology does not provide.
+ *
+ * `provider` points at the Organization node by @id rather than repeating it,
+ * so the six service pages describe six services offered by one identified
+ * business instead of six unrelated pages that happen to share a domain.
+ */
+export function serviceGraph(service: Service, detail: ServiceDetail) {
+  const url = absoluteUrl(`/services/${service.id}`);
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": `${url}#service`,
+        name: service.name,
+        description: detail.lead,
+        url,
+        provider: { "@id": ORGANIZATION_ID },
+        serviceType: service.name,
+        // Every entry restates a capability already published in
+        // content/services.ts — nothing is asserted here that a visitor
+        // cannot read for themselves on the page.
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: `${service.name} capabilities`,
+          itemListElement: service.capabilities.map((capability) => ({
+            "@type": "Offer",
+            itemOffered: { "@type": "Service", name: capability },
+          })),
+        },
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        mainEntity: detail.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumbs`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Services",
+            item: absoluteUrl("/services"),
+          },
+          { "@type": "ListItem", position: 2, name: service.name, item: url },
+        ],
+      },
+    ],
   };
 }
 
