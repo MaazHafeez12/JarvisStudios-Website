@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { INSIGHTS } from "@/content/insights";
 import { SERVICES } from "@/content/services";
+import { TRADES } from "@/content/trades";
 import { SITE_URL as BASE_URL } from "@/lib/seo";
 
 // /work is deliberately absent while there is no real work to show. Listing
@@ -30,10 +31,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }));
 
+  // Same reasoning as the service routes: derived, so adding a fourth trade
+  // does not depend on anyone remembering this file.
+  const tradeRoutes = TRADES.map((trade) => ({
+    url: `${BASE_URL}/for/${trade.id}`,
+    lastModified: new Date(),
+  }));
+
   const insightRoutes = INSIGHTS.map((post) => ({
     url: `${BASE_URL}/insights/${post.slug}`,
     lastModified: new Date(post.publishedAt),
   }));
 
-  return [...staticRoutes, ...serviceRoutes, ...insightRoutes];
+  return [...staticRoutes, ...serviceRoutes, ...tradeRoutes, ...insightRoutes];
 }

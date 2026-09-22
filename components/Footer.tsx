@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "./ui/Logo";
 import { CONTACT_EMAIL } from "@/content/legal";
 import { SERVICES } from "@/content/services";
+import { TRADES } from "@/content/trades";
 
 // Derived from SERVICES rather than hand-written, and pointing at the service
 // pages rather than at fragments of /services.
@@ -14,6 +15,14 @@ import { SERVICES } from "@/content/services";
 const SERVICE_LINKS = SERVICES.map((service) => ({
   href: `/services/${service.id}`,
   label: service.name,
+}));
+
+// The trade pages, derived for the same reason the service links are. These
+// are the only sitewide links they get — there is no /for hub — so without
+// this column they would be reachable from the sitemap and nowhere else.
+const TRADE_LINKS = TRADES.map((trade) => ({
+  href: `/for/${trade.id}`,
+  label: trade.name,
 }));
 
 const COMPANY_LINKS = [
@@ -35,8 +44,11 @@ export function Footer() {
   return (
     <footer className="border-t border-[--border] bg-[--surface]">
       <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
-          <div className="sm:col-span-2 md:col-span-2">
+        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          {/* Four link columns rather than three since the trade pages were
+              added. At md the brand block takes its own row and the four
+              columns share the next one; five columns only fits at lg. */}
+          <div className="sm:col-span-2 md:col-span-3 lg:col-span-2">
             <Logo />
             <p className="mt-4 max-w-sm text-sm text-[--text-secondary]">
               Web development, app development, SaaS, CRM, and
@@ -50,6 +62,24 @@ export function Footer() {
             </h2>
             <ul className="mt-4 space-y-2">
               {SERVICE_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-[--text-secondary] transition-colors duration-150 ease-confident hover:text-[--text-primary]"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+              Who we build for
+            </h2>
+            <ul className="mt-4 space-y-2">
+              {TRADE_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}

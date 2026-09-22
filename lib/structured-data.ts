@@ -2,6 +2,7 @@ import { SITE_URL, SITE_NAME, absoluteUrl } from "@/lib/seo";
 import { CONTACT_EMAIL } from "@/content/legal";
 import { SERVICES, type Service } from "@/content/services";
 import type { ServiceDetail } from "@/content/service-detail";
+import type { Trade } from "@/content/trades";
 import type { InsightPost } from "@/content/insights";
 
 // schema.org structured data. Crawlers read the page fine — every route here
@@ -209,6 +210,65 @@ export function articleGraph(post: InsightPost) {
             name: post.title,
             item: url,
           },
+        ],
+      },
+    ],
+  };
+}
+
+/**
+ * A trade page: a page about an audience, the services offered to it, and the
+ * questions that audience asks.
+ *
+ * `WebPage` rather than `Service`, deliberately. A trade page is not an offer
+ * — it describes four of them and links out to each — and typing it as a
+ * `Service` would put a seventh service into a catalogue that has six. The
+ * `audience` node is the part carrying the meaning here: it says who this page
+ * is for in a form a crawler can read, which is the whole reason the page
+ * exists.
+ *
+ * No `Offer`, no price, and no result. The commercial figures live on the
+ * service pages that own them, and the only published result on the site is
+ * already emitted by the `design` service page's own graph. Repeating a result
+ * on a page about an audience would assert it as this audience's result.
+ */
+export function tradeGraph(trade: Trade) {
+  const url = absoluteUrl(`/for/${trade.id}`);
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${url}#page`,
+        name: trade.headline,
+        description: trade.lead,
+        url,
+        isPartOf: { "@id": WEBSITE_ID },
+        about: { "@id": ORGANIZATION_ID },
+        audience: {
+          "@type": "Audience",
+          audienceType: trade.audience,
+        },
+        inLanguage: "en",
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        mainEntity: trade.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      },
+      {
+        // Home rather than a /for hub, because no hub exists. A breadcrumb
+        // naming a parent that 404s is worse than a two-step trail.
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumbs`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: SITE_NAME, item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: trade.name, item: url },
         ],
       },
     ],
