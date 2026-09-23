@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { isConstrainedClient } from "@/lib/hero-capability";
+import { useHydrated } from "@/lib/use-hydrated";
 
 // Scroll-scrubbed film (docs/MOTION_REDESIGN.md §5.8). Scroll position drives
 // `video.currentTime` — the film has no clock of its own, so it moves exactly
@@ -55,19 +56,20 @@ export function ScrubVideo({
   // null until the client has decided. Staying null means "no video at all",
   // which is also the server render — so the poster is what SSR emits and
   // there is no layout shift when the decision lands.
-  const [source, setSource] = useState<ScrubSource | null>(null);
-
-  useEffect(() => {
-    if (isConstrainedClient()) return;
+  //
+  // Decided once per mount, not per render: a resize after the film has
+  // started must not swap the encode out from under it.
+  const hydrated = useHydrated();
+  const source = useMemo<ScrubSource | null>(() => {
+    if (!hydrated || isConstrainedClient()) return null;
     const width = window.innerWidth * (window.devicePixelRatio || 1);
     // Widest encode the viewport earns. Sorting here rather than trusting the
     // caller's order keeps the ladder declaration readable at the call site.
     const match = [...sources]
       .sort((a, b) => b.minWidth - a.minWidth)
       .find((s) => width >= s.minWidth);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setSource(match ?? null);
-  }, [sources]);
+    return match ?? null;
+  }, [hydrated, sources]);
 
   // Fetch gate. `preload="none"` until the section is close, so a visitor who
   // never scrolls this far never pays for the film at all.

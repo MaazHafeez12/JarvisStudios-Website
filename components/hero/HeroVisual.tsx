@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import { HeroFallback } from "./HeroFallback";
 import { detectHeroTier, type HeroTier } from "@/lib/hero-capability";
+import { useHydrated } from "@/lib/use-hydrated";
 import { useScrollProgress } from "@/lib/use-scroll-progress";
 
 // Hero shell for the homepage (docs/MOTION_REDESIGN.md §4, §5.8). A pinned
@@ -34,23 +35,20 @@ export function HeroVisual({ children }: { children: React.ReactNode }) {
   const sectionRef = useRef<HTMLElement>(null);
   const progressRef = useRef(0);
   // null until the client has measured the device. The static fallback
-  // covers that window, so the hero is never blank.
-  const [tier, setTier] = useState<HeroTier | null>(null);
+  // covers that window, so the hero is never blank. Device capability is
+  // unknowable on the server, so the server render and hydration must see
+  // null. After that it is measured once per mount: useMemo, not a
+  // per-render snapshot, because detectHeroTier() opens a WebGL context.
+  const hydrated = useHydrated();
+  const tier = useMemo<HeroTier | null>(
+    () => (hydrated ? detectHeroTier() : null),
+    [hydrated],
+  );
 
   // The pin is the section, so `--p` lands where the copy and the closing
   // hairline can both read it, and HeroScene can read the same number as a
   // JS value for its useFrame loop.
   useScrollProgress(trackRef, sectionRef, progressRef);
-
-  useEffect(() => {
-    // Device capability is unknowable on the server, so this cannot move
-    // into render without breaking hydration. The null-first window is
-    // deliberate and covered by HeroFallback (see comment above).
-    // useSyncExternalStore is the rule-clean version of this and is tracked
-    // in TODO.md.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTier(detectHeroTier());
-  }, []);
 
   const show3D = tier === "full" || tier === "lite";
 
