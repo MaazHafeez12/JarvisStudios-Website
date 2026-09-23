@@ -116,9 +116,15 @@ export function ProcessTour({
           }
         },
         {
-          rootMargin: `-${centre - 1}px 0px -${
-            window.innerHeight - centre - 1
-          }px 0px`,
+          // Clamped: on a viewport shorter than the nav (a hidden iframe or
+          // prerender reports innerHeight 0) the bottom inset goes negative,
+          // the template yields "--35px", and the constructor throws — which
+          // takes the whole page down to the error boundary, not just this
+          // section. A zero inset just widens the band until the next resize.
+          rootMargin: `-${Math.max(0, centre - 1)}px 0px -${Math.max(
+            0,
+            window.innerHeight - centre - 1,
+          )}px 0px`,
         },
       );
 
