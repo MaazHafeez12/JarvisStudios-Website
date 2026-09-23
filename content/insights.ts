@@ -12,6 +12,12 @@
 // featured-work section). It restates and explains that result; it does not
 // introduce new numbers, dates, channels, or tactics that aren't already
 // on hand. Nothing here is invented to sound like proof.
+//
+// WHAT IS NOT SIGNED OFF, the same notice content/trades.ts carries: the
+// operational claims in the two 2026-09-23 notes (that silence after a quote
+// rarely means a considered no, that a slow quote often loses to a fast one)
+// are reasoned from the market the site addresses, not measured. They read
+// as expertise. Review them as copy.
 
 import type { ProjectType } from "@/lib/types/lead";
 
@@ -39,6 +45,38 @@ export interface InsightPost {
 }
 
 export const INSIGHTS: InsightPost[] = [
+  {
+    slug: "the-quote-that-goes-quiet",
+    title: "The quote that goes quiet",
+    services: ["crm", "ai"],
+    excerpt:
+      "A sent quote with no reply isn't a no. It's a job waiting for someone to remember it.",
+    publishedAt: "2026-09-23",
+    body: [
+      "Most of the effort in winning a job goes in before the quote is sent: the call, the site visit, the measuring, the pricing. Then the quote goes out, and in a lot of businesses that's where the process stops. If the customer replies, great. If they don't, the job slowly becomes one more thing someone meant to chase.",
+      "Silence after a quote rarely means a considered no. More often the customer got busy, is waiting on a second price, has a question they haven't got round to asking, or simply lost the email. Every one of those is recoverable with a short message at the right time. None of them is recoverable if nobody sends it.",
+      "The reason follow-up doesn't happen isn't laziness. It depends on memory, and memory is the first thing to go in a busy week. There's usually no single list of open quotes, only a sent folder and a vague sense of which ones are still live. And chasing can feel pushy, so it gets put off until it's too late to feel natural.",
+      "The fix is less clever than it sounds. Every quote goes into one list the moment it's sent, with its value and how long it's been open. At a set interval, a follow-up goes out automatically, or lands in front of the right person as a task, depending on how much the job is worth. When the customer replies, accepts or declines, the reminders stop. Nobody has to remember anything, and the list shows at a glance what's still in play.",
+      "What the message says matters as much as when it arrives. \"Just checking in\" asks the customer to do the work of replying. A useful follow-up gives them a reason to: whether anything in the scope should change, whether the timing still works, or an honest note that the price holds until a given date. For a small job, a template can send that on its own. For a large one, the system should draft it and a person should read it before it goes. That's the same line we draw with any automation, where a machine handles the routine part and a person still makes the call that matters.",
+      "Speed on the way out matters too. A quote that takes three days to arrive has often already lost to one that took three hours, which is why we commit to a scope and a real price within 48 hours ourselves. A quote-tracking setup like this is a CRM job, usually a small one, and it can start from the spreadsheet or inbox you already quote from rather than replacing how you work.",
+    ],
+  },
+  {
+    slug: "what-a-trades-website-is-for",
+    title: "What a trades website is actually for",
+    services: ["web"],
+    excerpt:
+      "Not to impress other businesses. To get the right customer to call you, from a phone, in under a minute.",
+    publishedAt: "2026-09-23",
+    body: [
+      "It helps to picture who's actually on the page. Not a design award panel, and not a competitor. Someone with a problem, often an urgent one, on a phone, comparing you against two or three other results they found in the same search. They aren't reading. They're scanning for three answers: do you do this, do you cover where I am, and how do I reach you right now.",
+      "So the phone number goes at the top of every page, and it's a link that dials when you tap it, not a picture of a number or a line of text someone has to copy. It sounds obvious, but a surprising number of sites bury it in the footer or behind a contact page, and every extra step is a chance for the visitor to go back to the search results and tap the next one.",
+      "Say where you work, in words a customer would search for: the towns and areas you actually cover, not \"serving the region.\" Say what you do, and just as usefully, what you don't. A site that makes clear you don't take small repairs, or don't travel past a certain distance, loses nothing. The calls it filters out are ones you would have turned down anyway, after spending time on them.",
+      "If there's a form, keep it short enough to finish standing on a driveway: name, a way to reach them, and what the problem is. Then say what happens next and when, and keep that promise. \"We'll call you back within two hours during working days\" is worth more than any slogan, because it answers the question the visitor actually has, which is whether sending the form is worth it.",
+      "Photos should be of your real work or not be there at all. Stock images of spotless vans and smiling technicians read as exactly what they are, and a customer who notices once will assume everything else on the page is borrowed too. A few honest photos of finished jobs do more than a gallery of someone else's. We hold our own site to the same rule: nothing on it is presented as evidence that isn't.",
+      "None of this needs a large site. A fast, clear handful of pages that answers those three questions well will usually beat a sprawling one that answers them slowly. A small, well-defined site is exactly the kind of project our $1,000 starting point exists for, and discovery is free, so the first conversation costs nothing either way.",
+    ],
+  },
   {
     slug: "snf-construction-group-social-reach",
     title: "SNF Construction Group: reach that compounds, not spikes",
