@@ -45,13 +45,14 @@ export function Nav() {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [mobileOpen]);
 
-  // No background, only the blur, and that is what production has always
-  // rendered. This used to carry `bg-[--surface]/90`, which Tailwind 3 dropped
-  // without a word (it can't apply an opacity modifier to a bare variable) and
-  // Tailwind 4 honours. Removed in the migration so the upgrade changes nothing
-  // visible. A 90% surface is one class away if the frosted bar is wanted.
+  // Frosted bar: a 90% surface over an 8px blur. The surface is what keeps the
+  // links legible over whatever scrolls beneath, since blur alone softens
+  // bright content but doesn't darken or lighten it. It was written as
+  // `bg-[--surface]/90` from the start, but Tailwind 3 silently dropped an
+  // opacity modifier on a bare variable, so until Tailwind 4 the bar was only
+  // ever the blur.
   return (
-    <header className="sticky top-0 z-50 border-b border-(--border) backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-(--border) bg-(--surface)/90 backdrop-blur-sm">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Logo />
 
