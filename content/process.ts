@@ -22,7 +22,7 @@ export const PROCESS_STEPS: ProcessStep[] = [
     step: 1,
     title: "Discovery",
     description:
-      "We start by understanding your business, users, and constraints — not by jumping straight to a solution.",
+      "We start by understanding your business, users, and constraints, not by jumping straight to a solution.",
   },
   {
     id: "design",
@@ -43,6 +43,6 @@ export const PROCESS_STEPS: ProcessStep[] = [
     step: 4,
     title: "Launch",
     description:
-      "We ship, monitor, and support the handoff — launch is the start of the relationship, not the end of it.",
+      "We ship, monitor, and support the handoff. Launch is the start of the relationship, not the end of it.",
   },
 ];

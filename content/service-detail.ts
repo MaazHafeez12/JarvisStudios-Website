@@ -72,11 +72,11 @@ export interface ServiceDetail {
 export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
   ai: {
     headline: "AI automation for the jobs your team still does by hand",
-    lead: "Automation that clears the copy-paste, re-keying and follow-ups nobody has time for — without removing the person from decisions that still need one.",
+    lead: "Automation that clears the copy-paste, re-keying and follow-ups nobody has time for, without removing the person from decisions that still need one.",
     body: [
       "The clearest case is a missed call. Someone rings while you're on a roof or under a sink, it goes to voicemail, and by the time you ring back they have already booked someone else. A text that fires the moment the call drops turns a lost job into a conversation, and it never depends on anyone remembering to send it.",
       "The same reasoning covers the rest of the back office: quotes typed out by hand, job details re-keyed from one system into another, follow-ups that live in somebody's head. Those are mechanical steps, and mechanical steps are what automation is genuinely good at.",
-      "Where a language model does the work — search, drafting, classification — the review step is built into the workflow rather than bolted on afterwards. The cost of a wrong answer going out unreviewed is almost always higher than the cost of someone spending thirty seconds confirming it. Automation that removes that checkpoint to save the thirty seconds is optimising for the wrong thing.",
+      "Where a language model does the work (search, drafting, classification), the review step is built into the workflow rather than bolted on afterwards. The cost of a wrong answer going out unreviewed is almost always higher than the cost of someone spending thirty seconds confirming it. Automation that removes that checkpoint to save the thirty seconds is optimising for the wrong thing.",
     ],
     outcomes: [
       "Missed calls answered in seconds, without anyone lifting a phone",
@@ -87,7 +87,7 @@ export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
       {
         question: "Does this replace my team?",
         answer:
-          "No, and we would push back on a brief that asked for it. The mechanical steps get automated — copy-paste, data entry, the first-pass draft. Anything involving judgment keeps a person in the loop by design, because that is exactly where the cost of being wrong is highest.",
+          "No, and we would push back on a brief that asked for it. The mechanical steps get automated: copy-paste, data entry, the first-pass draft. Anything involving judgment keeps a person in the loop by design, because that is exactly where the cost of being wrong is highest.",
       },
       {
         question: "What is the smallest useful version of this?",
@@ -104,10 +104,10 @@ export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
 
   crm: {
     headline: "CRM systems built around how your team actually sells",
-    lead: "Pipelines, fields and workflows shaped to your business — including the migration out of the spreadsheet you are currently running on.",
+    lead: "Pipelines, fields and workflows shaped to your business, including the migration out of the spreadsheet you are currently running on.",
     body: [
       "Most CRM projects fail the same way: the tool arrives with someone else's sales process baked in, the team works around it, and within a few months the real information is back in a spreadsheet and a group chat. A CRM is only useful if it matches how the work already happens.",
-      "So the first stage is mapping that — who touches a job between the enquiry and the invoice, what actually decides whether it moves forward, and which fields someone will realistically fill in while standing in a driveway. Fields nobody completes are worse than no fields at all, because they make the data look trustworthy when it is not.",
+      "So the first stage is mapping that: who touches a job between the enquiry and the invoice, what actually decides whether it moves forward, and which fields someone will realistically fill in while standing in a driveway. Fields nobody completes are worse than no fields at all, because they make the data look trustworthy when it is not.",
       "Then it connects to what you already run: quotes, calendars, accounting, the phone system. Most of the value in a CRM is not having to enter the same job in four places, and that only materialises if the integrations are real rather than a weekly CSV export.",
     ],
     outcomes: [
@@ -138,7 +138,7 @@ export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
     headline: "Web development for sites that load fast and get enquiries",
     lead: "Marketing sites, landing pages and web apps built for speed and conversion, with Core Web Vitals treated as a requirement rather than an audit.",
     body: [
-      "A slow site costs you enquiries before anyone reads a word. Someone searching on a phone, on mobile data, outside a job that needs doing, will leave a page that takes four seconds to appear — and you will never know they were there.",
+      "A slow site costs you enquiries before anyone reads a word. Someone searching on a phone, on mobile data, outside a job that needs doing, will leave a page that takes four seconds to appear, and you will never know they were there.",
       "So performance is not a polish step. Core Web Vitals are measured and optimised as part of the build, not audited afterwards when the architecture has already made them expensive to fix. This site is the same argument made in public: its own metrics are kept as a regression baseline rather than quoted as a marketing claim.",
       "The same applies to what the page says. A site that loads instantly and still does not tell a visitor what you do, where you work, or how to reach you produces no enquiries. Structure and copy are part of the build, and we would rather argue about a headline than ship a fast page that converts nobody.",
     ],
@@ -151,7 +151,7 @@ export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
       {
         question: "Can you work with our existing site?",
         answer:
-          "Often, yes. Whether that is cheaper than rebuilding depends on what is underneath — some sites are a handful of fixable problems, others have the problem baked into the platform. We will tell you which one you have before you commit to either.",
+          "Often, yes. Whether that is cheaper than rebuilding depends on what is underneath. Some sites are a handful of fixable problems, others have the problem baked into the platform. We will tell you which one you have before you commit to either.",
       },
       {
         question: "Do we get a CMS?",
@@ -161,7 +161,7 @@ export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
       {
         question: "How do you measure that it is actually fast?",
         answer:
-          "Core Web Vitals — LCP, CLS and INP — measured against a production build rather than a dev server, because a dev server's numbers are meaningless. Those figures then become the baseline that later changes are checked against.",
+          "Core Web Vitals (LCP, CLS and INP), measured against a production build rather than a dev server, because a dev server's numbers are meaningless. Those figures then become the baseline that later changes are checked against.",
       },
     ],
   },
@@ -170,7 +170,7 @@ export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
     headline: "App development, from first prototype to app store",
     lead: "iOS, Android and cross-platform builds, including the store submission process that catches out most first launches.",
     body: [
-      "The decision that costs the most is made earliest: native or cross-platform. Cross-platform gets you both stores from one codebase and is the right answer for most projects. Native earns its extra cost when the app leans hard on hardware, background behaviour or platform-specific integrations — and discovering that after the build has started is expensive.",
+      "The decision that costs the most is made earliest: native or cross-platform. Cross-platform gets you both stores from one codebase and is the right answer for most projects. Native earns its extra cost when the app leans hard on hardware, background behaviour or platform-specific integrations, and discovering that after the build has started is expensive.",
       "So that conversation happens in discovery, weighed against what the app actually has to do, rather than being settled in advance by whichever framework a studio happens to prefer.",
       "Launch is inside the scope, not a handover. App Store and Play Store submission has its own rules about privacy disclosures, permissions, screenshots and review, and a rejection can cost a week each time it happens. We would rather absorb that than hand over a finished build and a login.",
     ],
@@ -199,12 +199,12 @@ export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
   },
 
   saas: {
-    headline: "SaaS development — auth, billing, and the parts that are hard to get right",
+    headline: "SaaS development: auth, billing, and the parts that are hard to get right",
     lead: "Full-stack product builds, including the multi-tenant and subscription plumbing that is consistently underestimated.",
     body: [
-      "Most of the difficulty in a SaaS build is not the feature you are excited about. It is auth, billing, roles, and keeping one customer's data provably separate from another's — the parts nobody demos, that everything else depends on, and that are painful to retrofit.",
+      "Most of the difficulty in a SaaS build is not the feature you are excited about. It is auth, billing, roles, and keeping one customer's data provably separate from another's: the parts nobody demos, that everything else depends on, and that are painful to retrofit.",
       "Multi-tenancy in particular is an early architectural decision with a long shadow. Getting it wrong does not show up in week three. It shows up when your second-largest customer asks a question about data isolation that you cannot answer confidently.",
-      "Billing has the same shape. Subscriptions, plan changes, proration, failed payments and refunds are a system rather than an integration, and the edge cases arrive late — usually from your most valuable customers.",
+      "Billing has the same shape. Subscriptions, plan changes, proration, failed payments and refunds are a system rather than an integration, and the edge cases arrive late, usually from your most valuable customers.",
     ],
     outcomes: [
       "Auth, roles and permissions that hold up as you add customers",
@@ -220,7 +220,7 @@ export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
       {
         question: "How do you handle billing?",
         answer:
-          "Usually on an established payments provider rather than building payments from scratch. The build effort goes into the logic around it — plan changes, proration, failed payments, refunds — which is where the complexity actually lives.",
+          "Usually on an established payments provider rather than building payments from scratch. The build effort goes into the logic around it (plan changes, proration, failed payments, refunds), which is where the complexity actually lives.",
       },
       {
         question: "What about multi-tenancy?",
@@ -234,7 +234,7 @@ export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
     headline: "Marketing and design that makes the rest of the work land",
     lead: "Brand, interface and campaign design, plus ongoing content and social where that is what actually moves the number.",
     body: [
-      "Design here is not decoration applied at the end. A brand system, an interface and a campaign are all answering the same question — whether someone trusts you enough to get in touch — and they fail in the same way when they look like everything else in the category.",
+      "Design here is not decoration applied at the end. A brand system, an interface and a campaign are all answering the same question, whether someone trusts you enough to get in touch, and they fail in the same way when they look like everything else in the category.",
       "So the work starts from what makes you different in practice rather than from a moodboard. For a trades business that is often unglamorous and specific: you answer the phone, you turn up when you said you would, you quote in writing. Those are the things worth designing around.",
       "Where the engagement is ongoing rather than a fixed scope, it is measured monthly and reported against the previous month. A one-off percentage with no window attached tells you almost nothing; a figure you can watch repeat is a claim that survives being looked at closely.",
     ],
@@ -247,7 +247,7 @@ export const SERVICE_DETAIL: Record<ProjectType, ServiceDetail> = {
       {
         question: "Do you do ongoing social, or only the design?",
         answer:
-          "Both. Content and social management runs as a retainer, because social growth has no finish line — the moment you stop publishing, reach decays. A fixed-scope launch would hand back a channel that starts shrinking the day it is delivered.",
+          "Both. Content and social management runs as a retainer, because social growth has no finish line: the moment you stop publishing, reach decays. A fixed-scope launch would hand back a channel that starts shrinking the day it is delivered.",
       },
       {
         question: "How do you report on ongoing work?",

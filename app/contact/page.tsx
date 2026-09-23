@@ -11,7 +11,7 @@ export const metadata: Metadata = pageMetadata({
   // (content/engagement.ts). "Start a project with Jarvis Studios" asked
   // for the commitment without answering what it costs to ask.
   description:
-    "Tell us what's breaking. Discovery is free, and you get a real scope and a real price within 48 hours — before you commit to anything.",
+    "Tell us what's breaking. Discovery is free, and you get a real scope and a real price within 48 hours, before you commit to anything.",
   path: "/contact",
 });
 

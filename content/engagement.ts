@@ -33,7 +33,7 @@ export const ENGAGEMENT_FACTS: EngagementFact[] = [
   {
     headline: "Projects start at $1,000",
     detail:
-      "That's the entry point for a small, well-defined scope. Larger builds are quoted against the actual work — we'll give you a number before we start, not after.",
+      "That's the entry point for a small, well-defined scope. Larger builds are quoted against the actual work. We'll give you a number before we start, not after.",
   },
   {
     headline: "Fixed scope or retainer",

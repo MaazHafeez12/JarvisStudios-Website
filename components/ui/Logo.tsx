@@ -62,7 +62,7 @@ export function Logo() {
     <Link
       href="/"
       className="flex items-center gap-2 rounded-md"
-      aria-label="Jarvis Studios — home"
+      aria-label="Jarvis Studios, home"
     >
       <LogoMark />
       <span className="font-display text-base font-semibold tracking-tight text-(--text-primary)">

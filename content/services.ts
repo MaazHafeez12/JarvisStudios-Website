@@ -40,7 +40,7 @@ export const SERVICES: Service[] = [
     summary: "Automation and AI built into the workflows your team already runs.",
     capabilities: [
       "Internal workflow and back-office automation",
-      "LLM features in your product — search, drafting, classification",
+      "LLM features in your product: search, drafting, classification",
       "Document and data pipelines with human review built in",
     ],
   },
@@ -77,7 +77,7 @@ export const SERVICES: Service[] = [
   {
     id: "saas",
     name: "SaaS",
-    summary: "Full-stack SaaS products — auth, billing, and everything in between.",
+    summary: "Full-stack SaaS products: auth, billing, and everything in between.",
     capabilities: [
       "Auth, billing, and subscription management",
       "Multi-tenant architecture and role-based access",

@@ -82,7 +82,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: SITE_NAME,
   description:
-    "Jarvis Studios — web development, app development, SaaS, CRM, and marketing/design for growing businesses.",
+    "Jarvis Studios: web development, app development, SaaS, CRM, and marketing/design for growing businesses.",
 };
 
 export default function RootLayout({
