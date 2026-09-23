@@ -86,24 +86,24 @@ export default async function TradePage({
 
       <section className="mx-auto max-w-4xl px-6 py-20">
         <Reveal lcpSafe>
-          <p className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+          <p className="font-mono text-xs uppercase tracking-widest text-(--text-secondary)">
             {trade.name}
           </p>
           <h1 className="mt-3 max-w-3xl text-balance font-display text-4xl font-semibold sm:text-5xl">
             {trade.headline}
           </h1>
-          <p className="mt-5 max-w-2xl text-balance text-lg text-[--text-secondary]">
+          <p className="mt-5 max-w-2xl text-balance text-lg text-(--text-secondary)">
             {trade.lead}
           </p>
         </Reveal>
       </section>
 
-      <section className="border-t border-[--border] px-6 py-16">
+      <section className="border-t border-(--border) px-6 py-16">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="space-y-6">
             {trade.body.map((paragraph, i) => (
               <Reveal key={i} delay={Math.min(i * 0.06, 0.2)}>
-                <p className="max-w-[65ch] leading-relaxed text-[--text-primary]">
+                <p className="max-w-[65ch] leading-relaxed text-(--text-primary)">
                   {paragraph}
                 </p>
               </Reveal>
@@ -111,19 +111,19 @@ export default async function TradePage({
           </div>
 
           <Reveal delay={0.1}>
-            <div className="rounded-lg border border-[--border] bg-[--surface-raised] p-6">
-              <h2 className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+            <div className="rounded-lg border border-(--border) bg-(--surface-raised) p-6">
+              <h2 className="font-mono text-xs uppercase tracking-widest text-(--text-secondary)">
                 What usually breaks
               </h2>
               <ul className="mt-4 space-y-3">
                 {trade.breaks.map((item) => (
                   <li
                     key={item}
-                    className="relative pl-5 text-sm leading-relaxed text-[--text-secondary]"
+                    className="relative pl-5 text-sm leading-relaxed text-(--text-secondary)"
                   >
                     <span
                       aria-hidden="true"
-                      className="absolute left-0 top-[0.55em] h-1.5 w-1.5 rounded-full bg-[--accent]"
+                      className="absolute left-0 top-[0.55em] h-1.5 w-1.5 rounded-full bg-(--accent)"
                     />
                     {item}
                   </li>
@@ -134,13 +134,13 @@ export default async function TradePage({
         </div>
       </section>
 
-      <section className="border-t border-[--border] px-6 py-16">
+      <section className="border-t border-(--border) px-6 py-16">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-2xl font-semibold">
               What we&rsquo;d build for {trade.audience}
             </h2>
-            <p className="mt-3 max-w-xl text-[--text-secondary]">
+            <p className="mt-3 max-w-xl text-(--text-secondary)">
               The service lines that genuinely apply, in the order they
               usually matter. Each one has its own page.
             </p>
@@ -151,15 +151,15 @@ export default async function TradePage({
                 <li className="h-full">
                   <Link
                     href={`/services/${service.id}`}
-                    className="group flex h-full flex-col rounded-lg border border-[--border] bg-[--surface-raised] p-5 transition-colors duration-200 ease-confident hover:border-[--accent]"
+                    className="group flex h-full flex-col rounded-lg border border-(--border) bg-(--surface-raised) p-5 transition-colors duration-200 ease-confident hover:border-(--accent)"
                   >
-                    <p className="font-display text-lg font-semibold transition-colors duration-200 ease-confident group-hover:text-[--accent]">
+                    <p className="font-display text-lg font-semibold transition-colors duration-200 ease-confident group-hover:text-(--accent)">
                       {service.name}
                     </p>
-                    <p className="mt-2 text-sm leading-relaxed text-[--text-secondary]">
+                    <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
                       {service.summary}
                     </p>
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-[--accent]">
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-(--accent)">
                       {service.name} in detail
                       <ArrowRight
                         className="h-3.5 w-3.5 transition-transform duration-200 ease-confident motion-safe:group-hover:translate-x-1"
@@ -177,9 +177,9 @@ export default async function TradePage({
               audience would be asserting it as *this* audience's result. */}
           {proof ? (
             <Reveal>
-              <div className="mt-12 max-w-xl border-t border-[--border] pt-6">
+              <div className="mt-12 max-w-xl border-t border-(--border) pt-6">
                 <p className="font-medium leading-relaxed">{proof.result}</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-[--text-secondary]">
+                <p className="mt-1.5 text-sm leading-relaxed text-(--text-secondary)">
                   {proof.detail}
                 </p>
               </div>
@@ -188,7 +188,7 @@ export default async function TradePage({
         </div>
       </section>
 
-      <section className="border-t border-[--border] px-6 py-16">
+      <section className="border-t border-(--border) px-6 py-16">
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <h2 className="font-display text-2xl font-semibold">
@@ -198,14 +198,14 @@ export default async function TradePage({
           {/* A <dl>, not an accordion — same reasoning as the service pages:
               collapsed answers cost a click to read and tell an answer engine
               nothing about which one matters. Emitted as FAQPage too. */}
-          <dl className="mt-8 divide-y divide-[--border] border-t border-[--border]">
+          <dl className="mt-8 divide-y divide-(--border) border-t border-(--border)">
             {trade.faqs.map((faq, i) => (
               <Reveal key={faq.question} delay={Math.min(i * 0.06, 0.2)}>
                 <div className="py-6">
                   <dt className="font-display text-lg font-semibold">
                     {faq.question}
                   </dt>
-                  <dd className="mt-2 max-w-[65ch] leading-relaxed text-[--text-secondary]">
+                  <dd className="mt-2 max-w-[65ch] leading-relaxed text-(--text-secondary)">
                     {faq.answer}
                   </dd>
                 </div>
@@ -215,13 +215,13 @@ export default async function TradePage({
         </div>
       </section>
 
-      <section className="border-t border-[--border] px-6 py-16">
+      <section className="border-t border-(--border) px-6 py-16">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-2xl font-semibold">
               How a project runs
             </h2>
-            <p className="mt-3 max-w-xl text-[--text-secondary]">
+            <p className="mt-3 max-w-xl text-(--text-secondary)">
               The same four stages as every project we take on. Discovery is
               free, and the scope and price come before the work starts.
             </p>
@@ -229,14 +229,14 @@ export default async function TradePage({
           <ol className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {PROCESS_STEPS.map((step, i) => (
               <Reveal key={step.id} delay={Math.min(i * 0.06, 0.2)}>
-                <li className="h-full border-t border-[--border] pt-4">
-                  <span className="font-mono text-sm text-[--accent]">
+                <li className="h-full border-t border-(--border) pt-4">
+                  <span className="font-mono text-sm text-(--accent)">
                     0{step.step}
                   </span>
                   <h3 className="mt-2 font-display text-lg font-semibold">
                     {step.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[--text-secondary]">
+                  <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
                     {step.description}
                   </p>
                 </li>
@@ -246,12 +246,12 @@ export default async function TradePage({
         </div>
       </section>
 
-      <section className="border-t border-[--border] px-6 py-20 text-center">
+      <section className="border-t border-(--border) px-6 py-20 text-center">
         <Reveal>
           <h2 className="mx-auto max-w-2xl text-balance font-display text-3xl font-semibold">
             Get a scoped project and a real price in 48 hours. Free.
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-balance text-[--text-secondary]">
+          <p className="mx-auto mt-3 max-w-xl text-balance text-(--text-secondary)">
             Tell us what&rsquo;s slow, missed, or manual right now, and
             we&rsquo;ll tell you what it costs and how long it takes.
           </p>

@@ -66,7 +66,7 @@ export function Frame({
   return (
     <svg
       viewBox="0 0 480 320"
-      className={`h-full w-full text-[--text-secondary]${className ? ` ${className}` : ""}`}
+      className={`h-full w-full text-(--text-secondary)${className ? ` ${className}` : ""}`}
       fill="none"
       aria-hidden="true"
       focusable="false"

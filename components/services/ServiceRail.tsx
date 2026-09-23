@@ -51,8 +51,8 @@ export function ServiceStrip({
               href={`#${service.id}`}
               className={`flex shrink-0 snap-start items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors duration-200 ease-confident ${
                 matched
-                  ? "border-[--accent] text-[--text-primary]"
-                  : "border-[--border] text-[--text-secondary]"
+                  ? "border-(--accent) text-(--text-primary)"
+                  : "border-(--border) text-(--text-secondary)"
               }`}
             >
               {/* A dot rather than a colour-only distinction: the chips have
@@ -60,7 +60,7 @@ export function ServiceStrip({
               <span
                 aria-hidden="true"
                 className={`h-1.5 w-1.5 rounded-full ${
-                  matched ? "bg-[--accent]" : "bg-[--border]"
+                  matched ? "bg-(--accent)" : "bg-(--border)"
                 }`}
               />
               {service.name}
@@ -69,11 +69,11 @@ export function ServiceStrip({
         })}
       </div>
 
-      <div className="-mx-6 h-px bg-[--border]">
+      <div className="-mx-6 h-px bg-(--border)">
         <motion.div
           aria-hidden="true"
           style={{ scaleX: scrollXProgress }}
-          className="svc-strip-fill h-full w-full origin-left bg-[--accent]"
+          className="svc-strip-fill h-full w-full origin-left bg-(--accent)"
         />
       </div>
     </nav>

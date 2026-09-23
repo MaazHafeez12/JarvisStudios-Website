@@ -123,7 +123,7 @@ export function ContactForm() {
         className="rounded-lg border border-success-500/30 bg-success-500/10 p-6 text-center"
       >
         <p className="font-display text-xl font-semibold">Message sent.</p>
-        <p className="mt-2 text-sm text-[--text-secondary]">
+        <p className="mt-2 text-sm text-(--text-secondary)">
           Thanks for reaching out — we&rsquo;ll get back to you soon.
         </p>
       </div>
@@ -208,7 +208,7 @@ export function ContactForm() {
       {/* Honeypot — visually hidden (not display:none) and hidden from
           assistive tech and tab order, per docs/DESIGN.md §6.6. A real
           visitor never sees or fills this. */}
-      <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+      <div className="absolute left-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
         <label htmlFor="website">Website</label>
         <input
           id="website"
@@ -221,7 +221,7 @@ export function ContactForm() {
       </div>
 
       {state.status === "error" && (
-        <p role="alert" className="text-sm text-[--error-text]">
+        <p role="alert" className="text-sm text-(--error-text)">
           {state.message}
         </p>
       )}
@@ -240,12 +240,12 @@ export function ContactForm() {
           not be discoverable elsewhere on the site. Deliberately states the
           retention window inline: "see our privacy policy" alone tells a
           visitor nothing at the moment they are deciding whether to type. */}
-      <p className="text-xs leading-relaxed text-[--text-secondary]">
+      <p className="text-xs leading-relaxed text-(--text-secondary)">
         We use this only to reply to your enquiry, keep it for 24 months, and
         never sell or share it.{" "}
         <Link
           href="/privacy"
-          className="underline decoration-[--border] underline-offset-4 transition-colors duration-150 ease-confident hover:text-[--text-primary] hover:decoration-[--accent]"
+          className="underline decoration-(--border) underline-offset-4 transition-colors duration-150 ease-confident hover:text-(--text-primary) hover:decoration-(--accent)"
         >
           Privacy policy
         </Link>
@@ -256,17 +256,17 @@ export function ContactForm() {
 }
 
 // `outline-none` is deliberately absent. It used to be here, leaving the
-// 1px `focus:border-[--accent]` as the only focus signal — a one-pixel
+// 1px `focus:border-(--accent)` as the only focus signal — a one-pixel
 // colour change that fails WCAG 2.4.13's 2px minimum and is genuinely hard
 // to locate when tabbing. The global `:focus-visible` rule in globals.css now
 // draws the real indicator; the border change stays as a secondary cue.
 //
 // Note that a Tailwind utility would win over that rule on specificity, so
-// re-adding `outline-none` here silently removes the site's focus ring from
+// re-adding `outline-none` or `outline-hidden` here silently removes the site's focus ring from
 // every form field. Don't.
 function inputClass(hasError: boolean): string {
-  return `w-full rounded-md border bg-[--surface-raised] px-4 py-2.5 text-[--text-primary] transition-colors duration-150 ease-confident focus:border-[--accent] ${
-    hasError ? "border-error-500" : "border-[--border]"
+  return `w-full rounded-md border bg-(--surface-raised) px-4 py-2.5 text-(--text-primary) transition-colors duration-150 ease-confident focus:border-(--accent) ${
+    hasError ? "border-error-500" : "border-(--border)"
   }`;
 }
 
@@ -283,12 +283,12 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="mb-1.5 block text-sm text-[--text-secondary]">
+      <label htmlFor={htmlFor} className="mb-1.5 block text-sm text-(--text-secondary)">
         {label}
       </label>
       {children}
       {error && (
-        <p id={`${htmlFor}-error`} className="mt-1.5 text-sm text-[--error-text]">
+        <p id={`${htmlFor}-error`} className="mt-1.5 text-sm text-(--error-text)">
           {error}
         </p>
       )}

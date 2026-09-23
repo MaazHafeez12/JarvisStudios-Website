@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { href: "/insights", label: "Insights" },
 ];
 
-// The house curve (tailwind.config.ts `ease-confident`), in the array form
+// The house curve (`--ease-confident` in globals.css `@theme`), in the array form
 // Motion wants. Same tuple as Reveal and ProcessSteps.
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -45,8 +45,13 @@ export function Nav() {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [mobileOpen]);
 
+  // No background, only the blur, and that is what production has always
+  // rendered. This used to carry `bg-[--surface]/90`, which Tailwind 3 dropped
+  // without a word (it can't apply an opacity modifier to a bare variable) and
+  // Tailwind 4 honours. Removed in the migration so the upgrade changes nothing
+  // visible. A 90% surface is one class away if the frosted bar is wanted.
   return (
-    <header className="sticky top-0 z-50 border-b border-[--border] bg-[--surface]/90 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-(--border) backdrop-blur-sm">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Logo />
 
@@ -56,7 +61,7 @@ export function Nav() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="text-sm text-[--text-secondary] transition-colors duration-150 ease-confident hover:text-[--text-primary]"
+                className="text-sm text-(--text-secondary) transition-colors duration-150 ease-confident hover:text-(--text-primary)"
               >
                 {link.label}
               </Link>
@@ -84,7 +89,7 @@ export function Nav() {
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[--border] text-[--text-primary] transition-colors duration-150 ease-confident hover:border-[--accent] hover:text-[--accent]"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-(--border) text-(--text-primary) transition-colors duration-150 ease-confident hover:border-(--accent) hover:text-(--accent)"
           >
             {/* The two glyphs rotate through each other rather than cutting.
                 mode="wait" is safe at this duration — 120ms each way is a
@@ -134,14 +139,14 @@ export function Nav() {
             transition={{ duration: 0.22, ease: EASE }}
             className="overflow-hidden md:hidden"
           >
-            <div className="border-t border-[--border] bg-[--surface]">
+            <div className="border-t border-(--border) bg-(--surface)">
               <ul className="flex flex-col gap-1 px-6 py-4">
                 {NAV_LINKS.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
                       onClick={() => setMobileOpen(false)}
-                      className="block py-2 text-base text-[--text-secondary] transition-colors duration-150 ease-confident hover:text-[--text-primary]"
+                      className="block py-2 text-base text-(--text-secondary) transition-colors duration-150 ease-confident hover:text-(--text-primary)"
                     >
                       {link.label}
                     </Link>

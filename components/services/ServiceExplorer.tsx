@@ -139,8 +139,8 @@ export function ServiceExplorer() {
                 onClick={() => choose(option.id)}
                 className={`relative isolate overflow-hidden rounded-lg border p-4 text-left transition-colors duration-200 ease-confident ${
                   active
-                    ? "border-[--accent]"
-                    : "border-[--border] hover:border-[--text-secondary]"
+                    ? "border-(--accent)"
+                    : "border-(--border) hover:border-(--text-secondary)"
                 }`}
               >
                 {/* The selected fill arrives as an angular sweep rather than
@@ -150,12 +150,12 @@ export function ServiceExplorer() {
                 <span className="svc-wipe" aria-hidden="true" />
                 <span
                   className={`block text-sm font-medium ${
-                    active ? "text-[--accent]" : "text-[--text-primary]"
+                    active ? "text-(--accent)" : "text-(--text-primary)"
                   }`}
                 >
                   {option.label}
                 </span>
-                <span className="mt-1 block text-sm text-[--text-secondary]">
+                <span className="mt-1 block text-sm text-(--text-secondary)">
                   {option.detail}
                 </span>
               </button>
@@ -164,7 +164,7 @@ export function ServiceExplorer() {
         </div>
 
         {/* Announced, not just shown: the reflow is silent to a screen reader. */}
-        <p aria-live="polite" className="mt-6 text-sm text-[--text-secondary]">
+        <p aria-live="polite" className="mt-6 text-sm text-(--text-secondary)">
           {situation
             ? `${matchCount} of ${SERVICES.length} service lines match “${situation.label}” and are shown first. All six stay readable.`
             : `All ${SERVICES.length} service lines.`}
@@ -208,18 +208,18 @@ export function ServiceExplorer() {
                   {service.name}
                 </h3>
 
-                <p className="mt-3 text-[--text-secondary]">{service.summary}</p>
+                <p className="mt-3 text-(--text-secondary)">{service.summary}</p>
 
                 {/* Capabilities as hairline-separated statements. No
                     checkmarks: a tick beside a claim the studio wrote itself
                     asserts a verification nobody performed. Present on every
                     card in every state — this list is the only thing the six
                     services can actually be compared on. */}
-                <ul className="mt-6 border-t border-[--border]">
+                <ul className="mt-6 border-t border-(--border)">
                   {service.capabilities.map((capability) => (
                     <li
                       key={capability}
-                      className="border-b border-[--border] py-3 text-sm"
+                      className="border-b border-(--border) py-3 text-sm"
                     >
                       {capability}
                     </li>
@@ -236,7 +236,7 @@ export function ServiceExplorer() {
                     <p className="text-sm font-medium leading-relaxed">
                       {service.proof.result}
                     </p>
-                    <p className="mt-1.5 text-sm leading-relaxed text-[--text-secondary]">
+                    <p className="mt-1.5 text-sm leading-relaxed text-(--text-secondary)">
                       {service.proof.detail}
                     </p>
                   </div>
@@ -254,7 +254,7 @@ export function ServiceExplorer() {
                 <div className="svc-item-cta flex flex-wrap items-center gap-x-6 gap-y-2 self-start">
                   <Link
                     href={`/contact?service=${service.id}`}
-                    className="group inline-flex items-center gap-2 text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
+                    className="group inline-flex items-center gap-2 text-sm font-medium text-(--accent) transition-colors duration-200 ease-confident hover:text-(--accent-hover)"
                   >
                     {ctaLabel(service.name)}
                     <ArrowRight
@@ -264,7 +264,7 @@ export function ServiceExplorer() {
                   </Link>
                   <Link
                     href={`/services/${service.id}`}
-                    className="text-sm text-[--text-secondary] underline decoration-[--border] underline-offset-4 transition-colors duration-200 ease-confident hover:text-[--text-primary] hover:decoration-[--accent]"
+                    className="text-sm text-(--text-secondary) underline decoration-(--border) underline-offset-4 transition-colors duration-200 ease-confident hover:text-(--text-primary) hover:decoration-(--accent)"
                   >
                     More on {service.name}
                   </Link>

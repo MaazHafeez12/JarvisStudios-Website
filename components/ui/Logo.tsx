@@ -41,7 +41,7 @@ function LogoMark() {
       // button. Both still measure 36, so the nav stays 69px and every pinned
       // surface stays aligned (globals.css:95). Shrink those and this stops
       // being true — check the measurement, don't assume it.
-      className="h-7 w-auto text-[--text-primary]"
+      className="h-7 w-auto text-(--text-primary)"
       aria-hidden="true"
       focusable="false"
     >
@@ -65,7 +65,7 @@ export function Logo() {
       aria-label="Jarvis Studios — home"
     >
       <LogoMark />
-      <span className="font-display text-base font-semibold tracking-tight text-[--text-primary]">
+      <span className="font-display text-base font-semibold tracking-tight text-(--text-primary)">
         Jarvis Studios
       </span>
     </Link>

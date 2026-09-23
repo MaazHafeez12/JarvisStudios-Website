@@ -35,11 +35,11 @@ export default function Error({
 
   return (
     <main className="mx-auto flex max-w-lg flex-col items-center px-6 py-32 text-center">
-      <p className="font-mono text-sm text-[--accent]">Error</p>
+      <p className="font-mono text-sm text-(--accent)">Error</p>
       <h1 className="mt-3 font-display text-3xl font-semibold">
         Something broke on our end.
       </h1>
-      <p className="mt-3 text-[--text-secondary]">
+      <p className="mt-3 text-(--text-secondary)">
         That&rsquo;s our fault, not yours. Try again — and if it keeps
         happening, tell us and we&rsquo;ll fix it.
       </p>
@@ -55,7 +55,7 @@ export default function Error({
         </button>
         <Link
           href="/"
-          className="group inline-flex items-center gap-2 rounded-md border border-[--border] px-5 py-2.5 text-sm font-medium transition-colors duration-150 ease-confident hover:border-[--accent] hover:text-[--accent]"
+          className="group inline-flex items-center gap-2 rounded-md border border-(--border) px-5 py-2.5 text-sm font-medium transition-colors duration-150 ease-confident hover:border-(--accent) hover:text-(--accent)"
         >
           Back to homepage
           <ArrowRight
@@ -70,7 +70,7 @@ export default function Error({
           saw to the server log entry. Shown so someone reporting the problem
           can quote it. */}
       {error.digest && (
-        <p className="mt-10 font-mono text-xs text-[--text-secondary]">
+        <p className="mt-10 font-mono text-xs text-(--text-secondary)">
           Reference: {error.digest}
         </p>
       )}

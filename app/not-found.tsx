@@ -4,9 +4,9 @@ import { ArrowRight } from "lucide-react";
 export default function NotFound() {
   return (
     <main className="mx-auto flex max-w-lg flex-col items-center px-6 py-32 text-center">
-      <p className="font-mono text-sm text-[--accent]">404</p>
+      <p className="font-mono text-sm text-(--accent)">404</p>
       <h1 className="mt-3 font-display text-3xl font-semibold">Page not found.</h1>
-      <p className="mt-3 text-[--text-secondary]">
+      <p className="mt-3 text-(--text-secondary)">
         The page you&rsquo;re looking for doesn&rsquo;t exist or has moved.
       </p>
       <Link

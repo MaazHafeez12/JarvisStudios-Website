@@ -105,7 +105,7 @@ jarvis-studios-website/
 ├── app/
 │   ├── layout.tsx                  # Root layout: nav, footer, global SEO defaults
 │   ├── page.tsx                    # Homepage (SSG)
-│   ├── globals.css                 # Tailwind base + design tokens
+│   ├── globals.css                 # Tailwind import, `@theme` tokens, design tokens
 │   │
 │   ├── services/
 │   │   └── page.tsx                # Services page (SSG) — renders content/services.ts
@@ -167,7 +167,7 @@ jarvis-studios-website/
 ├── .env.example                    # Committed, placeholder values only — documents the TRD §9 variable list
 ├── .env.local                      # Local-only, gitignored (and confirmed via .gitignore + GitHub push protection)
 ├── next.config.ts                  # Includes security response headers (CSP, HSTS, X-Frame-Options, etc. — TRD §8.1)
-├── tailwind.config.ts
+├── postcss.config.js               # Tailwind 4 via @tailwindcss/postcss; the theme itself is `@theme` in app/globals.css
 ├── tsconfig.json
 └── package.json
 ```

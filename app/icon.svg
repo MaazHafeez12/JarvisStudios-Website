@@ -11,7 +11,7 @@
      mark is invisible for every visitor on a light one. The dark tile below is
      the fix — the mark keeps its own background instead of borrowing the
      browser's, so it reads identically in both themes. #141414 is neutral-950
-     from tailwind.config.ts, not an approximation.
+     from the `@theme` block in app/globals.css, not an approximation.
 
   2. THE MARK IS NOT SQUARE. It is 285.06 x 214.44 (~4:3). A favicon is square
      everywhere it appears, so an unpadded mark gets letterboxed or squashed

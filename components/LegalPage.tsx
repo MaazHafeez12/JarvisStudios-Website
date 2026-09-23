@@ -29,21 +29,21 @@ export function LegalPage({ document: doc }: { document: LegalDocument }) {
     <main className="mx-auto max-w-2xl px-6 py-20">
       <Reveal lcpSafe>
         <h1 className="font-display text-4xl font-semibold">{doc.title}</h1>
-        <p className="mt-3 text-[--text-secondary]">{doc.description}</p>
+        <p className="mt-3 text-(--text-secondary)">{doc.description}</p>
         {/* <time> rather than a bare string: the date is the one piece of
             metadata that tells a reader whether this page is current, and it
             should be machine-readable for the same reason. */}
-        <p className="mt-6 font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+        <p className="mt-6 font-mono text-xs uppercase tracking-widest text-(--text-secondary)">
           Last updated{" "}
           <time dateTime={doc.updated}>{formatDate(doc.updated)}</time>
         </p>
       </Reveal>
 
-      <div className="mt-10 border-t border-[--border] pt-10">
+      <div className="mt-10 border-t border-(--border) pt-10">
         {doc.intro.map((paragraph, i) => (
           <p
             key={i}
-            className="mb-5 max-w-[65ch] leading-relaxed text-[--text-primary]"
+            className="mb-5 max-w-[65ch] leading-relaxed text-(--text-primary)"
           >
             {paragraph}
           </p>
@@ -59,7 +59,7 @@ export function LegalPage({ document: doc }: { document: LegalDocument }) {
               {section.body.map((paragraph, i) => (
                 <p
                   key={i}
-                  className="mt-4 max-w-[65ch] leading-relaxed text-[--text-secondary]"
+                  className="mt-4 max-w-[65ch] leading-relaxed text-(--text-secondary)"
                 >
                   {paragraph}
                 </p>
@@ -69,7 +69,7 @@ export function LegalPage({ document: doc }: { document: LegalDocument }) {
                   {section.list.map((item) => (
                     <li
                       key={item}
-                      className="relative pl-5 leading-relaxed text-[--text-secondary]"
+                      className="relative pl-5 leading-relaxed text-(--text-secondary)"
                     >
                       {/* A marker drawn in the accent rather than a default
                           disc, matching the numbered markers on /about.
@@ -77,7 +77,7 @@ export function LegalPage({ document: doc }: { document: LegalDocument }) {
                           "this is an item" — the glyph is decoration. */}
                       <span
                         aria-hidden="true"
-                        className="absolute left-0 top-[0.6em] h-1.5 w-1.5 rounded-full bg-[--accent]"
+                        className="absolute left-0 top-[0.6em] h-1.5 w-1.5 rounded-full bg-(--accent)"
                       />
                       {item}
                     </li>

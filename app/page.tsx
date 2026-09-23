@@ -31,17 +31,17 @@ export default function HomePage() {
           remains the LCP candidate and never waits on the 3D bundle. */}
       <HeroVisual>
         <Reveal>
-          <p className="font-mono text-sm uppercase tracking-widest text-[--text-secondary]">
+          <p className="font-mono text-sm uppercase tracking-widest text-(--text-secondary)">
             Jarvis Studios
           </p>
         </Reveal>
         <Reveal delay={0.1} lcpSafe>
-          <h1 className="mt-4 font-display text-4xl font-semibold leading-tight sm:text-6xl">
+          <h1 className="mt-4 font-display text-4xl font-semibold leading-tight sm:text-6xl sm:leading-none">
             Never miss another job because the phone didn&apos;t get answered.
           </h1>
         </Reveal>
         <Reveal delay={0.2}>
-          <p className="mx-auto mt-6 max-w-xl text-[--text-secondary]">
+          <p className="mx-auto mt-6 max-w-xl text-(--text-secondary)">
             We build the automation and systems that keep trades businesses
             running when you&apos;re not in the office: missed-call text-back,
             lead capture, booking, CRM.
@@ -65,7 +65,7 @@ export default function HomePage() {
           bundle. */}
       <section
         id="what-we-do"
-        className="scroll-mt-24 border-t border-[--border] px-6 py-20"
+        className="scroll-mt-24 border-t border-(--border) px-6 py-20"
       >
         <div className="mx-auto max-w-6xl">
           <Reveal>
@@ -81,7 +81,7 @@ export default function HomePage() {
       </section>
 
       {/* Credibility strip */}
-      <section className="border-t border-[--border] py-12">
+      <section className="border-t border-(--border) py-12">
         <Marquee
           items={SERVICES.map((s) => s.name)}
         />
@@ -90,18 +90,18 @@ export default function HomePage() {
       {/* Featured work — restored with a real, named client result instead
           of the removed placeholder teaser. Links to /contact rather than
           /work since /work still has no case studies to land on. */}
-      <section className="border-t border-[--border] px-6 py-20">
+      <section className="border-t border-(--border) px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <Reveal>
-            <div className="flex flex-col items-start gap-6 rounded-lg border border-[--border] bg-[--surface-raised] p-8 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col items-start gap-6 rounded-lg border border-(--border) bg-(--surface-raised) p-8 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+                <p className="font-mono text-xs uppercase tracking-widest text-(--text-secondary)">
                   Real client, real numbers
                 </p>
                 <h2 className="mt-2 max-w-xl text-balance font-display text-2xl font-semibold sm:text-3xl">
                   We understand how trades businesses actually run.
                 </h2>
-                <p className="mt-3 max-w-md text-sm leading-relaxed text-[--text-secondary]">
+                <p className="mt-3 max-w-md text-sm leading-relaxed text-(--text-secondary)">
                   Content and social management for SNF Construction Group,
                   run and measured monthly since we took over: social reach
                   growing 10%, every month.
@@ -109,7 +109,7 @@ export default function HomePage() {
               </div>
               <Link
                 href="/contact"
-                className="group inline-flex shrink-0 items-center gap-2 rounded-md border border-[--border] px-5 py-2.5 text-sm font-medium transition-colors duration-150 ease-confident hover:border-[--accent] hover:text-[--accent]"
+                className="group inline-flex shrink-0 items-center gap-2 rounded-md border border-(--border) px-5 py-2.5 text-sm font-medium transition-colors duration-150 ease-confident hover:border-(--accent) hover:text-(--accent)"
               >
                 Get results like this
                 <ArrowRight
@@ -123,12 +123,12 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA band */}
-      <section className="border-t border-[--border] px-6 py-20 text-center">
+      <section className="border-t border-(--border) px-6 py-20 text-center">
         <Reveal>
           <h2 className="mx-auto max-w-2xl text-balance font-display text-3xl font-semibold">
             Get a scoped project and a real price in 48 hours. Free.
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-balance text-[--text-secondary]">
+          <p className="mx-auto mt-3 max-w-xl text-balance text-(--text-secondary)">
             No sales pitch, no pitch deck. Tell us what you&rsquo;re building, and
             we&rsquo;ll tell you what it costs and how long it takes.
           </p>
@@ -145,15 +145,15 @@ export default function HomePage() {
       {/* Insights callout. Sits after the CTA deliberately: it's a secondary,
           low-commitment path, so it shouldn't come between the featured result
           and the ask. */}
-      <section className="border-t border-[--border] px-6 py-12">
+      <section className="border-t border-(--border) px-6 py-12">
         <Reveal>
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
-            <p className="text-sm text-[--text-secondary]">
+            <p className="text-sm text-(--text-secondary)">
               Notes on process and engineering decisions.
             </p>
             <Link
               href="/insights"
-              className="text-sm font-medium text-[--text-secondary] underline decoration-[--border] underline-offset-4 transition-colors duration-150 ease-confident hover:text-[--text-primary]"
+              className="text-sm font-medium text-(--text-secondary) underline decoration-(--border) underline-offset-4 transition-colors duration-150 ease-confident hover:text-(--text-primary)"
             >
               Read our insights
             </Link>

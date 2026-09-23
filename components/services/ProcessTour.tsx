@@ -156,16 +156,16 @@ export function ProcessTour({
           <li
             key={step.id}
             data-index={i}
-            className="ptour-panel rounded-lg border border-[--border] bg-[--surface-raised] p-6 motion-safe:lg:rounded-none motion-safe:lg:border-0 motion-safe:lg:bg-transparent motion-safe:lg:p-0"
+            className="ptour-panel rounded-lg border border-(--border) bg-(--surface-raised) p-6 motion-safe:lg:rounded-none motion-safe:lg:border-0 motion-safe:lg:bg-transparent motion-safe:lg:p-0"
           >
             <span
               // Accent everywhere in the stacked layout, where all four are
               // read at once. In the pinned layout only the step being
               // scrubbed is lit, so the numerals track the stage.
-              className={`font-mono text-xs text-[--accent] transition-colors duration-300 ease-confident ${
+              className={`font-mono text-xs text-(--accent) transition-colors duration-300 ease-confident ${
                 i === active
-                  ? "motion-safe:lg:text-[--accent]"
-                  : "motion-safe:lg:text-[--text-secondary]"
+                  ? "motion-safe:lg:text-(--accent)"
+                  : "motion-safe:lg:text-(--text-secondary)"
               }`}
             >
               0{step.step}
@@ -173,7 +173,7 @@ export function ProcessTour({
             <h3 className="mt-2 font-display text-xl font-semibold sm:text-2xl">
               {step.title}
             </h3>
-            <p className="mt-3 max-w-md text-[--text-secondary]">
+            <p className="mt-3 max-w-md text-(--text-secondary)">
               {step.description}
             </p>
 
@@ -181,7 +181,7 @@ export function ProcessTour({
                 stack show. Hidden once the stage takes over at `lg`. */}
             <div
               aria-hidden="true"
-              className="ptour-panel-visual mt-6 overflow-hidden rounded-md border border-[--border] p-4 motion-safe:lg:hidden"
+              className="ptour-panel-visual mt-6 overflow-hidden rounded-md border border-(--border) p-4 motion-safe:lg:hidden"
             >
               {visuals[i]}
             </div>

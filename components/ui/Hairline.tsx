@@ -46,13 +46,13 @@ export function Hairline({
       whileInView="hairDrawn"
       viewport={{ once: true, margin: "-80px" }}
       variants={TRACK}
-      className={`h-px w-full bg-[--border] ${className ?? ""}`}
+      className={`h-px w-full bg-(--border) ${className ?? ""}`}
       aria-hidden="true"
     >
       <motion.div
         variants={FILL}
         transition={{ duration: 0.7, ease: EASE, delay }}
-        className="h-full w-full origin-left bg-[--text-secondary] opacity-40"
+        className="h-full w-full origin-left bg-(--text-secondary) opacity-40"
       />
     </motion.div>
   );

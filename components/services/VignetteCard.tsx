@@ -55,7 +55,7 @@ export function VignetteCard({ service }: { service: ProjectType }) {
     <div
       ref={ref}
       data-vg={entered ? "in" : "out"}
-      className={`overflow-hidden rounded-lg border border-[--border] bg-[--surface-raised] p-5 ${
+      className={`overflow-hidden rounded-lg border border-(--border) bg-(--surface-raised) p-5 ${
         armed ? "vg-armed" : ""
       }`}
     >

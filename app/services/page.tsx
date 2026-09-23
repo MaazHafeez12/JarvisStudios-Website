@@ -97,7 +97,7 @@ export default function ServicesPage() {
               choose-one instructions in a row read as the page asking the
               same question twice. */}
           <Reveal delay={0.45}>
-            <p className="mt-5 max-w-xl text-balance text-[--text-secondary]">
+            <p className="mt-5 max-w-xl text-balance text-(--text-secondary)">
               Pick whichever sounds like you and we&rsquo;ll tell you exactly
               what it takes to get it live.
             </p>
@@ -174,7 +174,7 @@ export default function ServicesPage() {
             </h2>
           </Reveal>
           <Reveal delay={0.08}>
-            <p className="mx-auto mt-4 max-w-md text-[--text-secondary]">
+            <p className="mx-auto mt-4 max-w-md text-(--text-secondary)">
               Describe the problem in your own words. Working out which
               service it is happens to be our job, not yours.
             </p>
@@ -184,7 +184,7 @@ export default function ServicesPage() {
               who had already decided — the ones it exists to convince had
               passed it. */}
           <Reveal delay={0.16}>
-            <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-[--text-secondary]">
+            <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-(--text-secondary)">
               If discovery shows we&rsquo;re not the right fit, we&rsquo;ll
               tell you and point you elsewhere. You lose nothing but a phone
               call.

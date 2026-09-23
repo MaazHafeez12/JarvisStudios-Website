@@ -66,7 +66,7 @@ export function ThreadFilm({ beats }: { beats: ThreadBeat[] }) {
         <h2 className="font-display text-2xl font-semibold text-balance sm:text-3xl">
           Pull the thread
         </h2>
-        <p className="mt-3 max-w-sm text-[--text-secondary]">
+        <p className="mt-3 max-w-sm text-(--text-secondary)">
           Every project has one detail that explains all the others.
         </p>
       </div>
@@ -105,7 +105,7 @@ export function ThreadFilm({ beats }: { beats: ThreadBeat[] }) {
             <h3 className="font-display text-xl font-semibold sm:text-2xl">
               {beat.title}
             </h3>
-            <p className="mt-2 text-sm leading-relaxed text-[--text-secondary]">
+            <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
               {beat.body}
             </p>
           </article>

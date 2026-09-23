@@ -35,7 +35,7 @@ type SceneProps = {
 };
 
 /**
- * `ease-confident` — cubic-bezier(0.16, 1, 0.3, 1) from tailwind.config.ts —
+ * `ease-confident` — cubic-bezier(0.16, 1, 0.3, 1) from globals.css `@theme` —
  * approximated as an exponential ease-out, so the entrance shares its
  * character with every other transition on the site.
  */
