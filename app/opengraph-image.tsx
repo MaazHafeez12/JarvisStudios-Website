@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "nodejs";
-export const alt = "Jarvis Studios — web, app, SaaS, CRM, and marketing/design for growing businesses.";
+export const alt = "Jarvis Studios: web, app, SaaS, CRM, and marketing/design for growing businesses.";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -82,7 +82,7 @@ export default async function OpengraphImage() {
             maxWidth: 760,
           }}
         >
-          Development, design, and CRM — one studio, start to launch.
+          Development, design, and CRM. One studio, start to launch.
         </div>
       </div>
     ),

@@ -11,7 +11,7 @@ export const metadata: Metadata = pageMetadata({
   // page's own "Built lean, on purpose", and the other two are
   // content/differentiators.ts verbatim in substance.
   description:
-    "A lean studio for trades and local service businesses. You talk to whoever is building your project — and we're still there after launch.",
+    "A lean studio for trades and local service businesses. You talk to whoever is building your project, and we're still there after launch.",
   path: "/about",
 });
 

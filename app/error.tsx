@@ -40,7 +40,7 @@ export default function Error({
         Something broke on our end.
       </h1>
       <p className="mt-3 text-(--text-secondary)">
-        That&rsquo;s our fault, not yours. Try again — and if it keeps
+        That&rsquo;s our fault, not yours. Try again, and if it keeps
         happening, tell us and we&rsquo;ll fix it.
       </p>
 

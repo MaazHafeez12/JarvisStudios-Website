@@ -88,8 +88,8 @@ export const PRIVACY_POLICY: LegalDocument = {
       list: [
         "Your name",
         "Your email address",
-        "Your company name, if you choose to give one — the field is optional",
-        "The project type you select, if you select one — also optional",
+        "Your company name, if you choose to give one (the field is optional)",
+        "The project type you select, if you select one (also optional)",
         "The message you write",
       ],
     },
@@ -98,7 +98,7 @@ export const PRIVACY_POLICY: LegalDocument = {
       body: [
         "Two things, neither of which identifies you by name.",
         "Your IP address is used to rate-limit the contact form, so that one source cannot flood it. It is held briefly by our rate-limiting provider as part of a counter and expires automatically within the hour. It is not stored alongside your enquiry and we never look at it.",
-        "We also run privacy-preserving analytics on page views and page performance. These are cookieless and aggregated — they tell us that a page was viewed, roughly from where, and how quickly it loaded. They do not track you between sites, and they do not build a profile.",
+        "We also run privacy-preserving analytics on page views and page performance. These are cookieless and aggregated: they tell us that a page was viewed, roughly from where, and how quickly it loaded. They do not track you between sites, and they do not build a profile.",
       ],
     },
     {
@@ -107,9 +107,9 @@ export const PRIVACY_POLICY: LegalDocument = {
         "Under the GDPR, and as a matter of plain fairness wherever you happen to be, the reasons are:",
       ],
       list: [
-        "Your enquiry — because you asked us to contact you about working together, which is a step taken at your request before entering a contract.",
-        "Your IP address for rate limiting — our legitimate interest in keeping a public form from being abused. There is no way to run an open contact form safely without it.",
-        "Analytics — our legitimate interest in knowing which pages are useful. We use a cookieless, non-profiling tool specifically so this stays proportionate.",
+        "Your enquiry: because you asked us to contact you about working together, which is a step taken at your request before entering a contract.",
+        "Your IP address for rate limiting: our legitimate interest in keeping a public form from being abused. There is no way to run an open contact form safely without it.",
+        "Analytics: our legitimate interest in knowing which pages are useful. We use a cookieless, non-profiling tool specifically so this stays proportionate.",
       ],
     },
     {
@@ -118,17 +118,17 @@ export const PRIVACY_POLICY: LegalDocument = {
         "We are a small studio and we do not run our own infrastructure. Your enquiry passes through these providers, and no others:",
       ],
       list: [
-        "Vercel — hosts the site and provides the cookieless analytics described above.",
-        "Supabase — the database your enquiry is stored in.",
-        "Upstash — the rate-limiting store that briefly holds the IP counter.",
-        "Resend — delivers the notification email containing your enquiry to us.",
-        "Slack — receives a notification message containing your enquiry.",
+        "Vercel: hosts the site and provides the cookieless analytics described above.",
+        "Supabase: the database your enquiry is stored in.",
+        "Upstash: the rate-limiting store that briefly holds the IP counter.",
+        "Resend: delivers the notification email containing your enquiry to us.",
+        "Slack: receives a notification message containing your enquiry.",
       ],
     },
     {
       heading: "A copy reaches our inbox",
       body: [
-        "Worth stating plainly, because most policies leave it implied: the notification email and Slack message contain what you wrote. That means a copy of your enquiry lives in our email and our Slack workspace as well as in the database, and it stays there under those services' own retention until we delete it. When you ask us to erase your data, we delete those copies too — not just the database row.",
+        "Worth stating plainly, because most policies leave it implied: the notification email and Slack message contain what you wrote. That means a copy of your enquiry lives in our email and our Slack workspace as well as in the database, and it stays there under those services' own retention until we delete it. When you ask us to erase your data, we delete those copies too, not just the database row.",
       ],
     },
     {
@@ -179,7 +179,7 @@ export const PRIVACY_POLICY: LegalDocument = {
     {
       heading: "Security",
       body: [
-        "Enquiries are stored in a database with no public read or write access — every access goes through our server, never your browser. The site is served over HTTPS only. Input is validated and escaped on the server before it is stored or included in any notification.",
+        "Enquiries are stored in a database with no public read or write access. Every access goes through our server, never your browser. The site is served over HTTPS only. Input is validated and escaped on the server before it is stored or included in any notification.",
         "No system is perfect, and we would rather say that than claim otherwise. If you find a security problem with this site, please tell us at the address above.",
       ],
     },
@@ -204,7 +204,7 @@ export const TERMS_OF_USE: LegalDocument = {
     "The terms that apply to using the Jarvis Studios website, including what our published pricing does and does not commit us to.",
   updated: "2026-09-21",
   intro: [
-    "These terms cover your use of jarvisstudios.net. They do not govern any project we take on together — that is covered by a separate written proposal and agreement, and nothing on this website replaces one.",
+    "These terms cover your use of jarvisstudios.net. They do not govern any project we take on together. That is covered by a separate written proposal and agreement, and nothing on this website replaces one.",
   ],
   sections: [
     {
@@ -237,7 +237,7 @@ export const TERMS_OF_USE: LegalDocument = {
       heading: "Intellectual property",
       body: [
         "The design, code, written content, and graphics on this site belong to Jarvis Studios, except where noted below. You are welcome to read it, link to it, and quote it with attribution. You may not copy the site or substantial parts of it, present our work as yours, or reuse our content commercially without permission.",
-        "Third-party components carry their own licences and are used under them — the Clash Display and Inter typefaces, and the Lucide icon set.",
+        "Third-party components carry their own licences and are used under them: the Clash Display and Inter typefaces, and the Lucide icon set.",
       ],
     },
     {

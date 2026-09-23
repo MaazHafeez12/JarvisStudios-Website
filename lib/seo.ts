@@ -24,9 +24,9 @@ import type { Metadata } from "next";
 export const SITE_URL = "https://jarvisstudios.net";
 export const SITE_NAME = "Jarvis Studios";
 
-/** The site's title convention: "Page — Jarvis Studios", bare name on home. */
+/** The site's title convention: "Page | Jarvis Studios", bare name on home. */
 export function pageTitle(title?: string): string {
-  return title ? `${title} — ${SITE_NAME}` : SITE_NAME;
+  return title ? `${title} | ${SITE_NAME}` : SITE_NAME;
 }
 
 /** Absolute URL for a route path. `""` is the homepage. */
@@ -35,7 +35,7 @@ export function absoluteUrl(path: string): string {
 }
 
 interface PageSeoInput {
-  /** Page title WITHOUT the " — Jarvis Studios" suffix. Omit on the homepage. */
+  /** Page title WITHOUT the " | Jarvis Studios" suffix. Omit on the homepage. */
   title?: string;
   description: string;
   /** Route path, leading slash, no trailing slash. `""` for the homepage. */

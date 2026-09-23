@@ -12,7 +12,7 @@ export const metadata: Metadata = pageMetadata({
   // "Measured month over month" is the SNF case study's own framing, not a
   // stronger claim than the post makes.
   description:
-    "How we scope, build and price the work — plus what a retainer actually produced for a construction client, measured month over month.",
+    "How we scope, build and price the work, plus what a retainer actually produced for a construction client, measured month over month.",
   path: "/insights",
 });
 
