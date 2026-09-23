@@ -1,33 +1,52 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
 
 type Theme = "light" | "dark";
 
-// Mirrors the inline script in app/layout.tsx — reads the same
-// `data-theme` attribute/localStorage key so the two never disagree.
-export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme | null>(null);
+// The store is the `data-theme` attribute on <html>, written before paint by
+// the inline script in app/layout.tsx from the same localStorage key. Reading
+// it from the DOM rather than holding a copy in state is what keeps every
+// toggle in agreement. Nav renders two of these (desktop and mobile), and
+// with per-instance state, flipping one left the other showing a stale icon
+// until it remounted.
+function subscribe(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+  return () => observer.disconnect();
+}
 
-  useEffect(() => {
-    const current = document.documentElement.getAttribute("data-theme") as
-      | Theme
-      | null;
-    // The value lives in the DOM, written by layout.tsx's inline script
-    // before paint, so it cannot be read during render without diverging
-    // from the server render. Starting null and setting once on mount is
-    // what keeps hydration consistent. useSyncExternalStore is the
-    // rule-clean version of this and is tracked in TODO.md.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTheme(current ?? "dark");
-  }, []);
+// Normalised the same way the inline script does, so anything but "light"
+// reads as the dark default.
+function getSnapshot(): Theme {
+  return document.documentElement.getAttribute("data-theme") === "light"
+    ? "light"
+    : "dark";
+}
+
+// Unknown on the server: the theme lives in the visitor's localStorage.
+function getServerSnapshot(): Theme | null {
+  return null;
+}
+
+export function ThemeToggle() {
+  const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
   function toggleTheme() {
     const next: Theme = theme === "light" ? "dark" : "light";
+    // The attribute write is the state change. The observer picks it up and
+    // re-renders every subscribed toggle.
     document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
-    setTheme(next);
+    try {
+      localStorage.setItem("theme", next);
+    } catch {
+      // Storage blocked (private mode, disabled site data): the theme still
+      // switches for this page view, it just won't be remembered.
+    }
   }
 
   return (
@@ -37,8 +56,8 @@ export function ThemeToggle() {
       aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
       className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-(--border) text-(--text-primary) transition-colors duration-150 ease-confident hover:border-(--accent) hover:text-(--accent)"
     >
-      {/* Render nothing on the very first paint (theme is unknown until the
-          effect above reads the DOM) to avoid flashing the wrong icon. */}
+      {/* Nothing during the server render and hydration, where the theme is
+          unknown, so the wrong icon never flashes. */}
       {theme === "light" ? (
         <Moon className="h-4 w-4" aria-hidden="true" />
       ) : theme === "dark" ? (
