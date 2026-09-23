@@ -18,7 +18,7 @@ const inter = Inter({
 // The third typeface of the brand system (PRODUCT.md "Brand Commitments":
 // Clash Display for headings, Inter for body/UI, JetBrains Mono for accents).
 //
-// tailwind.config.ts has mapped `font-mono` to `var(--font-jetbrains-mono)`
+// The Tailwind theme has mapped `font-mono` to `var(--font-jetbrains-mono)`
 // since the theme was written, but nothing ever defined that variable — so
 // every `font-mono` element on the site (the hero eyebrow, the 01/02/03
 // markers on /about, the footer column headings, the 404 code, the legal
@@ -108,7 +108,7 @@ export default function RootLayout({
             skip the nav instead of tabbing through it on every page. */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-brand-500 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-neutral-950"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-60 focus:rounded-md focus:bg-brand-500 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-neutral-950"
         >
           Skip to content
         </a>

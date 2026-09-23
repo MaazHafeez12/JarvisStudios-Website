@@ -162,12 +162,12 @@ export function ServiceTour({
           <li
             key={service.id}
             data-index={i}
-            className="tour-panel rounded-lg border border-[--border] bg-[--surface-raised] p-6 motion-safe:lg:rounded-none motion-safe:lg:border-0 motion-safe:lg:bg-transparent motion-safe:lg:p-0"
+            className="tour-panel rounded-lg border border-(--border) bg-(--surface-raised) p-6 motion-safe:lg:rounded-none motion-safe:lg:border-0 motion-safe:lg:bg-transparent motion-safe:lg:p-0"
           >
             <h3 className="font-display text-xl font-semibold sm:text-2xl">
               {service.name}
             </h3>
-            <p className="mt-3 max-w-md text-[--text-secondary]">
+            <p className="mt-3 max-w-md text-(--text-secondary)">
               {service.summary}
             </p>
 
@@ -175,11 +175,11 @@ export function ServiceTour({
                 ServiceExplorer's treatment so the homepage and /services
                 read as one system. No checkmarks: a tick beside a claim the
                 studio wrote itself asserts a verification nobody did. */}
-            <ul className="mt-6 max-w-md border-t border-[--border]">
+            <ul className="mt-6 max-w-md border-t border-(--border)">
               {service.capabilities.map((capability) => (
                 <li
                   key={capability}
-                  className="border-b border-[--border] py-3 text-sm"
+                  className="border-b border-(--border) py-3 text-sm"
                 >
                   {capability}
                 </li>
@@ -197,7 +197,7 @@ export function ServiceTour({
                 repointed the footer. The tour was missed in that pass. */}
             <Link
               href={`/services/${service.id}`}
-              className="group mt-6 inline-flex items-center gap-2 text-sm font-medium text-[--accent] transition-colors duration-200 ease-confident hover:text-[--accent-hover]"
+              className="group mt-6 inline-flex items-center gap-2 text-sm font-medium text-(--accent) transition-colors duration-200 ease-confident hover:text-(--accent-hover)"
             >
               Explore {service.name}
               <ArrowRight
@@ -210,7 +210,7 @@ export function ServiceTour({
                 stack show. Hidden once the stage takes over at `lg`. */}
             <div
               aria-hidden="true"
-              className="tour-panel-visual mt-6 overflow-hidden rounded-md border border-[--border] p-4 motion-safe:lg:hidden"
+              className="tour-panel-visual mt-6 overflow-hidden rounded-md border border-(--border) p-4 motion-safe:lg:hidden"
             >
               {visuals[i]}
             </div>

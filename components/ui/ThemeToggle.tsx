@@ -35,7 +35,7 @@ export function ThemeToggle() {
       type="button"
       onClick={toggleTheme}
       aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
-      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[--border] text-[--text-primary] transition-colors duration-150 ease-confident hover:border-[--accent] hover:text-[--accent]"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-(--border) text-(--text-primary) transition-colors duration-150 ease-confident hover:border-(--accent) hover:text-(--accent)"
     >
       {/* Render nothing on the very first paint (theme is unknown until the
           effect above reads the DOM) to avoid flashing the wrong icon. */}

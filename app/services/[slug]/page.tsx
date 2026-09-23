@@ -86,13 +86,13 @@ export default async function ServiceDetailPage({
         <Reveal lcpSafe>
           <Link
             href="/services"
-            className="inline-flex items-center gap-2 text-sm text-[--text-secondary] transition-colors duration-200 ease-confident hover:text-[--text-primary]"
+            className="inline-flex items-center gap-2 text-sm text-(--text-secondary) transition-colors duration-200 ease-confident hover:text-(--text-primary)"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden="true" />
             All services
           </Link>
 
-          <p className="mt-8 font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+          <p className="mt-8 font-mono text-xs uppercase tracking-widest text-(--text-secondary)">
             {service.name}
           </p>
           {/* The H1 carries the search term inside a sentence. A heading that
@@ -100,18 +100,18 @@ export default async function ServiceDetailPage({
           <h1 className="mt-3 max-w-3xl text-balance font-display text-4xl font-semibold sm:text-5xl">
             {detail.headline}
           </h1>
-          <p className="mt-5 max-w-2xl text-balance text-lg text-[--text-secondary]">
+          <p className="mt-5 max-w-2xl text-balance text-lg text-(--text-secondary)">
             {detail.lead}
           </p>
         </Reveal>
       </section>
 
-      <section className="border-t border-[--border] px-6 py-16">
+      <section className="border-t border-(--border) px-6 py-16">
         <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="space-y-6">
             {detail.body.map((paragraph, i) => (
               <Reveal key={i} delay={Math.min(i * 0.06, 0.2)}>
-                <p className="max-w-[65ch] leading-relaxed text-[--text-primary]">
+                <p className="max-w-[65ch] leading-relaxed text-(--text-primary)">
                   {paragraph}
                 </p>
               </Reveal>
@@ -126,7 +126,7 @@ export default async function ServiceDetailPage({
         </div>
       </section>
 
-      <section className="border-t border-[--border] px-6 py-16">
+      <section className="border-t border-(--border) px-6 py-16">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-2xl font-semibold">
@@ -135,14 +135,14 @@ export default async function ServiceDetailPage({
           </Reveal>
           <div className="mt-10 grid gap-10 md:grid-cols-2">
             <Reveal>
-              <h3 className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+              <h3 className="font-mono text-xs uppercase tracking-widest text-(--text-secondary)">
                 Capabilities
               </h3>
-              <ul className="mt-4 border-t border-[--border]">
+              <ul className="mt-4 border-t border-(--border)">
                 {service.capabilities.map((capability) => (
                   <li
                     key={capability}
-                    className="border-b border-[--border] py-3 text-sm"
+                    className="border-b border-(--border) py-3 text-sm"
                   >
                     {capability}
                   </li>
@@ -150,18 +150,18 @@ export default async function ServiceDetailPage({
               </ul>
             </Reveal>
             <Reveal delay={0.08}>
-              <h3 className="font-mono text-xs uppercase tracking-widest text-[--text-secondary]">
+              <h3 className="font-mono text-xs uppercase tracking-widest text-(--text-secondary)">
                 What you end up with
               </h3>
               <ul className="mt-4 space-y-3">
                 {detail.outcomes.map((outcome) => (
                   <li
                     key={outcome}
-                    className="relative pl-5 text-sm leading-relaxed text-[--text-secondary]"
+                    className="relative pl-5 text-sm leading-relaxed text-(--text-secondary)"
                   >
                     <span
                       aria-hidden="true"
-                      className="absolute left-0 top-[0.55em] h-1.5 w-1.5 rounded-full bg-[--accent]"
+                      className="absolute left-0 top-[0.55em] h-1.5 w-1.5 rounded-full bg-(--accent)"
                     />
                     {outcome}
                   </li>
@@ -174,11 +174,11 @@ export default async function ServiceDetailPage({
               invented result beside a real one devalues both. */}
           {service.proof ? (
             <Reveal>
-              <div className="mt-12 max-w-xl border-t border-[--border] pt-6">
+              <div className="mt-12 max-w-xl border-t border-(--border) pt-6">
                 <p className="font-medium leading-relaxed">
                   {service.proof.result}
                 </p>
-                <p className="mt-1.5 text-sm leading-relaxed text-[--text-secondary]">
+                <p className="mt-1.5 text-sm leading-relaxed text-(--text-secondary)">
                   {service.proof.detail}
                 </p>
               </div>
@@ -188,13 +188,13 @@ export default async function ServiceDetailPage({
       </section>
 
       {situations.length > 0 && (
-        <section className="border-t border-[--border] px-6 py-16">
+        <section className="border-t border-(--border) px-6 py-16">
           <div className="mx-auto max-w-6xl">
             <Reveal>
               <h2 className="font-display text-2xl font-semibold">
                 When this is the right call
               </h2>
-              <p className="mt-3 max-w-xl text-[--text-secondary]">
+              <p className="mt-3 max-w-xl text-(--text-secondary)">
                 Phrased the way the problem usually arrives, rather than as a
                 service category.
               </p>
@@ -202,9 +202,9 @@ export default async function ServiceDetailPage({
             <ul role="list" className="mt-8 grid gap-4 sm:grid-cols-2">
               {situations.map((situation, i) => (
                 <Reveal key={situation.id} delay={Math.min(i * 0.06, 0.2)}>
-                  <li className="h-full rounded-lg border border-[--border] bg-[--surface-raised] p-5">
+                  <li className="h-full rounded-lg border border-(--border) bg-(--surface-raised) p-5">
                     <p className="font-medium">{situation.label}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-[--text-secondary]">
+                    <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
                       {situation.detail}
                     </p>
                   </li>
@@ -215,7 +215,7 @@ export default async function ServiceDetailPage({
         </section>
       )}
 
-      <section className="border-t border-[--border] px-6 py-16">
+      <section className="border-t border-(--border) px-6 py-16">
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <h2 className="font-display text-2xl font-semibold">
@@ -227,14 +227,14 @@ export default async function ServiceDetailPage({
               they cost a click to read and give an answer engine no signal
               about which one matters. These are three short answers; hiding
               them buys nothing. Emitted as FAQPage structured data too. */}
-          <dl className="mt-8 divide-y divide-[--border] border-t border-[--border]">
+          <dl className="mt-8 divide-y divide-(--border) border-t border-(--border)">
             {detail.faqs.map((faq, i) => (
               <Reveal key={faq.question} delay={Math.min(i * 0.06, 0.2)}>
                 <div className="py-6">
                   <dt className="font-display text-lg font-semibold">
                     {faq.question}
                   </dt>
-                  <dd className="mt-2 max-w-[65ch] leading-relaxed text-[--text-secondary]">
+                  <dd className="mt-2 max-w-[65ch] leading-relaxed text-(--text-secondary)">
                     {faq.answer}
                   </dd>
                 </div>
@@ -244,13 +244,13 @@ export default async function ServiceDetailPage({
         </div>
       </section>
 
-      <section className="border-t border-[--border] px-6 py-16">
+      <section className="border-t border-(--border) px-6 py-16">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-2xl font-semibold">
               How a {service.name} project runs
             </h2>
-            <p className="mt-3 max-w-xl text-[--text-secondary]">
+            <p className="mt-3 max-w-xl text-(--text-secondary)">
               The same four stages as every project we take on. Discovery is
               free, and the scope and price come before the work starts.
             </p>
@@ -258,14 +258,14 @@ export default async function ServiceDetailPage({
           <ol className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {PROCESS_STEPS.map((step, i) => (
               <Reveal key={step.id} delay={Math.min(i * 0.06, 0.2)}>
-                <li className="h-full border-t border-[--border] pt-4">
-                  <span className="font-mono text-sm text-[--accent]">
+                <li className="h-full border-t border-(--border) pt-4">
+                  <span className="font-mono text-sm text-(--accent)">
                     0{step.step}
                   </span>
                   <h3 className="mt-2 font-display text-lg font-semibold">
                     {step.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[--text-secondary]">
+                  <p className="mt-2 text-sm leading-relaxed text-(--text-secondary)">
                     {step.description}
                   </p>
                 </li>
@@ -276,14 +276,14 @@ export default async function ServiceDetailPage({
       </section>
 
       {related.length > 0 && (
-        <section className="border-t border-[--border] px-6 py-16">
+        <section className="border-t border-(--border) px-6 py-16">
           <div className="mx-auto max-w-4xl">
             <Reveal>
               <h2 className="font-display text-2xl font-semibold">
                 Related reading
               </h2>
             </Reveal>
-            <ul role="list" className="mt-6 divide-y divide-[--border] border-t border-[--border]">
+            <ul role="list" className="mt-6 divide-y divide-(--border) border-t border-(--border)">
               {related.map((post) => (
                 <Reveal key={post.slug}>
                   <li>
@@ -291,10 +291,10 @@ export default async function ServiceDetailPage({
                       href={`/insights/${post.slug}`}
                       className="group block py-5"
                     >
-                      <p className="font-display text-lg font-semibold transition-colors duration-200 ease-confident group-hover:text-[--accent]">
+                      <p className="font-display text-lg font-semibold transition-colors duration-200 ease-confident group-hover:text-(--accent)">
                         {post.title}
                       </p>
-                      <p className="mt-1.5 max-w-xl text-sm text-[--text-secondary]">
+                      <p className="mt-1.5 max-w-xl text-sm text-(--text-secondary)">
                         {post.excerpt}
                       </p>
                     </Link>
@@ -306,13 +306,13 @@ export default async function ServiceDetailPage({
         </section>
       )}
 
-      <section className="border-t border-[--border] px-6 py-20 text-center">
+      <section className="border-t border-(--border) px-6 py-20 text-center">
         <Reveal>
           <h2 className="mx-auto max-w-2xl text-balance font-display text-3xl font-semibold">
             Get a scoped {service.name} project and a real price in 48 hours.
             Free.
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-balance text-[--text-secondary]">
+          <p className="mx-auto mt-3 max-w-xl text-balance text-(--text-secondary)">
             Tell us what&rsquo;s slow, missed, or manual right now, and
             we&rsquo;ll tell you what it costs and how long it takes.
           </p>

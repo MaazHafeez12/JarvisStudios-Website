@@ -29,11 +29,11 @@ export default function InsightsPage() {
               factually stale the moment a real result shipped — it now
               contradicts the homepage and /services, which both publish
               one. Points at that result instead. */}
-          <p className="mt-4 text-[--text-secondary]">
+          <p className="mt-4 text-(--text-secondary)">
             Notes on process and engineering decisions. For results, see{" "}
             <Link
               href="/services/design"
-              className="text-[--text-primary] underline decoration-[--border] underline-offset-4 transition-colors duration-200 ease-confident hover:text-[--accent] hover:decoration-[--accent]"
+              className="text-(--text-primary) underline decoration-(--border) underline-offset-4 transition-colors duration-200 ease-confident hover:text-(--accent) hover:decoration-(--accent)"
             >
               what we&rsquo;ve done for SNF Construction Group
             </Link>
@@ -42,24 +42,24 @@ export default function InsightsPage() {
         </Reveal>
       </section>
 
-      <section className="border-t border-[--border] px-6 py-8">
-        <div className="mx-auto max-w-3xl divide-y divide-[--border]">
+      <section className="border-t border-(--border) px-6 py-8">
+        <div className="mx-auto max-w-3xl divide-y divide-(--border)">
           {INSIGHTS.map((post, i) => (
             <Reveal key={post.slug} delay={i * 0.06}>
               <Link href={`/insights/${post.slug}`} className="group block py-8">
-                <p className="text-sm text-[--text-secondary]">
+                <p className="text-sm text-(--text-secondary)">
                   {post.kind === "case-study" && (
-                    <span className="text-[--text-primary]">
+                    <span className="text-(--text-primary)">
                       Case study
                       <span aria-hidden="true"> · </span>
                     </span>
                   )}
                   {formatDate(post.publishedAt)}
                 </p>
-                <h2 className="mt-2 font-display text-2xl font-semibold transition-colors duration-200 ease-confident group-hover:text-[--accent]">
+                <h2 className="mt-2 font-display text-2xl font-semibold transition-colors duration-200 ease-confident group-hover:text-(--accent)">
                   {post.title}
                 </h2>
-                <p className="mt-3 max-w-xl text-[--text-secondary]">
+                <p className="mt-3 max-w-xl text-(--text-secondary)">
                   {post.excerpt}
                 </p>
               </Link>
@@ -73,18 +73,18 @@ export default function InsightsPage() {
           visitor and had nowhere to go. Same offer as the homepage and
           /services — third hand-maintained copy of this band, which is one
           too many; it wants extracting once anything about it changes. */}
-      <section className="border-t border-[--border] px-6 py-24">
+      <section className="border-t border-(--border) px-6 py-24">
         <div className="mx-auto max-w-2xl text-center">
           <Reveal>
             <h2 className="text-balance font-display text-3xl font-semibold sm:text-4xl">
               Get a scoped project and a real price in 48 hours. Free.
             </h2>
-            <p className="mx-auto mt-4 max-w-xl text-balance text-[--text-secondary]">
+            <p className="mx-auto mt-4 max-w-xl text-balance text-(--text-secondary)">
               No sales pitch, no pitch deck. Tell us what you&rsquo;re
               building, and we&rsquo;ll tell you what it costs and how long it
               takes.
             </p>
-            <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-[--text-secondary]">
+            <p className="mx-auto mt-5 max-w-md text-sm leading-relaxed text-(--text-secondary)">
               If discovery shows we&rsquo;re not the right fit, we&rsquo;ll
               tell you and point you elsewhere. You lose nothing but a phone
               call.

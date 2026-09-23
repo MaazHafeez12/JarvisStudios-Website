@@ -1,58 +1,126 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-neutral-0: #ffffff;
+  --color-neutral-100: #f4f4f4;
+  --color-neutral-200: #e4e4e4;
+  --color-neutral-400: #8a8a8a;
+  --color-neutral-600: #4a4a4a;
+  --color-neutral-800: #222222;
+  --color-neutral-900: #1b1b1b;
+  --color-neutral-950: #141414;
+
+  --color-brand-100: #d6f3ff;
+  --color-brand-300: #5fd0ff;
+  --color-brand-500: #00adef;
+  --color-brand-700: #0088be;
+  --color-brand-800: #00749f;
+
+  --color-success-500: #2fae66;
+
+  --color-error-500: #e5484d;
+
+  --color-warning-500: #e5a000;
+
+  --font-display: var(--font-clash-display), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+
+  --ease-confident: cubic-bezier(0.16, 1, 0.3, 1);
+}
 
 /*
+  Two v3 preflight defaults that v4 dropped, restored so the migration changes
+  nothing a visitor can see or feel:
+
+  - Borders default to v3's gray-200 rather than v4's `currentcolor`. The exact
+    v3 hex, not `--color-gray-200`: v4 redefines that token in oklch, and this
+    project otherwise has no reason to depend on Tailwind's gray palette. Every
+    visible border here names its own colour, so this only matters for one that
+    forgets to.
+  - Buttons get a pointer cursor. v4 follows the platform convention of
+    `default`, which is defensible, but it would be a behaviour change shipped
+    inside a version bump. Changing it deserves its own decision.
+  - Placeholders stay v3's gray-400. v4 derives them from the text colour at
+    50%, which on /contact means near-white hints in dark mode that read as
+    filled-in values. No field here styles its own placeholder, so this rule
+    is the only thing setting it.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: #e5e7eb;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    opacity: 1;
+    color: #9ca3af;
+  }
+}
+
+@layer utilities {
+  /*
   Token-based theming per docs/DESIGN.md §4 — components reference these
-  CSS custom properties (via Tailwind's arbitrary value / bg-[--surface]
+  CSS custom properties (via Tailwind's arbitrary value / bg-(--surface)
   syntax, or by extending the Tailwind theme to point at them) rather than
   branching on `dark:` everywhere, so light/dark stay in sync as the site
   grows. Dark mode is the default per DESIGN.md §4.
 */
-:root {
-  /* Tells the browser to render its own UI dark too — scrollbars, the
+  :root {
+    /* Tells the browser to render its own UI dark too — scrollbars, the
      `<select>` dropdown on /contact, autofill backgrounds, focus rings. Without
      it those stay light-mode against a dark page. It also lets the browser
      paint the canvas dark before any CSS arrives, which is what removes the
      white flash on first load. Overridden in the light block below. */
-  color-scheme: dark;
-  --surface: theme("colors.neutral.950");
-  --surface-raised: theme("colors.neutral.900");
-  --text-primary: theme("colors.neutral.0");
-  --text-secondary: theme("colors.neutral.400");
-  --border: theme("colors.neutral.600");
-  --accent: theme("colors.brand.500");
-  --accent-hover: theme("colors.brand.300");
-  /* error-500 (#E5484D) as text only hits 4.71:1 on this surface — just
+    color-scheme: dark;
+    --surface: var(--color-neutral-950);
+    --surface-raised: var(--color-neutral-900);
+    --text-primary: var(--color-neutral-0);
+    --text-secondary: var(--color-neutral-400);
+    --border: var(--color-neutral-600);
+    --accent: var(--color-brand-500);
+    --accent-hover: var(--color-brand-300);
+    /* error-500 (#E5484D) as text only hits 4.71:1 on this surface — just
      over the WCAG AA 4.5:1 body-text minimum, no margin for rounding/
      rendering differences. Lightened for a safer 5.3:1 (docs/DESIGN.md
      §2.2's flagged contrast check for form error states). */
-  --error-text: #e85a5f;
-}
+    --error-text: #e85a5f;
+  }
 
-:root[data-theme="light"] {
-  color-scheme: light;
-  --surface: theme("colors.neutral.0");
-  --surface-raised: theme("colors.neutral.100");
-  --text-primary: theme("colors.neutral.800");
-  --text-secondary: theme("colors.neutral.600");
-  --border: theme("colors.neutral.200");
-  /* brand-500 as text/border on white is only 2.55:1 — fails WCAG AA
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --surface: var(--color-neutral-0);
+    --surface-raised: var(--color-neutral-100);
+    --text-primary: var(--color-neutral-800);
+    --text-secondary: var(--color-neutral-600);
+    --border: var(--color-neutral-200);
+    /* brand-500 as text/border on white is only 2.55:1 — fails WCAG AA
      even for the 3:1 UI-component minimum (docs/DESIGN.md §2.2's flagged
      check). brand-800 hits 5.25:1, safe for both text and borders. */
-  --accent: theme("colors.brand.800");
-  --accent-hover: theme("colors.brand.700");
-  /* error-500 as text only hits 3.91:1 on white — fails WCAG AA 4.5:1 for
+    --accent: var(--color-brand-800);
+    --accent-hover: var(--color-brand-700);
+    /* error-500 as text only hits 3.91:1 on white — fails WCAG AA 4.5:1 for
      body text. Darkened to 5.7:1 for the light-mode form error messages. */
-  --error-text: #c4282e;
-}
+    --error-text: #c4282e;
+  }
 
-body {
-  background-color: var(--surface);
-  color: var(--text-primary);
-}
+  body {
+    background-color: var(--surface);
+    color: var(--text-primary);
+  }
 
-/* ─────────────────────────────────────────────────────────────────────────
+  /* ─────────────────────────────────────────────────────────────────────────
    Focus indicators (WCAG 2.4.7 Focus Visible, 2.4.11 Focus Not Obscured,
    2.4.13 Focus Appearance).
 
@@ -74,6 +142,7 @@ body {
    different treatment can still override this with a plain utility class
    rather than an `!important`.
    ───────────────────────────────────────────────────────────────────────── */
+}
 @layer base {
   :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
     outline: 2px solid var(--accent);
@@ -385,11 +454,11 @@ body {
   overflow: hidden;
   border-radius: 0.5rem;
   border: 1px solid rgb(255 255 255 / 0.14);
-  background: theme("colors.neutral.950");
+  background: var(--color-neutral-950);
   /* ThreadStill draws entirely on currentColor, so this is the still's ink.
      neutral.400 left the weave at roughly #3a3a3a on this ground — present in
      a screenshot, invisible on a real display. */
-  color: theme("colors.neutral.200");
+  color: var(--color-neutral-200);
 }
 
 .film-still {
@@ -467,7 +536,7 @@ body {
     margin-bottom: 0;
     max-width: min(76vw, 34rem);
     text-align: center;
-    color: theme("colors.neutral.0");
+    color: var(--color-neutral-0);
     /* Leaves as the frame arrives. Reads the same --enter the frame does, so
        the handoff is exact rather than two timings that drift apart. */
     opacity: calc(1 - var(--enter));
@@ -476,7 +545,7 @@ body {
   }
 
   .film-intro p {
-    color: theme("colors.neutral.200");
+    color: var(--color-neutral-200);
   }
 
   .film-frame {
@@ -568,11 +637,11 @@ body {
   /* Copy over film needs the light value the veil is protecting, in both
      themes — the frame is dark on every path. */
   .film-beat h3 {
-    color: theme("colors.neutral.0");
+    color: var(--color-neutral-0);
   }
 
   .film-beat p {
-    color: theme("colors.neutral.200");
+    color: var(--color-neutral-200);
   }
 
   .film-progress {

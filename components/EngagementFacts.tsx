@@ -23,7 +23,7 @@ export function EngagementFacts() {
             <dt className="font-display text-xl font-semibold">
               {fact.headline}
             </dt>
-            <dd className="mt-2 max-w-sm text-sm leading-relaxed text-[--text-secondary]">
+            <dd className="mt-2 max-w-sm text-sm leading-relaxed text-(--text-secondary)">
               {fact.detail}
             </dd>
           </div>
